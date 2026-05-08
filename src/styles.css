@@ -121,7 +121,7 @@
     to { transform: translateX(calc(-50% - 12px)); }
   }
   .animate-infinite-scroll {
-    animation: infinite-scroll 40s linear infinite;
+    animation: infinite-scroll 80s linear infinite;
   }
 }
 
