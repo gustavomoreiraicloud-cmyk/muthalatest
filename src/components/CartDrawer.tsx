@@ -489,9 +489,45 @@ export default function CartDrawer() {
                   ))}
                 </div>
                 {payment === "dinheiro" && (
-                  <div>
-                    <Label className="text-xs">Troco para quanto? (opcional)</Label>
-                    <Input value={changeFor} onChange={(e) => setChangeFor(e.target.value)} placeholder="Ex: 100" inputMode="decimal" />
+                  <div className="space-y-3 p-3 rounded-lg bg-background/20 border border-border">
+                    <Label className="text-xs font-bold uppercase">Precisa de troco?</Label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setNeedsChange(true)}
+                        className={`flex-1 p-2 rounded border text-xs font-bold transition-smooth ${
+                          needsChange === true ? "border-primary bg-primary/20 text-primary" : "border-border"
+                        }`}
+                      >
+                        Sim
+                      </button>
+                      <button
+                        onClick={() => {
+                          setNeedsChange(false);
+                          setChangeFor("");
+                        }}
+                        className={`flex-1 p-2 rounded border text-xs font-bold transition-smooth ${
+                          needsChange === false ? "border-primary bg-primary/20 text-primary" : "border-border"
+                        }`}
+                      >
+                        Não
+                      </button>
+                    </div>
+                    
+                    {needsChange === true && (
+                      <div className="animate-in fade-in slide-in-from-top-1">
+                        <Label className="text-[10px] uppercase">Troco para quanto?</Label>
+                        <div className="relative mt-1">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">R$</span>
+                          <Input
+                            className="pl-8"
+                            value={changeFor}
+                            onChange={(e) => setChangeFor(e.target.value)}
+                            placeholder="Ex: 100,00"
+                            inputMode="decimal"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
