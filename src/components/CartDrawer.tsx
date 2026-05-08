@@ -713,6 +713,5 @@ export default function CartDrawer() {
         )}
       </SheetContent>
     </Sheet>
-    );
-  }
+  );
 }
