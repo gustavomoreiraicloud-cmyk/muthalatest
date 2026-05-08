@@ -34,6 +34,11 @@ const reviews = [
 ];
 
 const Index = () => {
+  useEffect(() => {
+    // Scroll to top when entering index
+    window.scrollTo(0, 0);
+  }, []);
+
   const whatsappLink = buildWhatsAppLink();
   const { items: dbItems, loading: menuLoading } = useMenu();
   const { settings } = useStoreSettings();
