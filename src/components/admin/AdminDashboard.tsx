@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Loader2, TrendingUp, ShoppingBag, DollarSign, Calendar, CreditCard, Wallet, MapPin } from "lucide-react";
+import { Loader2, TrendingUp, ShoppingBag, DollarSign, Calendar, CreditCard, Wallet, MapPin, Clock } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import {
   ResponsiveContainer,
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
 
   const cards = [
     { label: "Vendas hoje", value: stats.todayCount, icon: ShoppingBag, color: "text-blue-400" },
-    { label: "Receita hoje", value: formatBRL(stats.todayRevenue), icon: DollarSign, color: "text-green-400" },
+    { label: "Fila de espera", value: `${orders.filter(o => ["novo", "preparo"].includes(o.status)).length} pedidos`, icon: Clock, color: "text-orange-400" },
     { label: "Vendas mês", value: stats.monthCount, icon: Calendar, color: "text-primary" },
     { label: "Receita mês", value: formatBRL(stats.monthRevenue), icon: Wallet, color: "text-yellow-400" },
   ];

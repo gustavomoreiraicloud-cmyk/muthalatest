@@ -166,6 +166,16 @@ export default function OrderStatus() {
                         {order.status === 'finalizado' && "Pedido entregue. Bom apetite!"}
                         {order.status === 'cancelado' && "Este pedido foi cancelado."}
                       </p>
+                      
+                      {['novo', 'preparo'].includes(order.status) && (
+                        <div className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/10 w-full">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Previsão de Entrega</p>
+                          <p className="text-2xl font-display text-primary">45 - 60 min</p>
+                          <p className="text-[10px] text-muted-foreground mt-1 italic">
+                            Ajustado de acordo com a fila de pedidos atual.
+                          </p>
+                        </div>
+                      )}
                     </>
                   );
                 })()}
