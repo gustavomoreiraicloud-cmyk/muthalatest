@@ -411,84 +411,58 @@ const Index = () => {
       </section>
 
       {/* CONTATO */}
-      <section id="contato" className="py-24 md:py-32 scroll-mt-20">
+      <section id="contato" className="py-20 md:py-32 scroll-mt-16 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-primary font-semibold mb-3 tracking-wider uppercase text-sm">Visite-nos</p>
-            <h2 className="font-display text-5xl md:text-7xl">Venha provar <span className="text-gradient-fire">ao vivo</span></h2>
+          <div className="text-center mb-12">
+            <p className="text-primary font-bold mb-3 tracking-widest uppercase text-xs md:text-sm">Onde estamos</p>
+            <h2 className="font-display text-4xl md:text-6xl uppercase">Visite-nos ou <br className="md:hidden" /><span className="text-gradient-fire">Peça Online</span></h2>
           </div>
-          <div className="grid lg:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <Card className="p-6 bg-card border-border hover:border-primary/50 transition-smooth">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <MapPin className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl mb-1">Endereço</h3>
-                    <p className="text-muted-foreground">R. Smith Vasconcelos, 312 — Centro, Assis · SP</p>
-                  </div>
+          <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Card className="p-5 bg-card/40 border-border/50 hover:border-primary/40 transition-all flex flex-col items-center text-center">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                  <MapPin className="w-5 h-5 text-primary" />
                 </div>
+                <h3 className="font-display text-lg mb-1 uppercase tracking-tight">Endereço</h3>
+                <p className="text-muted-foreground text-sm">R. Smith Vasconcelos, 312<br/>Centro, Assis · SP</p>
               </Card>
-              <a href={PHONE}>
-                <Card className="p-6 bg-card border-border hover:border-primary/50 transition-smooth cursor-pointer">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Phone className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl mb-1">Telefone</h3>
-                      <p className="text-muted-foreground">+55 18 99796-2510 · clique para ligar</p>
-                    </div>
+              
+              <a href={PHONE} className="block group">
+                <Card className="p-5 bg-card/40 border-border/50 group-hover:border-primary/40 transition-all flex flex-col items-center text-center h-full">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                    <Phone className="w-5 h-5 text-primary" />
                   </div>
+                  <h3 className="font-display text-lg mb-1 uppercase tracking-tight">Telefone</h3>
+                  <p className="text-muted-foreground text-sm">+55 18 99796-2510<br/><span className="text-[10px] text-primary group-hover:underline">Clique para ligar</span></p>
                 </Card>
               </a>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                <Card className="p-6 bg-card border-border hover:border-primary/50 transition-smooth cursor-pointer">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <MessageCircle className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl mb-1">WhatsApp</h3>
-                      <p className="text-muted-foreground">Peça já — resposta rápida</p>
-                    </div>
+
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block group">
+                <Card className="p-5 bg-card/40 border-border/50 group-hover:border-primary/40 transition-all flex flex-col items-center text-center h-full">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                    <MessageCircle className="w-5 h-5 text-primary" />
                   </div>
+                  <h3 className="font-display text-lg mb-1 uppercase tracking-tight">WhatsApp</h3>
+                  <p className="text-muted-foreground text-sm">Resposta imediata<br/><span className="text-[10px] text-primary group-hover:underline">Clique para conversar</span></p>
                 </Card>
               </a>
-              <a href="https://instagram.com/muthalaburguer" target="_blank" rel="noopener noreferrer">
-                <Card className="p-6 bg-card border-border hover:border-primary/50 transition-smooth cursor-pointer">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Instagram className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl mb-1">@muthalaburguer</h3>
-                      <p className="text-muted-foreground">Siga e veja as novidades</p>
-                    </div>
-                  </div>
-                </Card>
-              </a>
-              <Card className="p-6 bg-card border-border">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Clock className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-display text-xl">Horário</h3>
-                      <StatusBadge />
-                    </div>
-                    <p className="text-muted-foreground">Aberto das 18:00 às 23:00</p>
-                  </div>
+
+              <Card className="p-5 bg-card/40 border-border/50 transition-all flex flex-col items-center text-center">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                  <Clock className="w-5 h-5 text-primary" />
                 </div>
+                <div className="flex items-center gap-2 mb-1 justify-center">
+                  <h3 className="font-display text-lg uppercase tracking-tight">Horário</h3>
+                </div>
+                <p className="text-muted-foreground text-sm">Ter-Dom: 19:00 - 23:00<br/><StatusBadge /></p>
               </Card>
             </div>
-            <div className="rounded-2xl overflow-hidden shadow-deep border border-border min-h-[400px]">
+            
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/50 min-h-[300px] md:min-h-[400px]">
               <iframe
                 title="Localização Muthala Burger"
                 src="https://www.google.com/maps?q=R.+Smith+Vasconcelos,+312+-+Centro,+Assis+-+SP&output=embed"
-                className="w-full h-full min-h-[400px] border-0"
+                className="w-full h-full min-h-[300px] md:min-h-[400px] border-0"
                 loading="lazy"
               />
             </div>
@@ -497,60 +471,60 @@ const Index = () => {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-border bg-jet/50 py-12">
-        <div className="container mx-auto grid md:grid-cols-3 gap-8">
-          <div>
-            <img src={muthalaLogo} alt="Muthala Burger" className="h-24 w-auto mb-3 object-contain" width={96} height={96} loading="lazy" />
-            <p className="text-sm text-muted-foreground">Hambúrgueres artesanais em Assis — SP. Sabor que vicia.</p>
-          </div>
-          <div>
-            <h4 className="font-display text-lg mb-3">Contato</h4>
-            <p className="text-sm text-muted-foreground">R. Smith Vasconcelos, 312 — Centro</p>
-            <p className="text-sm text-muted-foreground">+55 18 99796-2510</p>
-            <p className="text-sm text-muted-foreground">Aberto até 23:00</p>
-          </div>
-          <div>
-            <h4 className="font-display text-lg mb-3">Redes</h4>
-            <div className="flex gap-3">
-              <a href="https://instagram.com/muthalaburguer" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-smooth">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-smooth">
-                <MessageCircle className="w-4 h-4" />
-              </a>
-              <a href={PHONE} className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-smooth">
-                <Phone className="w-4 h-4" />
-              </a>
+      <footer className="border-t border-border/50 bg-black/40 py-12 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 items-start">
+            <div className="flex flex-col items-center md:items-start">
+              <img src={muthalaLogo} alt="Muthala Burger" className="h-20 w-auto mb-4 object-contain" width={96} height={96} loading="lazy" />
+              <p className="text-sm text-muted-foreground text-center md:text-left max-w-xs">Hambúrgueres artesanais forjados para deuses. A melhor smash burguer de Assis — SP.</p>
+            </div>
+            <div className="text-center md:text-left">
+              <h4 className="font-display text-xl mb-4 uppercase tracking-wider">Contato</h4>
+              <p className="text-sm text-muted-foreground mb-1">R. Smith Vasconcelos, 312 — Centro</p>
+              <p className="text-sm text-muted-foreground mb-1">+55 18 99796-2510</p>
+              <p className="text-sm text-muted-foreground">Assis — SP</p>
+            </div>
+            <div className="text-center md:text-left">
+              <h4 className="font-display text-xl mb-4 uppercase tracking-wider">Siga-nos</h4>
+              <div className="flex justify-center md:justify-start gap-4">
+                <a href="https://instagram.com/muthalaburguer" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-card/50 border border-border/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all shadow-lg">
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full bg-card/50 border border-border/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all shadow-lg">
+                  <MessageCircle className="w-5 h-5" />
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="container mx-auto mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Muthala Burger. Todos os direitos reservados.
+          <div className="mt-12 pt-6 border-t border-border/30 text-center text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest">
+            © {new Date().getFullYear()} Muthala Burger • Todos os direitos reservados.
+          </div>
         </div>
       </footer>
 
-      {/* FLOATING WHATSAPP — chamativo */}
-      <a
-        href={whatsappLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Pedir agora pelo WhatsApp"
-        className="fixed bottom-6 right-6 z-50 h-14 px-5 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-wider text-sm flex items-center gap-2 shadow-glow animate-pulse-whats hover:scale-105 transition-smooth"
-      >
-        <MessageCircle className="w-5 h-5" />
-        <span className="hidden sm:inline">Pedir agora</span>
-      </a>
-
-      {cartCount > 0 && (
-        <button
-          onClick={openCart}
-          aria-label="Ver carrinho"
-          className="fixed bottom-24 right-6 z-50 h-14 px-5 rounded-full bg-gradient-gold text-primary-foreground font-bold flex items-center gap-2 shadow-glow hover:scale-105 transition-smooth"
+      {/* FLOATING ACTIONS — Mobile Optimized */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
+        {cartCount > 0 && (
+          <button
+            onClick={openCart}
+            aria-label="Ver carrinho"
+            className="h-14 px-6 rounded-full bg-gradient-gold text-primary-foreground font-black flex items-center gap-2 shadow-glow hover:scale-105 transition-all animate-bounce"
+          >
+            <ShoppingBag className="w-6 h-6" />
+            <span className="text-sm">{cartCount} {cartCount === 1 ? "item" : "itens"}</span>
+          </button>
+        )}
+        <a
+          href={whatsappLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Pedir agora pelo WhatsApp"
+          className="h-14 w-14 md:h-14 md:px-6 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-wider text-sm flex items-center justify-center md:justify-start gap-2 shadow-2xl hover:scale-105 transition-all"
         >
-          <ShoppingBag className="w-5 h-5" />
-          <span>{cartCount} {cartCount === 1 ? "item" : "itens"}</span>
-        </button>
-      )}
+          <MessageCircle className="w-6 h-6" />
+          <span className="hidden md:inline">WhatsApp</span>
+        </a>
+      </div>
 
       <ItemDetailDialog
         item={detailItem}
