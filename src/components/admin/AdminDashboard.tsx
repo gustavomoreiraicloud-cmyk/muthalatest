@@ -32,10 +32,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const since = new Date();
-    since.setDate(since.getDate() - 7);
+    since.setDate(since.getDate() - 30); // Aumentar para 30 dias para métricas mensais
     supabase
       .from("orders")
-      .select("id,total,items,status,created_at")
+      .select("id,total,items,status,created_at,payment_method,delivery_method")
       .gte("created_at", since.toISOString())
       .order("created_at", { ascending: true })
       .then(({ data }) => {
@@ -45,15 +45,38 @@ export default function AdminDashboard() {
   }, []);
 
   const stats = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayOrders = orders.filter(
-      (o) => new Date(o.created_at) >= today && o.status !== "cancelado"
-    );
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
     const validOrders = orders.filter((o) => o.status !== "cancelado");
+    const todayOrders = validOrders.filter((o) => new Date(o.created_at) >= today);
+    const monthOrders = validOrders.filter((o) => new Date(o.created_at) >= startOfMonth);
+
     const todayRevenue = todayOrders.reduce((s, o) => s + Number(o.total), 0);
-    const weekRevenue = validOrders.reduce((s, o) => s + Number(o.total), 0);
-    const ticket = validOrders.length ? weekRevenue / validOrders.length : 0;
+    const monthRevenue = monthOrders.reduce((s, o) => s + Number(o.total), 0);
+
+    // Métodos de pagamento (Pie Chart)
+    const paymentMap = new Map<string, number>();
+    validOrders.forEach((o) => {
+      const method = o.payment_method || "Não informado";
+      paymentMap.set(method, (paymentMap.get(method) ?? 0) + 1);
+    });
+    const paymentData = [...paymentMap.entries()].map(([name, value]) => ({ name: name.toUpperCase(), value }));
+
+    // Entrega vs Retirada
+    const deliveryMap = new Map<string, number>();
+    validOrders.forEach((o) => {
+      const method = o.delivery_method || "entrega";
+      deliveryMap.set(method, (deliveryMap.get(method) ?? 0) + 1);
+    });
+    const deliveryData = [...deliveryMap.entries()].map(([name, value]) => ({ 
+      name: name === "entrega" ? "Entrega" : "Retirada", 
+      value 
+    }));
 
     // Top items
     const itemMap = new Map<string, number>();
@@ -65,7 +88,7 @@ export default function AdminDashboard() {
       .slice(0, 5)
       .map(([name, qty]) => ({ name, qty }));
 
-    // Daily chart
+    // Daily chart (últimos 7 dias)
     const byDay = new Map<string, number>();
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
@@ -85,10 +108,12 @@ export default function AdminDashboard() {
     return {
       todayCount: todayOrders.length,
       todayRevenue,
-      weekRevenue,
-      ticket,
+      monthRevenue,
+      monthCount: monthOrders.length,
       top,
       chart,
+      paymentData,
+      deliveryData,
     };
   }, [orders]);
 
