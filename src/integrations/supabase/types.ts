@@ -265,12 +265,14 @@ export type Database = {
           address: string | null
           business_hours: Json | null
           delivery_fee: number
+          estimated_delivery_time: number | null
           hours: string | null
           id: string
           is_open: boolean
           latitude: number | null
           longitude: number | null
           min_order: number
+          order_prep_time_multiplier: number | null
           phone: string
           store_name: string
           updated_at: string | null
@@ -279,12 +281,14 @@ export type Database = {
           address?: string | null
           business_hours?: Json | null
           delivery_fee?: number
+          estimated_delivery_time?: number | null
           hours?: string | null
           id?: string
           is_open?: boolean
           latitude?: number | null
           longitude?: number | null
           min_order?: number
+          order_prep_time_multiplier?: number | null
           phone?: string
           store_name?: string
           updated_at?: string | null
@@ -293,12 +297,14 @@ export type Database = {
           address?: string | null
           business_hours?: Json | null
           delivery_fee?: number
+          estimated_delivery_time?: number | null
           hours?: string | null
           id?: string
           is_open?: boolean
           latitude?: number | null
           longitude?: number | null
           min_order?: number
+          order_prep_time_multiplier?: number | null
           phone?: string
           store_name?: string
           updated_at?: string | null
