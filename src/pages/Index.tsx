@@ -217,8 +217,8 @@ const Index = () => {
                 <span className="font-medium text-white">Feito na hora</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                <ShoppingBag className="w-4 h-4 text-primary" /> 
-                <span className="font-medium text-white">Entrega em Assis</span>
+                <Star className="w-4 h-4 text-primary" /> 
+                <span className="font-medium text-white">Carne Nobre</span>
               </div>
             </div>
           </div>
