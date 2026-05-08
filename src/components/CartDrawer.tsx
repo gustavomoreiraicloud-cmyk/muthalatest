@@ -208,7 +208,7 @@ export default function CartDrawer() {
         setDeliveryRangeId(range.id);
         toast.success(`Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`);
       } else {
-        toast.error("Distância fora da área de entrega atendida.");
+        toast.error("Este endereço parece estar fora da nossa área de entrega.");
       }
     } catch (err) {
       console.error(err);
