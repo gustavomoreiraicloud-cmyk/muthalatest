@@ -35,7 +35,6 @@ export default function OrderStatus() {
     setLoading(true);
     setSearched(true);
     
-    // Tentar buscar por ID (UUID) ou por Número do Pedido (4 dígitos)
     let query = supabase.from("orders").select("*");
     
     if (id.length === 4 && /^\d+$/.test(id)) {
@@ -46,7 +45,47 @@ export default function OrderStatus() {
 
     const { data, error } = await query.maybeSingle();
     
-    setOrder(data);
+    if (data) {
+      setOrder(data);
+      // Subscrever a mudanças específicas deste pedido para notificar o cliente
+      const channel = supabase
+        .channel(`order-status-${data.id}`)
+        .on(
+          "postgres_changes",
+          { 
+            event: "UPDATE", 
+            schema: "public", 
+            table: "orders",
+            filter: `id=eq.${data.id}` 
+          },
+          (payload) => {
+            const updatedOrder = payload.new as any;
+            setOrder(updatedOrder);
+            
+            // Notificação do navegador se o status mudou
+            if (updatedOrder.status !== data.status) {
+              const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
+              if (Notification.permission === "granted") {
+                new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
+                  body: `Seu pedido #${updatedOrder.order_number} mudou de status!`,
+                  icon: "/muthala-logo.png"
+                });
+              }
+            }
+          }
+        )
+        .subscribe();
+
+      // Pedir permissão para notificações se ainda não tiver
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+    
     setLoading(false);
     if (error) console.error(error);
   };
