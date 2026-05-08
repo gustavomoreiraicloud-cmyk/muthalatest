@@ -518,11 +518,11 @@ const Index = () => {
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Pedir agora pelo WhatsApp"
-          className="h-14 w-14 md:h-14 md:px-6 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-wider text-sm flex items-center justify-center md:justify-start gap-2 shadow-2xl hover:scale-105 transition-all"
+          aria-label="Pedir agora"
+          className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
         >
-          <MessageCircle className="w-6 h-6" />
-          <span className="hidden md:inline">WhatsApp</span>
+          <MessageCircle className="w-6 h-6 animate-bounce" />
+          <span className="hidden md:inline">Pedir agora</span>
         </a>
       </div>
 
