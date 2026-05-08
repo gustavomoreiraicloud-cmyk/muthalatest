@@ -79,26 +79,34 @@ const sendPushNotification = (title: string, body: string) => {
 // Som de notificação mais longo e chamativo
 const playBeep = () => {
   try {
+    // Usar um elemento de áudio real se possível, ou melhorar o AudioContext
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     
-    const playNote = (freq: number, start: number, duration: number) => {
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+
+    const playNote = (freq: number, start: number, duration: number, type: OscillatorType = "sine") => {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
       o.connect(g);
       g.connect(ctx.destination);
-      o.type = "sine";
+      o.type = type;
       o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, ctx.currentTime + start);
-      g.gain.exponentialRampToValueAtTime(0.5, ctx.currentTime + start + 0.05);
+      
+      // Envelope de volume
+      g.gain.setValueAtTime(0, ctx.currentTime + start);
+      g.gain.linearRampToValueAtTime(0.6, ctx.currentTime + start + 0.1);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
+      
       o.start(ctx.currentTime + start);
       o.stop(ctx.currentTime + start + duration + 0.1);
     };
 
-    // Sequência de 3 bipes (estilo campainha)
-    playNote(880, 0, 0.4);
-    playNote(1100, 0.5, 0.4);
-    playNote(1320, 1.0, 0.6);
+    // Sequência mais "alerta" (estilo sirene/campainha forte)
+    playNote(880, 0, 0.5, "triangle");
+    playNote(880, 0.6, 0.5, "triangle");
+    playNote(880, 1.2, 0.8, "triangle");
   } catch (err) {
     console.error("Erro ao tocar som:", err);
   }
@@ -234,7 +242,10 @@ export default function AdminOrders() {
   const toggleSound = (v: boolean) => {
     setSoundOn(v);
     localStorage.setItem(SOUND_KEY, v ? "1" : "0");
-    if (v) playBeep();
+    if (v) {
+      toast.info("Som de alerta ativado (teste tocando agora)");
+      playBeep();
+    }
   };
 
   const toggleNotify = async (v: boolean) => {
