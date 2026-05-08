@@ -331,6 +331,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_unique_order_number: { Args: never; Returns: number }
       has_role:
         | {
             Args: {
