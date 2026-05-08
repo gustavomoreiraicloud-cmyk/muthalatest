@@ -185,7 +185,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
             <img 
               src={item.img} 
               alt={item.name} 
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover brightness-[1.05] contrast-[1.1] saturate-[1.1]" 
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 if (target.src.includes('/src/assets/')) {
