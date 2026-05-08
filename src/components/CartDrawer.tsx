@@ -258,7 +258,7 @@ export default function CartDrawer() {
   };
 
   const resetAll = () => {
-    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhood("");
+    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhoodId("");
     setComplement(""); setReference(""); setNotes(""); setChangeFor("");
     setCoupon(null); setCouponCode(""); setPayment("pix");
     setConfirmation(null);
