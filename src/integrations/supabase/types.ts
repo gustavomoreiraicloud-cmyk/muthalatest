@@ -128,6 +128,57 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          options: Json | null
+          order_id: string
+          price: number
+          product_id: string | null
+          product_name: string
+          quantity: number
+          subtotal: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          options?: Json | null
+          order_id: string
+          price: number
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          subtotal: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          options?: Json | null
+          order_id?: string
+          price?: number
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          subtotal?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           address_complement: string | null
@@ -141,9 +192,11 @@ export type Database = {
           customer_name: string | null
           customer_phone: string | null
           delivery_fee: number
+          delivery_method: string | null
           discount: number
           id: string
           items: Json
+          needs_change: boolean | null
           notes: string | null
           order_number: number
           payment_method: string | null
@@ -151,6 +204,7 @@ export type Database = {
           subtotal: number | null
           total: number
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           address_complement?: string | null
@@ -164,9 +218,11 @@ export type Database = {
           customer_name?: string | null
           customer_phone?: string | null
           delivery_fee?: number
+          delivery_method?: string | null
           discount?: number
           id?: string
           items: Json
+          needs_change?: boolean | null
           notes?: string | null
           order_number?: number
           payment_method?: string | null
@@ -174,6 +230,7 @@ export type Database = {
           subtotal?: number | null
           total: number
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           address_complement?: string | null
@@ -187,9 +244,11 @@ export type Database = {
           customer_name?: string | null
           customer_phone?: string | null
           delivery_fee?: number
+          delivery_method?: string | null
           discount?: number
           id?: string
           items?: Json
+          needs_change?: boolean | null
           notes?: string | null
           order_number?: number
           payment_method?: string | null
@@ -197,6 +256,7 @@ export type Database = {
           subtotal?: number | null
           total?: number
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -13,13 +13,15 @@ type Order = {
   order_number: number | null;
   customer_name: string | null;
   customer_phone: string | null;
-  items: Array<{ name: string; qty: number; price: string }>;
+  items: Array<{ name: string; qty: number; price: string; options?: any }>;
   subtotal: number | null;
   discount: number | null;
   delivery_fee: number | null;
+  delivery_method: string | null;
   total: number;
   coupon_code: string | null;
   payment_method: string | null;
+  needs_change: boolean | null;
   change_for: number | null;
   address_street: string | null;
   address_number: string | null;
@@ -86,7 +88,20 @@ const printOrder = (o: Order) => {
   const w = window.open("", "_blank", "width=380,height=600");
   if (!w) return;
   const itemsHtml = o.items
-    .map((it) => `<tr><td>${it.qty}x</td><td>${it.name}</td><td style="text-align:right">${it.price}</td></tr>`)
+    .map((it) => {
+      let opts = "";
+      if (it.options && Object.keys(it.options).length > 0) {
+        const details = [];
+        if (it.options.burgerSize) details.push(`Tamanho: ${it.options.burgerSize}`);
+        if (it.options.doneness) details.push(`Ponto: ${it.options.doneness}`);
+        if (it.options.beverage) details.push(`Bebida: ${it.options.beverage}`);
+        if (it.options.extras?.length) details.push(`Extras: ${it.options.extras.join(", ")}`);
+        if (it.options.notes) details.push(`Obs: ${it.options.notes}`);
+        opts = `<div style="font-size:10px;margin-left:8px;color:#333">${details.join("<br/>")}</div>`;
+      }
+      return `<tr><td colspan="3"><b>${it.qty}x ${it.name}</b></td><td style="text-align:right">${it.price}</td></tr>
+              <tr><td colspan="4">${opts}</td></tr>`;
+    })
     .join("");
   const addr = [o.address_street, o.address_number].filter(Boolean).join(", ");
   w.document.write(`
@@ -104,26 +119,28 @@ const printOrder = (o: Order) => {
       <p><b>Pedido #${o.order_number ?? o.id.slice(0, 8)}</b></p>
       <p>${new Date(o.created_at).toLocaleString("pt-BR")}</p>
       <hr/>
+      <p><b>MÉTODO:</b> ${o.delivery_method === "retirada" ? "RETIRADA NO LOCAL" : "ENTREGA"}</p>
       <p><b>CLIENTE</b><br/>${o.customer_name || "—"}<br/>${o.customer_phone || "—"}</p>
       <hr/>
+      ${o.delivery_method !== "retirada" ? `
       <p><b>ENDEREÇO</b><br/>
         ${addr || "—"}<br/>
         ${o.address_neighborhood ? `Bairro: ${o.address_neighborhood}<br/>` : ""}
         ${o.address_complement ? `Compl.: ${o.address_complement}<br/>` : ""}
         ${o.address_reference ? `Ref.: ${o.address_reference}` : ""}
       </p>
-      <hr/>
+      <hr/>` : ""}
       <table>${itemsHtml}</table>
       <hr/>
       <div class="row"><span>Subtotal</span><span>${formatBRL(Number(o.subtotal ?? o.total))}</span></div>
       ${Number(o.discount) > 0 ? `<div class="row"><span>Desc${o.coupon_code ? ` (${o.coupon_code})` : ""}</span><span>-${formatBRL(Number(o.discount))}</span></div>` : ""}
-      <div class="row"><span>Entrega</span><span>${formatBRL(Number(o.delivery_fee ?? 0))}</span></div>
+      ${o.delivery_method !== "retirada" ? `<div class="row"><span>Entrega</span><span>${formatBRL(Number(o.delivery_fee ?? 0))}</span></div>` : ""}
       <p class="total">TOTAL: ${formatBRL(Number(o.total))}</p>
       <hr/>
       <p><b>PAGAMENTO:</b> ${PAY_LABEL[o.payment_method ?? ""] ?? "—"}
       ${o.payment_method === "dinheiro" && o.change_for ? `<br/>Troco para ${formatBRL(Number(o.change_for))} (levar ${formatBRL(Number(o.change_for) - Number(o.total))})` : ""}
       </p>
-      ${o.notes ? `<hr/><p><b>Obs:</b> ${o.notes}</p>` : ""}
+      ${o.notes ? `<hr/><p><b>Obs Geral:</b> ${o.notes}</p>` : ""}
       <hr/>
       <p style="text-align:center">Obrigado! 🍔</p>
       <script>window.print();setTimeout(()=>window.close(),500);</script>
@@ -252,10 +269,24 @@ export default function AdminOrders() {
                   </div>
                 )}
 
-                <ul className="text-sm space-y-1 mb-3">
+                <ul className="text-sm space-y-2 mb-3">
                   {o.items?.map((it, idx) => (
                     <li key={idx}>
-                      • {it.qty}× {it.name} <span className="text-muted-foreground">({it.price})</span>
+                      <div className="flex justify-between">
+                        <span className="font-bold">• {it.qty}× {it.name}</span>
+                        <span className="text-muted-foreground">{it.price}</span>
+                      </div>
+                      {it.options && Object.keys(it.options).length > 0 && (
+                        <div className="text-[11px] text-muted-foreground ml-4 space-y-0.5">
+                          {it.options.burgerSize && <p>Tamanho: {it.options.burgerSize}</p>}
+                          {it.options.doneness && <p>Ponto: {it.options.doneness}</p>}
+                          {it.options.beverage && <p>Bebida: {it.options.beverage}</p>}
+                          {it.options.extras && it.options.extras.length > 0 && (
+                            <p>Adicionais: {it.options.extras.join(", ")}</p>
+                          )}
+                          {it.options.notes && <p className="italic">Obs item: {it.options.notes}</p>}
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
