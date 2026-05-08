@@ -22,6 +22,7 @@ import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
 
 type PaymentMethod = "pix" | "dinheiro" | "cartao_debito" | "cartao_credito";
+type DeliveryMethod = "entrega" | "retirada";
 
 const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   pix: "PIX",
@@ -33,9 +34,18 @@ const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 const checkoutSchema = z.object({
   name: z.string().trim().min(2, "Nome muito curto").max(80),
   phone: z.string().trim().min(10, "Telefone inválido").max(20),
-  street: z.string().trim().min(2, "Informe a rua").max(120),
-  number: z.string().trim().min(1, "Informe o número").max(10),
-  neighborhoodId: z.string().min(1, "Selecione o bairro"),
+  deliveryMethod: z.enum(["entrega", "retirada"]),
+  street: z.string().trim().max(120).optional(),
+  number: z.string().trim().max(10).optional(),
+  neighborhoodId: z.string().optional(),
+}).refine((data) => {
+  if (data.deliveryMethod === "entrega") {
+    return !!data.street && !!data.number && !!data.neighborhoodId;
+  }
+  return true;
+}, {
+  message: "Preencha todos os campos do endereço para entrega",
+  path: ["street"],
 });
 
 type Coupon = {
@@ -58,6 +68,7 @@ export default function CartDrawer() {
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
   const [neighborhoodId, setNeighborhoodId] = useState("");
   const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
   const [loadingNeighborhoods, setLoadingNeighborhoods] = useState(false);
@@ -104,7 +115,9 @@ export default function CartDrawer() {
     return 0;
   })();
   const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
-  const fee = freeShipping ? 0 : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
+  const fee = (deliveryMethod === "retirada" || freeShipping) 
+    ? 0 
+    : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
@@ -152,11 +165,14 @@ export default function CartDrawer() {
     lines.push(`Nome: ${name}`);
     lines.push(`Telefone: ${phone}`);
     lines.push("");
-    lines.push("📍 *ENDEREÇO DE ENTREGA*");
-    lines.push(`${street}, ${number}`);
-    lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
-    if (complement) lines.push(`Complemento: ${complement}`);
-    if (reference) lines.push(`Referência: ${reference}`);
+    lines.push(`🚚 *MÉTODO:* ${deliveryMethod === "entrega" ? "Entrega" : "Retirada no Local"}`);
+    if (deliveryMethod === "entrega") {
+      lines.push("📍 *ENDEREÇO DE ENTREGA*");
+      lines.push(`${street}, ${number}`);
+      lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
+      if (complement) lines.push(`Complemento: ${complement}`);
+      if (reference) lines.push(`Referência: ${reference}`);
+    }
     lines.push("");
     lines.push("🛒 *PEDIDO*");
     items.forEach((i) => {
@@ -201,7 +217,14 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhoodId });
+    const parsed = checkoutSchema.safeParse({ 
+      name, 
+      phone, 
+      deliveryMethod,
+      street: deliveryMethod === "entrega" ? street : undefined, 
+      number: deliveryMethod === "entrega" ? number : undefined, 
+      neighborhoodId: deliveryMethod === "entrega" ? neighborhoodId : undefined 
+    });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -227,11 +250,11 @@ export default function CartDrawer() {
           coupon_code: coupon?.code ?? null,
           payment_method: payment,
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
-          address_street: street,
-          address_number: number,
-          address_neighborhood: selectedNeighborhood?.name || null,
-          address_complement: complement || null,
-          address_reference: reference || null,
+          address_street: deliveryMethod === "entrega" ? street : null,
+          address_number: deliveryMethod === "entrega" ? number : null,
+          address_neighborhood: deliveryMethod === "entrega" ? (selectedNeighborhood?.name || null) : "Retirada no Local",
+          address_complement: deliveryMethod === "entrega" ? (complement || null) : null,
+          address_reference: deliveryMethod === "entrega" ? (reference || null) : null,
           notes: notes || null,
           status: "novo",
         })
@@ -367,51 +390,82 @@ export default function CartDrawer() {
                 </div>
               </div>
 
-              {/* Endereço */}
+              {/* Método de Entrega */}
               <div className="space-y-3 mb-5">
-                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
-                  <MapPin className="w-4 h-4" /> Endereço de entrega
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-2">
-                    <Label className="text-xs">Rua *</Label>
-                    <Input maxLength={120} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="R. Smith Vasconcelos" />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Número *</Label>
-                    <Input maxLength={10} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="312" />
-                  </div>
-                </div>
-                <div>
-                  <Label className="text-xs">Bairro *</Label>
-                  <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
-                    <SelectTrigger className="w-full bg-background/50">
-                      <SelectValue placeholder="Selecione seu bairro" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[250px]">
-                      {loadingNeighborhoods ? (
-                        <div className="flex items-center justify-center p-4">
-                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                        </div>
-                      ) : (
-                        neighborhoods.map((n) => (
-                          <SelectItem key={n.id} value={n.id}>
-                            {n.name} — {formatBRL(Number(n.fee))}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Complemento</Label>
-                  <Input maxLength={80} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto 21, bloco B" />
-                </div>
-                <div>
-                  <Label className="text-xs">Ponto de referência</Label>
-                  <Input maxLength={120} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Próximo ao mercado..." />
+                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">📦 Como prefere receber?</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setDeliveryMethod("entrega")}
+                    className={`p-3 rounded-lg border flex flex-col items-center gap-1 transition-smooth ${
+                      deliveryMethod === "entrega"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background/40"
+                    }`}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    <span className="text-sm font-bold">Entrega</span>
+                  </button>
+                  <button
+                    onClick={() => setDeliveryMethod("retirada")}
+                    className={`p-3 rounded-lg border flex flex-col items-center gap-1 transition-smooth ${
+                      deliveryMethod === "retirada"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background/40"
+                    }`}
+                  >
+                    <MapPin className="w-5 h-5" />
+                    <span className="text-sm font-bold">Retirada</span>
+                  </button>
                 </div>
               </div>
+
+              {/* Endereço (apenas se for entrega) */}
+              {deliveryMethod === "entrega" && (
+                <div className="space-y-3 mb-5">
+                  <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
+                    <MapPin className="w-4 h-4" /> Endereço de entrega
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2">
+                      <Label className="text-xs">Rua *</Label>
+                      <Input maxLength={120} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="R. Smith Vasconcelos" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Número *</Label>
+                      <Input maxLength={10} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="312" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Bairro *</Label>
+                    <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                      <SelectTrigger className="w-full bg-background/50">
+                        <SelectValue placeholder="Selecione seu bairro" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[250px]">
+                        {loadingNeighborhoods ? (
+                          <div className="flex items-center justify-center p-4">
+                            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                          </div>
+                        ) : (
+                          neighborhoods.map((n) => (
+                            <SelectItem key={n.id} value={n.id}>
+                              {n.name} — {formatBRL(Number(n.fee))}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Complemento</Label>
+                    <Input maxLength={80} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto 21, bloco B" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Ponto de referência</Label>
+                    <Input maxLength={120} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Próximo ao mercado..." />
+                  </div>
+                </div>
+              )}
 
               {/* Pagamento */}
               <div className="space-y-3 mb-5">
