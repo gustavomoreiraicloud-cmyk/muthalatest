@@ -204,7 +204,7 @@ const Index = () => {
             </p>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { icon: Flame, label: "Smash na hora" },
+                { icon: Flame, label: "Feitos na hora" },
                 { icon: Leaf, label: "Ingredientes frescos" },
                 { icon: Award, label: "Receita autoral" },
               ].map((f) => (
