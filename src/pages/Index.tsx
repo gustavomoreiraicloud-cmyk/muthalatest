@@ -347,21 +347,20 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground text-lg">Baseado em 98 avaliações de clientes reais</p>
           </div>
-          <div className="relative group">
-            <div className="flex overflow-hidden gap-6 py-4">
-              <div className="flex animate-infinite-scroll gap-6 hover:[animation-play-state:paused]">
-                {[...reviews, ...reviews].map((r, idx) => (
-                  <Card key={`${r.name}-${idx}`} className="w-[300px] md:w-[400px] shrink-0 p-8 bg-card border-border shadow-deep hover:border-primary/50 transition-smooth">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(r.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-primary text-primary" />
-                      ))}
-                    </div>
-
-                <p className="text-foreground/90 leading-relaxed mb-6 italic">"{r.text}"</p>
-                <p className="font-semibold">{r.name}</p>
-              </Card>
-            ))}
+          <div className="relative group overflow-hidden">
+            <div className="flex animate-infinite-scroll gap-6 py-4 hover:[animation-play-state:paused] w-max">
+              {[...reviews, ...reviews, ...reviews].map((r, idx) => (
+                <Card key={`${r.name}-${idx}`} className="w-[300px] md:w-[400px] shrink-0 p-8 bg-card border-border shadow-deep hover:border-primary/50 transition-smooth">
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(r.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-foreground/90 leading-relaxed mb-6 italic line-clamp-4">"{r.text}"</p>
+                  <p className="font-semibold">{r.name}</p>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
