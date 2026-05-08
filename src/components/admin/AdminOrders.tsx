@@ -254,10 +254,24 @@ export default function AdminOrders() {
                   </div>
                 )}
 
-                <ul className="text-sm space-y-1 mb-3">
+                <ul className="text-sm space-y-2 mb-3">
                   {o.items?.map((it, idx) => (
                     <li key={idx}>
-                      • {it.qty}× {it.name} <span className="text-muted-foreground">({it.price})</span>
+                      <div className="flex justify-between">
+                        <span className="font-bold">• {it.qty}× {it.name}</span>
+                        <span className="text-muted-foreground">{it.price}</span>
+                      </div>
+                      {it.options && Object.keys(it.options).length > 0 && (
+                        <div className="text-[11px] text-muted-foreground ml-4 space-y-0.5">
+                          {it.options.burgerSize && <p>Tamanho: {it.options.burgerSize}</p>}
+                          {it.options.doneness && <p>Ponto: {it.options.doneness}</p>}
+                          {it.options.beverage && <p>Bebida: {it.options.beverage}</p>}
+                          {it.options.extras && it.options.extras.length > 0 && (
+                            <p>Adicionais: {it.options.extras.join(", ")}</p>
+                          )}
+                          {it.options.notes && <p className="italic">Obs item: {it.options.notes}</p>}
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
