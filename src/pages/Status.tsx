@@ -33,11 +33,17 @@ export default function OrderStatus() {
     if (!id) return;
     setLoading(true);
     setSearched(true);
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    
+    // Tentar buscar por ID (UUID) ou por Número do Pedido (4 dígitos)
+    let query = supabase.from("orders").select("*");
+    
+    if (id.length === 4 && /^\d+$/.test(id)) {
+      query = query.eq("order_number", parseInt(id));
+    } else {
+      query = query.eq("id", id);
+    }
+
+    const { data, error } = await query.maybeSingle();
     
     setOrder(data);
     setLoading(false);
