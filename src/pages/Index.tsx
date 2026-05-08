@@ -334,8 +334,8 @@ const Index = () => {
       </section>
 
       {/* REVIEWS */}
-      <section id="avaliacoes" className="py-24 md:py-32 bg-muted/30 scroll-mt-20">
-        <div className="container mx-auto">
+      <section id="avaliacoes" className="py-24 md:py-32 bg-muted/30 scroll-mt-20 overflow-hidden">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 mb-4">
               {[...Array(5)].map((_, i) => (
@@ -347,7 +347,8 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground text-lg">Baseado em 98 avaliações de clientes reais</p>
           </div>
-          <div className="relative group overflow-hidden">
+          
+          <div className="relative">
             <div className="flex animate-infinite-scroll gap-6 py-4 hover:[animation-play-state:paused] w-max">
               {[...reviews, ...reviews, ...reviews].map((r, idx) => (
                 <Card key={`${r.name}-${idx}`} className="w-[300px] md:w-[400px] shrink-0 p-8 bg-card border-border shadow-deep hover:border-primary/50 transition-smooth">
