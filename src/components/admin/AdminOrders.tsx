@@ -40,15 +40,15 @@ const PAY_LABEL: Record<string, string> = {
   cartao_credito: "Cartão Crédito",
 };
 
-const STATUSES = ["novo", "preparo", "entrega", "finalizado", "cancelado"] as const;
-
-const statusColor: Record<string, string> = {
-  novo: "bg-blue-500/20 text-blue-300 border-blue-500/40",
-  preparo: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-  entrega: "bg-orange-500/20 text-orange-300 border-orange-500/40",
-  finalizado: "bg-green-500/20 text-green-300 border-green-500/40",
-  cancelado: "bg-red-500/20 text-red-300 border-red-500/40",
+const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  novo: { label: "🆕 Novo", color: "bg-blue-500/20 text-blue-300 border-blue-500/40" },
+  preparo: { label: "👨‍🍳 Preparando", color: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40" },
+  entrega: { label: "🛵 Entrega", color: "bg-orange-500/20 text-orange-300 border-orange-300/40" },
+  finalizado: { label: "✅ Finalizado", color: "bg-green-500/20 text-green-300 border-green-500/40" },
+  cancelado: { label: "❌ Cancelado", color: "bg-red-500/20 text-red-300 border-red-500/40" },
 };
+
+const STATUSES = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
 const SOUND_KEY = "muthala_admin_sound";
 const NOTIFY_KEY = "muthala_admin_notify";
@@ -306,7 +306,9 @@ export default function AdminOrders() {
                       {o.customer_phone || "—"} · {new Date(o.created_at).toLocaleString("pt-BR")}
                     </p>
                   </div>
-                  <Badge className={statusColor[o.status] ?? ""} variant="outline">{o.status}</Badge>
+                  <Badge className={STATUS_CONFIG[o.status]?.color ?? ""} variant="outline">
+                    {STATUS_CONFIG[o.status]?.label ?? o.status}
+                  </Badge>
                 </div>
 
                 {/* Endereço */}
@@ -383,8 +385,9 @@ export default function AdminOrders() {
                         size="sm"
                         variant={o.status === s ? "default" : "outline"}
                         onClick={() => updateStatus(o.id, s)}
+                        className={`text-[10px] uppercase font-bold ${o.status === s ? '' : 'opacity-70 hover:opacity-100'}`}
                       >
-                        {s}
+                        {STATUS_CONFIG[s].label}
                       </Button>
                     ))}
                   </div>
