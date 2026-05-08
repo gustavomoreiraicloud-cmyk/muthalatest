@@ -152,41 +152,60 @@ export default function AdminMenu() {
         </Card>
       )}
 
-      <div className="grid gap-2">
+      <div className="grid gap-4">
         {filtered.map((it) => (
-          <Card key={it.id} className={`p-3 flex items-center gap-3 bg-card border-border ${!it.available ? "opacity-60" : ""}`}>
-            {it.image_url ? (
-              <img src={it.image_url} alt={it.name} className="w-14 h-14 rounded object-cover" />
-            ) : (
-              <div className="w-14 h-14 rounded bg-muted" />
-            )}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-bold truncate">{it.name}</p>
-                {it.highlight && <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/20 text-primary">Destaque</span>}
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+          <Card key={it.id} className={`p-4 flex flex-col sm:flex-row items-center gap-4 bg-card border-border transition-all ${!it.available ? "grayscale opacity-60" : "hover:border-primary/30"}`}>
+            <div className="relative group shrink-0">
+              {it.image_url ? (
+                <img 
+                  src={it.image_url} 
+                  alt={it.name} 
+                  className="w-20 h-20 rounded-lg object-cover border border-border shadow-sm"
+                  onError={(e) => {
+                    // Fallback para quando a imagem local /src/assets não carregar no admin
+                    const target = e.target as HTMLImageElement;
+                    if (target.src.includes('/src/assets/')) {
+                      target.src = target.src.replace('/src/assets/', '/assets/');
+                    }
+                  }}
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center">
+                  <Plus className="w-6 h-6 text-muted-foreground opacity-20" />
+                </div>
+              )}
+            </div>
+            
+            <div className="flex-1 min-w-0 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap mb-1">
+                <p className="font-bold text-lg truncate">{it.name}</p>
+                {it.highlight && <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold uppercase tracking-wider">Destaque</span>}
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-bold uppercase tracking-wider">
                   {CATEGORIES.find((c) => c.id === it.category)?.label ?? it.category}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground truncate">{it.description}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{it.description}</p>
             </div>
-            <div className="text-right flex items-center gap-4">
-              <div className="flex flex-col items-end">
-                <p className="font-display text-primary whitespace-nowrap">R$ {Number(it.price).toFixed(2)}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] text-muted-foreground uppercase font-bold">
+
+            <div className="shrink-0 flex flex-col items-center sm:items-end gap-3 sm:border-l sm:border-border sm:pl-6 min-w-[140px]">
+              <p className="font-display text-2xl text-primary leading-none">R$ {Number(it.price).toFixed(2)}</p>
+              
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">
                     {it.available ? "Ativo" : "Pausado"}
                   </span>
                   <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} />
                 </div>
-              </div>
-              <div className="flex items-center gap-1 border-l border-border pl-4">
-                <Button size="icon" variant="ghost" onClick={() => setEditing(it)} title="Editar">
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button size="icon" variant="ghost" onClick={() => remove(it.id)} title="Excluir">
-                  <Trash2 className="w-4 h-4 text-destructive" />
-                </Button>
+                
+                <div className="flex items-center gap-1">
+                  <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => setEditing(it)} title="Editar">
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => remove(it.id)} title="Excluir">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>

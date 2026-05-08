@@ -34,6 +34,11 @@ const reviews = [
 ];
 
 const Index = () => {
+  useEffect(() => {
+    // Scroll to top when entering index
+    window.scrollTo(0, 0);
+  }, []);
+
   const whatsappLink = buildWhatsAppLink();
   const { items: dbItems, loading: menuLoading } = useMenu();
   const { settings } = useStoreSettings();
@@ -289,6 +294,12 @@ const Index = () => {
                           src={detail.img}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-700"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src.includes('/src/assets/')) {
+                              target.src = target.src.replace('/src/assets/', '/assets/');
+                            }
+                          }}
                           loading="lazy"
                           width={768}
                           height={576}
