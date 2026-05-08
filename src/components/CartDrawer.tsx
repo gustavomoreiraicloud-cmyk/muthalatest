@@ -521,7 +521,21 @@ export default function CartDrawer() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs">Distância até o local *</Label>
+                    <div className="flex justify-between items-end mb-1">
+                      <Label className="text-xs">Distância até o local *</Label>
+                      <button 
+                        onClick={handleAutoDistance}
+                        disabled={calculatingDistance || !street || !number}
+                        className="text-[10px] text-primary hover:underline flex items-center gap-0.5 disabled:opacity-50"
+                      >
+                        {calculatingDistance ? (
+                          <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                        ) : (
+                          <MapPinIcon className="w-2.5 h-2.5" />
+                        )}
+                        Calcular distância
+                      </button>
+                    </div>
                     <Select value={deliveryRangeId} onValueChange={setDeliveryRangeId}>
                       <SelectTrigger className="w-full bg-background/50">
                         <SelectValue placeholder="Qual a distância?" />
