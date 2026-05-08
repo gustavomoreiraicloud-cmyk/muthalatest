@@ -286,7 +286,8 @@ export default function CartDrawer() {
       lines.push(notes);
     }
     lines.push("");
-    lines.push("✅ Confirmar pedido por favor!");
+    lines.push("✅ *Confirmar pedido por favor!*");
+    lines.push(`🔗 Acompanhe em: https://muthalaburguer.lovable.app/status?id=${orderId || ''}`);
     return lines.join("\n");
   };
 
