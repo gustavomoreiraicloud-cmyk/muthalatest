@@ -450,7 +450,7 @@ const Index = () => {
       <footer className="border-t border-border bg-jet/50 py-12">
         <div className="container mx-auto grid md:grid-cols-3 gap-8">
           <div>
-            <img src={muthalaLogo} alt="Muthala Burger" className="h-24 mb-3" width={140} height={96} loading="lazy" />
+            <img src={muthalaLogo} alt="Muthala Burger" className="h-24 w-auto mb-3 object-contain" width={96} height={96} loading="lazy" />
             <p className="text-sm text-muted-foreground">Hambúrgueres artesanais em Assis — SP. Sabor que vicia.</p>
           </div>
           <div>
