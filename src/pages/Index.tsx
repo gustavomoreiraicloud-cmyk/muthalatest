@@ -2,9 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Star, MapPin, Phone, Instagram, Clock, MessageCircle, Flame, Award, Leaf, ShoppingBag, Plus, Loader2 } from "lucide-react";
+
+// Import all assets to ensure they are bundled and have stable URLs
 import heroBurger from "@/assets/hero-burger.jpg";
 import burgerBacon from "@/assets/burger-bacon.jpg";
+import burgerBaldurOuro from "@/assets/burger-baldur-ouro.jpg";
+import burgerClassic from "@/assets/burger-classic.jpg";
+import burgerMuthala from "@/assets/burger-muthala.jpg";
+import burgerSpicy from "@/assets/burger-spicy.jpg";
+import burgerValkyria from "@/assets/burger-valkyria.jpg";
+import comboBanquete from "@/assets/combo-banquete.jpg";
+import drinkShake from "@/assets/drink-shake.jpg";
+import drinkSoda from "@/assets/drink-soda.jpg";
+import hotdogBjorn from "@/assets/hotdog-bjorn.jpg";
+import sidesFries from "@/assets/sides-fries.jpg";
+import sidesOnion from "@/assets/sides-onion.jpg";
 import muthalaLogo from "@/assets/muthala-logo.png";
+
 import StatusBadge from "@/components/StatusBadge";
 import ItemDetailDialog, { DetailItem } from "@/components/ItemDetailDialog";
 import { useCart, formatBRL } from "@/hooks/useCart";
@@ -12,6 +26,24 @@ import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { useMenu } from "@/hooks/useMenu";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { nextOpening, formatNextOpening, DEFAULT_HOURS } from "@/lib/businessHours";
+
+// Map database paths to actual imported asset URLs
+export const ASSET_MAP: Record<string, string> = {
+  "/src/assets/hero-burger.jpg": heroBurger,
+  "/src/assets/burger-bacon.jpg": burgerBacon,
+  "/src/assets/burger-baldur-ouro.jpg": burgerBaldurOuro,
+  "/src/assets/burger-classic.jpg": burgerClassic,
+  "/src/assets/burger-muthala.jpg": burgerMuthala,
+  "/src/assets/burger-spicy.jpg": burgerSpicy,
+  "/src/assets/burger-valkyria.jpg": burgerValkyria,
+  "/src/assets/combo-banquete.jpg": comboBanquete,
+  "/src/assets/drink-shake.jpg": drinkShake,
+  "/src/assets/drink-soda.jpg": drinkSoda,
+  "/src/assets/hotdog-bjorn.jpg": hotdogBjorn,
+  "/src/assets/sides-fries.jpg": sidesFries,
+  "/src/assets/sides-onion.jpg": sidesOnion,
+  "muthala-logo.png": muthalaLogo,
+};
 
 const PHONE = "tel:+5518997962510";
 const FALLBACK_IMG = "/placeholder.svg";
@@ -76,7 +108,7 @@ const Index = () => {
   const toDetail = (it: typeof dbItems[number]): DetailItem => ({
     name: it.name,
     price: formatBRL(Number(it.price)),
-    img: it.image_url || FALLBACK_IMG,
+    img: (it.image_url && ASSET_MAP[it.image_url]) || it.image_url || FALLBACK_IMG,
     desc: it.description ?? undefined,
     ingredients: it.ingredients ?? undefined,
   });

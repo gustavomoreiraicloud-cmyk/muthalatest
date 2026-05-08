@@ -20,8 +20,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Pencil, Plus, Trash2, Loader2, Upload } from "lucide-react";
+import { Pencil, Plus, Trash2, Loader2, Upload, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { ASSET_MAP } from "@/pages/Index";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type MenuItem = {
   id: string;
@@ -128,6 +130,13 @@ export default function AdminMenu() {
 
   return (
     <div className="space-y-4">
+      <Alert className="bg-primary/10 border-primary/30">
+        <AlertCircle className="h-4 w-4 text-primary" />
+        <AlertDescription className="text-xs text-primary font-bold">
+          Dica: Os adicionais (bacon, queijos, etc.) e variações de peso (100g/180g) são gerenciados automaticamente pelo sistema de acordo com o nome do item.
+        </AlertDescription>
+      </Alert>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-2xl uppercase">Cardápio ({items.length})</h2>
         <div className="flex gap-2">
@@ -158,7 +167,7 @@ export default function AdminMenu() {
             <div className="relative group shrink-0">
               {it.image_url ? (
                 <img 
-                  src={it.image_url.replace('/src/assets/', '/assets/')} 
+                  src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url} 
                   alt={it.name} 
                   className="w-20 h-20 rounded-lg object-cover border border-border shadow-sm"
                 />
@@ -211,43 +220,39 @@ export default function AdminMenu() {
             <DialogTitle>{editing?.id ? "Editar item" : "Novo item"}</DialogTitle>
           </DialogHeader>
           {editing && (
-            <div className="space-y-3">
-              <div>
-                <Label>Nome</Label>
-                <Input value={editing.name ?? ""} onChange={(e) => setEditing({ ...editing, name: e.target.value })} />
+            <div className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Nome</Label>
+                  <Input value={editing.name ?? ""} onChange={(e) => setEditing({ ...editing, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Categoria</Label>
+                  <Select value={editing.category} onValueChange={(v) => setEditing({ ...editing, category: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label>Categoria</Label>
-                <Select value={editing.category} onValueChange={(v) => setEditing({ ...editing, category: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
+
+              <div className="space-y-2">
                 <Label>Descrição</Label>
                 <Textarea value={editing.description ?? ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} />
               </div>
-              <div>
-                <Label>Ingredientes (um por linha)</Label>
-                <Textarea
-                  rows={4}
-                  value={(editing.ingredients ?? []).join("\n")}
-                  onChange={(e) => setEditing({ ...editing, ingredients: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Preço (R$)</Label>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Preço Base (R$)</Label>
                   <Input
                     type="number" step="0.01" min="0"
                     value={editing.price ?? 0}
                     onChange={(e) => setEditing({ ...editing, price: parseFloat(e.target.value) || 0 })}
                   />
                 </div>
-                <div>
-                  <Label>Ordem</Label>
+                <div className="space-y-2">
+                  <Label>Ordem de Exibição</Label>
                   <Input
                     type="number"
                     value={editing.sort_order ?? 0}
@@ -255,26 +260,58 @@ export default function AdminMenu() {
                   />
                 </div>
               </div>
-              <div>
-                <Label>Imagem</Label>
+
+              <div className="p-4 rounded-lg bg-muted/30 border border-border space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Plus className="w-4 h-4 text-primary" />
+                  <h4 className="font-bold text-sm uppercase">Adicionais e Adereços</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10px] uppercase font-bold">
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Bacon</span>
+                    <span className="text-primary">+R$ 6,90</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Hambúrguer 180g</span>
+                    <span className="text-primary">+R$ 6,00</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Queijo Cheddar</span>
+                    <span className="text-primary">+R$ 4,90</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Combo Completo</span>
+                    <span className="text-primary">+R$ 26,00</span>
+                  </div>
+                </div>
+                <p className="text-[9px] text-muted-foreground uppercase leading-tight italic">
+                  * Estes valores são aplicados automaticamente no momento da compra pelo cliente.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Imagem do Produto</Label>
                 <ImagePicker
                   value={editing.image_url ?? ""}
                   onChange={(url) => setEditing({ ...editing, image_url: url })}
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <Label>Disponível</Label>
-                <Switch checked={editing.available ?? true} onCheckedChange={(v) => setEditing({ ...editing, available: v })} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label>Destaque</Label>
-                <Switch checked={editing.highlight ?? false} onCheckedChange={(v) => setEditing({ ...editing, highlight: v })} />
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between p-2 rounded bg-muted/20">
+                  <Label className="cursor-pointer">Disponível para venda</Label>
+                  <Switch checked={editing.available ?? true} onCheckedChange={(v) => setEditing({ ...editing, available: v })} />
+                </div>
+                <div className="flex items-center justify-between p-2 rounded bg-muted/20">
+                  <Label className="cursor-pointer">Destaque (⭐)</Label>
+                  <Switch checked={editing.highlight ?? false} onCheckedChange={(v) => setEditing({ ...editing, highlight: v })} />
+                </div>
               </div>
             </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="mt-6">
             <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
-            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">Salvar</Button>
+            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -308,7 +345,7 @@ function ImagePicker({ value, onChange }: { value: string; onChange: (url: strin
   return (
     <div className="space-y-2">
       {value && (
-        <img src={value.replace('/src/assets/', '/assets/')} alt="preview" className="w-32 h-32 rounded object-cover border border-border" />
+        <img src={(value && ASSET_MAP[value]) || value} alt="preview" className="w-32 h-32 rounded object-cover border border-border" />
       )}
       <div className="flex gap-2">
         <Button

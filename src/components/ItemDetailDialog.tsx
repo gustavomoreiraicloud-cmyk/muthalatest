@@ -39,9 +39,9 @@ const getBurgerSizes = (itemName: string) => {
 
   return [
     { id: "100g", label: "BURGER 100g", price: 0 },
-    { id: "180g", label: "BURGER 180g", price: itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' ? 7 : 6 },
-    { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: itemName === 'YGGDRASIL' ? 27 : 26 },
-    { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: itemName === 'YGGDRASIL' ? 16 : 13 },
+    { id: "180g", label: "BURGER 180g", price: (itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' || itemName === 'RAGNAROK' || itemName === 'BJORN') ? 6 : 6 },
+    { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: (itemName === 'YGGDRASIL' || itemName === 'BALDUR' || itemName === 'VIDAR' || itemName === 'VALKYRIA' || itemName === 'FREYA') ? 27 : 26 },
+    { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: (itemName === 'YGGDRASIL' || itemName === 'BALDUR' || itemName === 'VIDAR' || itemName === 'VALKYRIA' || itemName === 'FREYA') ? 16 : 13 },
   ];
 };
 
