@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
 const AuthRoute = AuthRouteImport.update({
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPedidosRoute = AdminPedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/admin/dashboard'
+  fullPaths: '/' | '/admin' | '/auth' | '/admin/dashboard' | '/admin/pedidos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/admin/dashboard'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/admin/dashboard'
+  to: '/' | '/admin' | '/auth' | '/admin/dashboard' | '/admin/pedidos'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -91,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/pedidos': {
+      id: '/admin/pedidos'
+      path: '/pedidos'
+      fullPath: '/admin/pedidos'
+      preLoaderRoute: typeof AdminPedidosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -103,10 +125,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminPedidosRoute: typeof AdminPedidosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminPedidosRoute: AdminPedidosRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
