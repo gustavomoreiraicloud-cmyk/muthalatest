@@ -134,7 +134,16 @@ export default function CartDrawer() {
     lines.push("");
     lines.push("🛒 *PEDIDO*");
     items.forEach((i) => {
-      lines.push(`• ${i.qty}x ${i.name} — ${formatBRL(parsePrice(i.price) * i.qty)}`);
+      lines.push(`• *${i.qty}x ${i.name}* — ${formatBRL(parsePrice(i.price) * i.qty)}`);
+      if (i.options) {
+        if (i.options.burgerSize) lines.push(`  └ _Opção:_ ${i.options.burgerSize}`);
+        if (i.options.doneness) lines.push(`  └ _Ponto:_ ${i.options.doneness}`);
+        if (i.options.beverage) lines.push(`  └ _Bebida:_ ${i.options.beverage}`);
+        if (i.options.extras && i.options.extras.length > 0) {
+          lines.push(`  └ _Adicionais:_ ${i.options.extras.join(", ")}`);
+        }
+        if (i.options.notes) lines.push(`  └ _Obs:_ ${i.options.notes}`);
+      }
     });
     lines.push("");
     lines.push("💰 *VALORES*");
@@ -152,7 +161,7 @@ export default function CartDrawer() {
     }
     if (notes) {
       lines.push("");
-      lines.push("📝 *OBSERVAÇÕES*");
+      lines.push("📝 *OBSERVAÇÕES GERAIS*");
       lines.push(notes);
     }
     lines.push("");
