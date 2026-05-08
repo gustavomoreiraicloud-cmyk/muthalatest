@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function Auth() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user && isAdmin) navigate("/admin", { replace: true });
+    if (!loading && user && isAdmin) navigate({ to: "/admin", replace: true });
   }, [loading, user, isAdmin, navigate]);
 
   const onSubmit = async (e: FormEvent) => {
@@ -29,8 +29,9 @@ export default function Auth() {
       return;
     }
     toast.success("Bem-vindo!");
-    navigate("/admin", { replace: true });
+    navigate({ to: "/admin", replace: true });
   };
+
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
