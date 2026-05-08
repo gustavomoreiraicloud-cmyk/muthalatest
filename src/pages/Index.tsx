@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Star, MapPin, Phone, Instagram, Clock, MessageCircle, Flame, Award, Leaf, ShoppingBag, Plus, Loader2 } from "lucide-react";
+import { Star, MapPin, Phone, Instagram, Clock, MessageCircle, Flame, Award, Leaf, ShoppingBag, Plus, Loader2, ClipboardList } from "lucide-react";
 
 // Import all assets to ensure they are bundled and have stable URLs
 import heroBurger from "@/assets/hero-burger.jpg";
@@ -148,6 +148,14 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <a
+              href="/status"
+              aria-label="Acompanhar Pedido"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-border bg-card/50 flex items-center justify-center hover:border-primary hover:text-primary transition-smooth text-primary"
+            >
+              <ClipboardList className="w-5 h-5" />
+            </a>
+
             <a
               href="https://instagram.com/muthalaburguer"
               target="_blank"

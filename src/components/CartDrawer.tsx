@@ -97,7 +97,7 @@ export default function CartDrawer() {
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
 
-  const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
+  const [confirmation, setConfirmation] = useState<{ orderNumber: number | null; orderId: string | null } | null>(null);
 
   // Load delivery ranges
   useEffect(() => {
@@ -221,7 +221,7 @@ export default function CartDrawer() {
     setCoupon(null);
     setCouponCode("");
   };
-  const buildOrderMessage = (orderNumber: number | null) => {
+  const buildOrderMessage = (orderNumber: number | null, orderId: string | null = null) => {
     const lines: string[] = [];
 
     lines.push("🍔 *NOVO PEDIDO — MUTHALA BURGER*");
@@ -286,7 +286,8 @@ export default function CartDrawer() {
       lines.push(notes);
     }
     lines.push("");
-    lines.push("✅ Confirmar pedido por favor!");
+    lines.push("✅ *Confirmar pedido por favor!*");
+    lines.push(`🔗 Acompanhe em: https://muthalaburguer.lovable.app/status?id=${orderId || ''}`);
     return lines.join("\n");
   };
 
@@ -339,7 +340,7 @@ export default function CartDrawer() {
           items: items.map((i) => ({ 
             name: i.name, 
             qty: i.qty, 
-            price: i.price,
+            price: Number(parsePrice(i.price)),
             options: i.options 
           }))
         })
@@ -365,7 +366,7 @@ export default function CartDrawer() {
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
-      setConfirmation({ orderNumber: order.order_number });
+      setConfirmation({ orderNumber: order.order_number, orderId: order.id });
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -393,11 +394,26 @@ export default function CartDrawer() {
             <CheckCircle2 className="w-20 h-20 text-[hsl(142_76%_45%)] mb-4" />
             <h2 className="font-display text-3xl uppercase mb-2">Pedido enviado!</h2>
             <p className="text-sm text-muted-foreground mb-6 mt-2">
-              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site ou aguardar nosso contato se necessário. 🙏
+              Seu pedido foi recebido com sucesso! Use o botão abaixo para enviar o pedido via WhatsApp e acompanhar o status com nossa equipe. 🙏
             </p>
-            <Button onClick={resetAll} size="lg" className="w-full bg-gradient-gold text-primary-foreground font-bold">
-              Fechar
-            </Button>
+            
+            <div className="w-full space-y-3">
+              <Button asChild size="lg" className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold">
+                <a 
+                  href={buildWhatsAppLink(buildOrderMessage(confirmation.orderNumber, confirmation.orderId))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Enviar no WhatsApp
+                </a>
+              </Button>
+
+              <Button onClick={resetAll} variant="outline" size="lg" className="w-full font-bold">
+                Fechar
+              </Button>
+            </div>
           </div>
         </SheetContent>
       </Sheet>

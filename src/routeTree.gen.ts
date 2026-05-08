@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SplatRouteImport } from './routes/$'
@@ -21,6 +22,11 @@ import { Route as AdminConfigRouteImport } from './routes/admin.config'
 import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 import { Route as AdminBairrosRouteImport } from './routes/admin.bairros'
 
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/status': typeof StatusRoute
   '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/status': typeof StatusRoute
   '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/status': typeof StatusRoute
   '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/status'
     | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/status'
     | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/status'
     | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
@@ -164,10 +176,18 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
+  StatusRoute: typeof StatusRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -275,6 +295,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
