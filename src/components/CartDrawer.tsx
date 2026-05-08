@@ -694,7 +694,7 @@ export default function CartDrawer() {
               className="w-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-bold"
             >
               <MessageCircle className="w-5 h-5 mr-2" />
-              {submitting ? "Enviando..." : "Enviar pedido pelo WhatsApp"}
+              {submitting ? "Enviando..." : "Confirmar pedido"}
             </Button>
             <button onClick={clear} className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth">
               Limpar carrinho
