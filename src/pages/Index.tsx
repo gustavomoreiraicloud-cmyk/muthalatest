@@ -125,100 +125,100 @@ const Index = () => {
         );
       })()}
       {/* NAV */}
-      <header className="fixed top-0 inset-x-0 z-40 backdrop-blur-md bg-background/70 border-b border-border/50">
-        <nav className="container mx-auto flex items-center justify-between py-4">
-          <a href="#home" className="group flex items-center gap-3">
+      <header className={`fixed top-0 inset-x-0 z-40 transition-smooth ${scrolled ? 'backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md' : 'bg-transparent'}`}>
+        <nav className="container mx-auto flex items-center justify-between py-3 md:py-4 px-4">
+          <a href="#home" className="group flex items-center gap-2 md:gap-3">
             <div className="relative group-hover:scale-105 transition-smooth">
               <img
                 src={muthalaLogo}
                 alt="Muthala Burger"
-                className="relative h-14 w-14 object-contain"
+                className="relative h-10 w-10 md:h-14 md:w-14 object-contain"
                 width={56}
                 height={56}
               />
             </div>
             <StatusBadge className="hidden sm:inline-flex" />
           </a>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+          
+          <div className="hidden lg:flex items-center gap-8 text-sm font-medium uppercase tracking-wider">
             <a href="#menu" className="hover:text-primary transition-smooth">Menu</a>
             <a href="#sobre" className="hover:text-primary transition-smooth">Sobre</a>
             <a href="#avaliacoes" className="hover:text-primary transition-smooth">Avaliações</a>
             <a href="#contato" className="hover:text-primary transition-smooth">Contato</a>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2 md:gap-3">
             <a
               href="https://instagram.com/muthalaburguer"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram Muthala Burger"
-              className="hidden sm:flex w-10 h-10 rounded-full border border-border bg-card items-center justify-center hover:border-primary hover:text-primary transition-smooth"
+              className="hidden sm:flex w-9 h-9 md:w-10 md:h-10 rounded-full border border-border bg-card/50 items-center justify-center hover:border-primary hover:text-primary transition-smooth"
             >
               <Instagram className="w-4 h-4" />
             </a>
+            
             <button
               onClick={openCart}
               aria-label="Abrir carrinho"
-              className="relative w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center hover:border-primary hover:text-primary transition-smooth"
+              className="relative w-9 h-9 md:w-10 md:h-10 rounded-full border border-border bg-card/50 flex items-center justify-center hover:border-primary hover:text-primary transition-smooth"
             >
               <ShoppingBag className="w-4 h-4" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] md:text-[11px] font-bold flex items-center justify-center shadow-lg">
                   {cartCount}
                 </span>
               )}
             </button>
-            <Button asChild className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold">
-              <a href="#menu">Ver Cardápio</a>
+
+            <Button asChild size="sm" className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold hidden xs:flex">
+              <a href="#menu">Cardápio</a>
             </Button>
           </div>
         </nav>
       </header>
 
       {/* HERO */}
-      <section id="home" className="relative min-h-[88vh] md:min-h-screen flex items-center overflow-hidden pt-24 md:pt-28 scroll-mt-20">
+      <section id="home" className="relative min-h-[90vh] md:min-h-screen flex items-center overflow-hidden pt-20 md:pt-28 scroll-mt-20">
         <img
           src={heroBurger}
           alt="Hambúrguer artesanal Muthala Burger com queijo derretido"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          className="absolute inset-0 w-full h-full object-cover"
           width={1920}
           height={1080}
         />
-        <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute inset-0 bg-background/50" />
-        <div className="container mx-auto relative z-10 py-12 md:py-20">
-          <div className="max-w-3xl animate-fade-in-up">
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-2 uppercase">
-              <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span> Burguer
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/40 md:bg-black/20" />
+        <div className="container mx-auto relative z-10 py-12 md:py-20 px-4">
+          <div className="max-w-3xl animate-fade-in-up text-center md:text-left">
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-3 uppercase tracking-tighter">
+              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-1 md:mb-0">MUTHALA</span> Burguer
             </h1>
-            <p className="text-sm md:text-base text-primary font-bold mb-4 tracking-widest uppercase">
-              Hamburgueria • Assis/SP
+            <p className="text-xs md:text-base text-primary font-bold mb-4 tracking-[0.2em] uppercase">
+              O Sabor dos Deuses • Assis/SP
             </p>
-            <p className="text-base md:text-xl text-foreground/90 max-w-xl mb-2 font-semibold">
-              O sabor dos deuses direto na sua mesa. Smash de carne nobre e pão selado na manteiga.
+            <p className="text-lg md:text-2xl text-foreground/95 max-w-xl mx-auto md:mx-0 mb-6 font-semibold leading-tight">
+              Smash de carne nobre e pão selado na manteiga. Experiência única em cada mordida.
             </p>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mb-6">
-              Primeiro pedido na loja? Use o cupom <b>PRIMEIRO5</b> e ganhe 5% de desconto!
-            </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
-              <Button asChild size="lg" className="relative bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-base md:text-lg px-8 md:px-10 h-14 md:h-16 shadow-glow animate-pulse-cta cursor-pointer">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
+              <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-16 shadow-glow animate-pulse-cta">
                 <button onClick={openCart}>
-                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+                  <MessageCircle className="mr-2 w-6 h-6" />
                   Pedir agora
                 </button>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold text-base px-6 md:px-8 h-14 md:h-16">
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border-2 border-primary/50 text-white hover:bg-primary hover:text-primary-foreground font-bold text-lg px-8 h-16 backdrop-blur-sm">
                 <a href="#menu">Ver cardápio</a>
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border">
-                <Flame className="w-3.5 h-3.5 text-primary" /> Feito na hora
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-xs md:text-sm">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                <Flame className="w-4 h-4 text-primary" /> 
+                <span className="font-medium text-white">Feito na hora</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border">
-                <ShoppingBag className="w-3.5 h-3.5 text-primary" /> Mínimo {formatBRL(settings?.min_order ?? 30)}
-              </div>
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border">
-                <MapPin className="w-3.5 h-3.5 text-primary" /> Centro · Assis SP
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                <ShoppingBag className="w-4 h-4 text-primary" /> 
+                <span className="font-medium text-white">Mínimo {formatBRL(settings?.min_order ?? 30)}</span>
               </div>
             </div>
           </div>
@@ -226,64 +226,72 @@ const Index = () => {
       </section>
 
       {/* SOBRE */}
-      <section id="sobre" className="py-24 md:py-32 bg-muted/30 scroll-mt-20">
+      <section id="sobre" className="py-20 md:py-32 bg-muted/20 scroll-mt-20 overflow-hidden px-4">
         <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="text-primary font-semibold mb-3 tracking-wider uppercase text-sm">Nossa História</p>
-            <h2 className="font-display text-5xl md:text-6xl mb-6 leading-tight">
-              Feito com <span className="text-gradient-gold">paixão</span>, servido com <span className="text-gradient-fire">orgulho</span>.
+          <div className="text-center md:text-left order-2 md:order-1">
+            <p className="text-primary font-bold mb-3 tracking-widest uppercase text-xs md:text-sm">Nossa História</p>
+            <h2 className="font-display text-4xl md:text-6xl mb-6 leading-none">
+              Feito com <span className="text-gradient-gold">paixão</span>,<br className="hidden md:block" /> servido com <span className="text-gradient-fire">orgulho</span>.
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+            <p className="text-foreground/80 text-base md:text-lg leading-relaxed mb-6">
               O Muthala Burger nasceu de uma obsessão simples: criar o hambúrguer perfeito.
               Aquele que faz você fechar os olhos na primeira mordida.
             </p>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+            <p className="text-foreground/80 text-base md:text-lg leading-relaxed mb-8">
               Cada smash é prensado na hora, cada pão é selecionado a dedo, cada molho
-              é receita exclusiva da casa. Em Assis, somos referência em sabor autêntico
-              e qualidade que você sente.
+              é receita exclusiva da casa. Em Assis, somos referência em sabor autêntico.
             </p>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
               {[
                 { icon: Flame, label: "Feito na hora" },
-                { icon: Leaf, label: "Ingredientes frescos" },
-                { icon: Award, label: "Receita autoral" },
+                { icon: Leaf, label: "Artesanal" },
+                { icon: Award, label: "Autoral" },
               ].map((f) => (
-                <div key={f.label} className="text-center p-4 rounded-xl bg-card border border-border">
-                  <f.icon className="w-7 h-7 text-primary mx-auto mb-2" />
-                  <p className="text-sm font-medium">{f.label}</p>
+                <div key={f.label} className="text-center p-3 md:p-4 rounded-2xl bg-card/50 border border-border backdrop-blur-sm">
+                  <f.icon className="w-5 h-5 md:w-7 md:h-7 text-primary mx-auto mb-2" />
+                  <p className="text-[10px] md:text-xs font-bold uppercase tracking-tighter md:tracking-normal">{f.label}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-fire rounded-3xl opacity-30 blur-2xl" />
-            <img src={burgerBacon} alt="Hambúrguer artesanal Muthala" className="relative rounded-3xl shadow-deep w-full" loading="lazy" width={768} height={768} />
+          <div className="relative order-1 md:order-2 px-8 md:px-0">
+            <div className="absolute -inset-4 bg-primary/20 rounded-full opacity-30 blur-3xl animate-pulse" />
+            <img 
+              src={burgerBacon} 
+              alt="Hambúrguer artesanal Muthala" 
+              className="relative rounded-3xl shadow-2xl w-full max-w-sm mx-auto md:max-w-none" 
+              loading="lazy" 
+              width={768} 
+              height={768} 
+            />
           </div>
         </div>
       </section>
 
       {/* MENU */}
-      <section id="menu" className="py-24 md:py-32 scroll-mt-20">
+      <section id="menu" className="py-20 md:py-32 scroll-mt-16 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-12 max-w-2xl mx-auto">
-            <p className="text-primary font-semibold mb-3 tracking-wider uppercase text-sm">Cardápio Completo</p>
-            <h2 className="font-display text-5xl md:text-7xl mb-4 uppercase">
+          <div className="text-center mb-10 max-w-2xl mx-auto">
+            <p className="text-primary font-bold mb-3 tracking-widest uppercase text-xs md:text-sm">Cardápio Completo</p>
+            <h2 className="font-display text-5xl md:text-7xl mb-4 uppercase leading-none">
               Sabores <span className="font-serif-italic normal-case text-gradient-gold">lendários</span>
             </h2>
-            <p className="text-muted-foreground text-lg">Cada lanche inspirado na mitologia nórdica. Pedido mínimo {formatBRL(settings?.min_order ?? 30)}.</p>
+            <p className="text-muted-foreground text-sm md:text-lg">Pedido mínimo de {formatBRL(settings?.min_order ?? 30)} para entregas.</p>
           </div>
 
-          {/* Tabs */}
-          <div className="sticky top-24 z-20 -mx-4 px-4 py-3 bg-background/90 backdrop-blur-md border-y border-border mb-10">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-start md:justify-center">
+          {/* Tabs - Mobile Optimized */}
+          <div className="sticky top-16 md:top-24 z-30 -mx-4 px-4 py-4 bg-background/95 backdrop-blur-md border-y border-border/50 mb-8 overflow-hidden">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveCat(cat.id)}
-                  className={`px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-smooth border ${
-                    activeCat === cat.id
-                      ? "bg-gradient-gold text-primary-foreground border-transparent shadow-glow"
-                      : "bg-card text-foreground border-border hover:border-primary/50"
+                  onClick={() => {
+                    setActiveCat(cat.id);
+                  }}
+                  className={`px-6 py-2.5 rounded-full whitespace-nowrap text-xs md:text-sm font-black uppercase tracking-wider transition-all duration-300 border ${
+                    activeCat === cat.id || (!activeCat && cat === categories[0])
+                      ? "bg-gradient-gold text-primary-foreground border-transparent shadow-glow scale-105"
+                      : "bg-card/50 text-foreground/70 border-border hover:border-primary/40"
                   }`}
                 >
                   {cat.label}
