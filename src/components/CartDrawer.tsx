@@ -339,7 +339,7 @@ export default function CartDrawer() {
           items: items.map((i) => ({ 
             name: i.name, 
             qty: i.qty, 
-            price: i.price,
+            price: Number(parsePrice(i.price)),
             options: i.options 
           }))
         })
