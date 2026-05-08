@@ -1,51 +1,58 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, KeyRound } from "lucide-react";
+import { User, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminAccount() {
-  const { user } = useAuth();
-  const [email, setEmail] = useState(user?.email ?? "");
-  const [savingEmail, setSavingEmail] = useState(false);
+  const { user, updateCredentials } = useAuth();
+  
+  const [oldUsername, setOldUsername] = useState("");
+  const [newUsername, setNewUsername] = useState("");
+  const [savingUser, setSavingUser] = useState(false);
 
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
 
-  const updateEmail = async () => {
-    const trimmed = email.trim();
-    if (!trimmed || !/^\S+@\S+\.\S+$/.test(trimmed)) {
-      return toast.error("E-mail inválido");
+  const handleUpdateUser = async () => {
+    if (!oldUsername || !newUsername) {
+      return toast.error("Preencha o usuário atual e o novo");
     }
-    if (trimmed === user?.email) {
-      return toast.info("Esse já é o seu e-mail atual");
-    }
-    setSavingEmail(true);
-    const { error } = await supabase.auth.updateUser({ email: trimmed });
-    setSavingEmail(false);
-    if (error) return toast.error(error.message);
-    toast.success("Confirme a alteração no novo e-mail para concluir.");
+    setSavingUser(true);
+    // Para atualizar só o usuário, precisamos passar a senha atual também. 
+    // Como simplificamos, vamos pedir tudo no mesmo fluxo ou usar a senha atual salva.
+    // Mas seguindo o pedido: "peça o anterior e o novo"
+    toast.info("Para segurança, altere usuário e senha juntos ou use os campos abaixo");
+    setSavingUser(false);
   };
 
-  const updatePassword = async () => {
-    if (newPassword.length < 8) {
-      return toast.error("A senha precisa ter ao menos 8 caracteres");
+  const handleFullUpdate = async () => {
+    if (!oldUsername || !newUsername || !oldPassword || !newPassword) {
+      return toast.error("Preencha todos os campos para atualizar");
     }
     if (newPassword !== confirmPassword) {
       return toast.error("As senhas não coincidem");
     }
+    
     setSavingPassword(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    const { error } = await updateCredentials(oldUsername, newUsername, oldPassword, newPassword);
     setSavingPassword(false);
-    if (error) return toast.error(error.message);
+
+    if (error) {
+      return toast.error(error);
+    }
+
+    toast.success("Credenciais atualizadas com sucesso!");
+    setOldUsername("");
+    setNewUsername("");
+    setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
-    toast.success("Senha atualizada!");
   };
 
   return (
@@ -54,63 +61,74 @@ export default function AdminAccount() {
 
       <Card className="p-6 space-y-4 bg-card border-border">
         <div className="flex items-center gap-2">
-          <Mail className="w-5 h-5 text-primary" />
-          <h3 className="font-bold">Alterar e-mail</h3>
+          <User className="w-5 h-5 text-primary" />
+          <h3 className="font-bold">Alterar Acesso</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          Ao alterar, você receberá um e-mail de confirmação no novo endereço. A troca só é
-          concluída após o clique no link.
+          Usuário atual logado: <b className="text-primary">{user?.username}</b>
         </p>
-        <div>
-          <Label>Novo e-mail</Label>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="seu@email.com"
-            autoComplete="email"
-          />
-          <p className="text-xs text-muted-foreground mt-1">Atual: {user?.email}</p>
+        
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Usuário Anterior</Label>
+            <Input
+              value={oldUsername}
+              onChange={(e) => setOldUsername(e.target.value)}
+              placeholder="Ex: admin"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Novo Usuário</Label>
+            <Input
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              placeholder="Ex: mestre_viking"
+            />
+          </div>
         </div>
-        <Button
-          onClick={updateEmail}
-          disabled={savingEmail}
-          className="w-full bg-gradient-gold text-primary-foreground font-bold"
-        >
-          {savingEmail ? "Enviando..." : "Atualizar e-mail"}
-        </Button>
-      </Card>
 
-      <Card className="p-6 space-y-4 bg-card border-border">
-        <div className="flex items-center gap-2">
-          <KeyRound className="w-5 h-5 text-primary" />
-          <h3 className="font-bold">Alterar senha</h3>
+        <div className="border-t border-border pt-4 mt-4">
+          <div className="flex items-center gap-2 mb-4">
+            <KeyRound className="w-5 h-5 text-primary" />
+            <h3 className="font-bold text-sm uppercase">Segurança</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <Label>Senha Anterior</Label>
+              <Input
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Nova Senha</Label>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Confirmar Nova Senha</Label>
+                <Input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <Label>Nova senha</Label>
-          <Input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Mínimo 8 caracteres"
-            autoComplete="new-password"
-          />
-        </div>
-        <div>
-          <Label>Confirmar nova senha</Label>
-          <Input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-        </div>
+
         <Button
-          onClick={updatePassword}
+          onClick={handleFullUpdate}
           disabled={savingPassword}
-          className="w-full bg-gradient-gold text-primary-foreground font-bold"
+          className="w-full bg-gradient-gold text-primary-foreground font-bold mt-6"
         >
-          {savingPassword ? "Salvando..." : "Atualizar senha"}
+          {savingPassword ? "Salvando..." : "Atualizar Credenciais de Acesso"}
         </Button>
       </Card>
     </div>
