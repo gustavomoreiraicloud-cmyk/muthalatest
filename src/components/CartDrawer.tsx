@@ -265,7 +265,7 @@ export default function CartDrawer() {
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: deliveryMethod === "entrega" ? street : null,
           address_number: deliveryMethod === "entrega" ? number : null,
-          address_neighborhood: deliveryMethod === "entrega" ? (selectedNeighborhood?.name || null) : "Retirada no Local",
+          address_neighborhood: deliveryMethod === "entrega" ? (selectedRange?.label || null) : "Retirada no Local",
           address_complement: deliveryMethod === "entrega" ? (complement || null) : null,
           address_reference: deliveryMethod === "entrega" ? (reference || null) : null,
           notes: notes || null,
