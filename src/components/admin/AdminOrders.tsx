@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, RefreshCw, Printer, Volume2, VolumeX } from "lucide-react";
+import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
@@ -50,6 +50,30 @@ const statusColor: Record<string, string> = {
 };
 
 const SOUND_KEY = "muthala_admin_sound";
+const NOTIFY_KEY = "muthala_admin_notify";
+
+const requestNotificationPermission = async () => {
+  if (!("Notification" in window)) return false;
+  if (Notification.permission === "granted") return true;
+  const permission = await Notification.requestPermission();
+  return permission === "granted";
+};
+
+const sendPushNotification = (title: string, body: string) => {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  
+  const notification = new Notification(title, {
+    body,
+    icon: "/muthala-logo.png", // Usando o logo como ícone
+    tag: "new-order",
+    requireInteraction: true,
+  });
+
+  notification.onclick = () => {
+    window.focus();
+    notification.close();
+  };
+};
 
 // Beep usando Web Audio (sem precisar de arquivo)
 const playBeep = () => {
@@ -153,6 +177,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_KEY) !== "0");
+  const [notifyOn, setNotifyOn] = useState(() => localStorage.getItem(NOTIFY_KEY) === "1");
   const knownIds = useRef<Set<string>>(new Set());
   const initialLoadDone = useRef(false);
 
@@ -185,6 +210,12 @@ export default function AdminOrders() {
           if (!knownIds.current.has(o.id)) {
             knownIds.current.add(o.id);
             if (soundOn) playBeep();
+            if (notifyOn) {
+              sendPushNotification(
+                "🍔 NOVO PEDIDO!",
+                `Novo pedido de ${o.customer_name || "cliente"} recebido agora.`
+              );
+            }
             toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`);
           }
           load();
@@ -210,15 +241,32 @@ export default function AdminOrders() {
     if (v) playBeep();
   };
 
+  const toggleNotify = async (v: boolean) => {
+    if (v) {
+      const granted = await requestNotificationPermission();
+      if (!granted) {
+        toast.error("Permissão de notificação negada pelo navegador");
+        return;
+      }
+    }
+    setNotifyOn(v);
+    localStorage.setItem(NOTIFY_KEY, v ? "1" : "0");
+    if (v) toast.success("Notificações de sistema ativadas");
+  };
+
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="font-display text-2xl uppercase">Pedidos ({orders.length})</h2>
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
-            {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm cursor-pointer" title="Notificação no sistema">
+            {notifyOn ? <Bell className="w-4 h-4 text-primary" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
+            <Switch checked={notifyOn} onCheckedChange={toggleNotify} />
+          </label>
+          <label className="flex items-center gap-2 text-sm cursor-pointer" title="Aviso sonoro">
+            {soundOn ? <Volume2 className="w-4 h-4 text-primary" /> : <VolumeX className="w-4 h-4 text-muted-foreground" />}
             <Switch checked={soundOn} onCheckedChange={toggleSound} />
           </label>
           <Button variant="outline" size="sm" onClick={load}>
