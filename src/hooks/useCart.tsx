@@ -43,7 +43,7 @@ const formatBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // Helper to generate unique ID for same product with different options
-const getItemId = (item: Omit<CartItem, "qty">) => {
+const getItemId = (item: Omit<CartItem, "qty"> | CartItem) => {
   if (!item.options) return item.name;
   return `${item.name}-${JSON.stringify(item.options)}`;
 };
