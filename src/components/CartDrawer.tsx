@@ -294,9 +294,9 @@ export default function CartDrawer() {
   };
 
   const resetAll = () => {
-    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhoodId("");
+    setName(""); setPhone(""); setStreet(""); setNumber(""); setDeliveryRangeId("");
     setComplement(""); setReference(""); setNotes(""); setChangeFor("");
-    setCoupon(null); setCouponCode(""); setPayment("pix");
+    setCoupon(null); setCouponCode(""); setPayment("pix"); setNeedsChange(null);
     setConfirmation(null);
     close();
   };
