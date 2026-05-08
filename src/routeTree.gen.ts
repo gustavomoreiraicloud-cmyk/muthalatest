@@ -19,6 +19,7 @@ import { Route as AdminCuponsRouteImport } from './routes/admin.cupons'
 import { Route as AdminContaRouteImport } from './routes/admin.conta'
 import { Route as AdminConfigRouteImport } from './routes/admin.config'
 import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
+import { Route as AdminBairrosRouteImport } from './routes/admin.bairros'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -70,12 +71,18 @@ const AdminCardapioRoute = AdminCardapioRouteImport.update({
   path: '/cardapio',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBairrosRoute = AdminBairrosRouteImport.update({
+  id: '/bairros',
+  path: '/bairros',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
   '/admin/conta': typeof AdminContaRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
   '/admin/conta': typeof AdminContaRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/bairros': typeof AdminBairrosRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
   '/admin/conta': typeof AdminContaRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
     | '/admin/conta'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
     | '/admin/conta'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/auth'
+    | '/admin/bairros'
     | '/admin/cardapio'
     | '/admin/config'
     | '/admin/conta'
@@ -226,10 +238,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCardapioRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/bairros': {
+      id: '/admin/bairros'
+      path: '/bairros'
+      fullPath: '/admin/bairros'
+      preLoaderRoute: typeof AdminBairrosRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBairrosRoute: typeof AdminBairrosRoute
   AdminCardapioRoute: typeof AdminCardapioRoute
   AdminConfigRoute: typeof AdminConfigRoute
   AdminContaRoute: typeof AdminContaRoute
@@ -239,6 +259,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBairrosRoute: AdminBairrosRoute,
   AdminCardapioRoute: AdminCardapioRoute,
   AdminConfigRoute: AdminConfigRoute,
   AdminContaRoute: AdminContaRoute,

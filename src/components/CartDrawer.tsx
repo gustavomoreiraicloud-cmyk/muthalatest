@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
-  Minus, Plus, Trash2, ShoppingBag, MessageCircle, CheckCircle2, MapPin, CreditCard, Tag,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Minus, Plus, Trash2, ShoppingBag, MessageCircle, CheckCircle2, MapPin, CreditCard, Tag, Loader2
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -28,7 +35,7 @@ const checkoutSchema = z.object({
   phone: z.string().trim().min(10, "Telefone inválido").max(20),
   street: z.string().trim().min(2, "Informe a rua").max(120),
   number: z.string().trim().min(1, "Informe o número").max(10),
-  neighborhood: z.string().trim().min(2, "Informe o bairro").max(80),
+  neighborhoodId: z.string().min(1, "Selecione o bairro"),
 });
 
 type Coupon = {
@@ -44,14 +51,16 @@ export default function CartDrawer() {
   const { items, isOpen, close, inc, dec, remove, clear, total: subtotal, totalLabel } = useCart();
   const { settings } = useStoreSettings();
   const MIN_ORDER = settings?.min_order ?? 30;
-  const DELIVERY_FEE = settings?.delivery_fee ?? 0;
+  const DEFAULT_DELIVERY_FEE = settings?.delivery_fee ?? 0;
   const isOpenStore = settings?.is_open ?? true;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
-  const [neighborhood, setNeighborhood] = useState("");
+  const [neighborhoodId, setNeighborhoodId] = useState("");
+  const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
+  const [loadingNeighborhoods, setLoadingNeighborhoods] = useState(false);
   const [complement, setComplement] = useState("");
   const [reference, setReference] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("pix");
@@ -64,12 +73,29 @@ export default function CartDrawer() {
 
   const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
 
+  // Load neighborhoods
+  useEffect(() => {
+    const loadNeighborhoods = async () => {
+      setLoadingNeighborhoods(true);
+      const { data } = await supabase
+        .from("neighborhoods")
+        .select("*")
+        .eq("active", true)
+        .order("name");
+      setNeighborhoods(data || []);
+      setLoadingNeighborhoods(false);
+    };
+    if (isOpen) loadNeighborhoods();
+  }, [isOpen]);
+
   // Reset confirmation when reopening
   useEffect(() => {
     if (isOpen) setConfirmation(null);
   }, [isOpen]);
 
   // Compute discount + total
+  const selectedNeighborhood = neighborhoods.find(n => n.id === neighborhoodId);
+  
   const discount = (() => {
     if (!coupon) return 0;
     if (subtotal < coupon.min_order) return 0;
@@ -78,7 +104,7 @@ export default function CartDrawer() {
     return 0;
   })();
   const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
-  const fee = freeShipping ? 0 : DELIVERY_FEE;
+  const fee = freeShipping ? 0 : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
@@ -128,7 +154,7 @@ export default function CartDrawer() {
     lines.push("");
     lines.push("📍 *ENDEREÇO DE ENTREGA*");
     lines.push(`${street}, ${number}`);
-    lines.push(`Bairro: ${neighborhood}`);
+    lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
     if (complement) lines.push(`Complemento: ${complement}`);
     if (reference) lines.push(`Referência: ${reference}`);
     lines.push("");
@@ -175,7 +201,7 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhood });
+    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhoodId });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -203,7 +229,7 @@ export default function CartDrawer() {
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: street,
           address_number: number,
-          address_neighborhood: neighborhood,
+          address_neighborhood: selectedNeighborhood?.name || null,
           address_complement: complement || null,
           address_reference: reference || null,
           notes: notes || null,
@@ -232,7 +258,7 @@ export default function CartDrawer() {
   };
 
   const resetAll = () => {
-    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhood("");
+    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhoodId("");
     setComplement(""); setReference(""); setNotes(""); setChangeFor("");
     setCoupon(null); setCouponCode(""); setPayment("pix");
     setConfirmation(null);
@@ -358,7 +384,24 @@ export default function CartDrawer() {
                 </div>
                 <div>
                   <Label className="text-xs">Bairro *</Label>
-                  <Input maxLength={80} value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Centro" />
+                  <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                    <SelectTrigger className="w-full bg-background/50">
+                      <SelectValue placeholder="Selecione seu bairro" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[250px]">
+                      {loadingNeighborhoods ? (
+                        <div className="flex items-center justify-center p-4">
+                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        </div>
+                      ) : (
+                        neighborhoods.map((n) => (
+                          <SelectItem key={n.id} value={n.id}>
+                            {n.name} — {formatBRL(Number(n.fee))}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label className="text-xs">Complemento</Label>

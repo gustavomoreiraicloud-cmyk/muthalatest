@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, ShoppingBag, UtensilsCrossed, Settings as SettingsIcon, Loader2, BarChart3, Tag, UserCog } from "lucide-react";
+import { LogOut, ShoppingBag, UtensilsCrossed, Settings as SettingsIcon, Loader2, BarChart3, Tag, UserCog, MapPin } from "lucide-react";
 
 export default function Admin() {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -40,6 +40,7 @@ export default function Admin() {
     { to: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
     { to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
     { to: "/admin/cardapio", label: "Cardápio", icon: UtensilsCrossed },
+    { to: "/admin/bairros", label: "Fretes", icon: MapPin },
     { to: "/admin/cupons", label: "Cupons", icon: Tag },
     { to: "/admin/config", label: "Configurações", icon: SettingsIcon },
     { to: "/admin/conta", label: "Minha conta", icon: UserCog },
