@@ -25,12 +25,43 @@ type Props = {
   onClose: () => void;
 };
 
-const BURGER_SIZES = [
-  { id: "100g", label: "BURGER 100g", price: 0 },
-  { id: "180g", label: "BURGER 180g", price: 6 },
-  { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: 27 },
-  { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: 16 },
-];
+const getBurgerSizes = (itemName: string) => {
+  if (itemName === 'BALDUR DE OURO' || itemName === 'COMBO BANQUETE NÓRDICO' || itemName.includes('DOG')) {
+    return [];
+  }
+  
+  const basePrices: Record<string, number> = {
+    'VALHALLA': 52.90, 'YGGDRASIL': 26.90, 'ASGARD': 33.90, 'MUTHALA': 42.90,
+    'RAGNAROK': 42.90, 'ODIN': 39.90, 'JOTUN': 52.90, 'BJORN': 42.90,
+    'BALDUR': 29.90, 'MIDGARD': 39.90, 'BIFROST': 36.90, 'FRIGGA': 36.90, 'LOKI': 33.90,
+    'IDUNN': 33.90, 'VIDAR': 29.90, 'VALKYRIA': 29.90, 'FREYA': 29.90
+  };
+
+  const base = basePrices[itemName] || 0;
+  
+  return [
+    { id: "100g", label: "BURGER 100g", price: 0 },
+    { id: "180g", label: "BURGER 180g", price: itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' ? 7 : 6 },
+    { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: itemName === 'YGGDRASIL' ? 27 : 26 },
+    { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: itemName === 'YGGDRASIL' ? 16 : 13 },
+  ];
+};
+
+const getPortionSizes = (itemName: string) => {
+  if (itemName === 'Batata Simples') {
+    return [
+      { id: "p", label: "P 170g", price: 0 },
+      { id: "g", label: "G 350g", price: 13 },
+    ];
+  }
+  if (itemName === 'Batata Especial') {
+    return [
+      { id: "p", label: "P 170g", price: 0 },
+      { id: "g", label: "G 350g", price: 13 },
+    ];
+  }
+  return [];
+};
 
 const BEVERAGES = [
   { id: "conti_cola", label: "CONTI COLA LATA", price: 3.99 },
