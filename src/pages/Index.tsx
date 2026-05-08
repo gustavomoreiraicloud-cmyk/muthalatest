@@ -349,8 +349,8 @@ const Index = () => {
                             }
                           }}
                           loading="lazy"
-                          width={768}
-                          height={576}
+                          width={400}
+                          height={300}
                         />
                       </div>
                       <div className="p-4 md:p-6 flex-1 flex flex-col">
