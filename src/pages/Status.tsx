@@ -33,11 +33,17 @@ export default function OrderStatus() {
     if (!id) return;
     setLoading(true);
     setSearched(true);
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    
+    // Tentar buscar por ID (UUID) ou por Número do Pedido (4 dígitos)
+    let query = supabase.from("orders").select("*");
+    
+    if (id.length === 4 && /^\d+$/.test(id)) {
+      query = query.eq("order_number", parseInt(id));
+    } else {
+      query = query.eq("id", id);
+    }
+
+    const { data, error } = await query.maybeSingle();
     
     setOrder(data);
     setLoading(false);
@@ -64,7 +70,7 @@ export default function OrderStatus() {
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
             <form onSubmit={handleSearch} className="flex gap-2">
               <Input 
-                placeholder="ID do pedido" 
+                placeholder="Ex: 5821" 
                 value={orderId} 
                 onChange={(e) => setOrderId(e.target.value)}
                 className="bg-background"
@@ -74,7 +80,7 @@ export default function OrderStatus() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              O código do pedido está no link enviado no seu WhatsApp após a finalização da compra.
+              Digite o número de 4 dígitos que apareceu na tela após você finalizar o seu pedido.
             </p>
           </Card>
         )}
