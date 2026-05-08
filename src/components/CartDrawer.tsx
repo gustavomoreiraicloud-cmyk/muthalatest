@@ -201,7 +201,7 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhood });
+    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhoodId });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
