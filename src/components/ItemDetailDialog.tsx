@@ -25,12 +25,35 @@ type Props = {
   onClose: () => void;
 };
 
-const BURGER_SIZES = [
-  { id: "100g", label: "BURGER 100g", price: 0 },
-  { id: "180g", label: "BURGER 180g", price: 6 },
-  { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: 27 },
-  { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: 16 },
-];
+const getBurgerSizes = (itemName: string) => {
+  if (itemName === 'BALDUR DE OURO' || itemName === 'COMBO BANQUETE NÓRDICO' || itemName.includes('DOG')) {
+    return [];
+  }
+  
+  const basePrices: Record<string, number> = {
+    'VALHALLA': 52.90, 'YGGDRASIL': 26.90, 'ASGARD': 33.90, 'MUTHALA': 42.90,
+    'RAGNAROK': 42.90, 'ODIN': 39.90, 'JOTUN': 52.90, 'BJORN': 42.90,
+    'BALDUR': 29.90, 'MIDGARD': 39.90, 'BIFROST': 36.90, 'FRIGGA': 36.90, 'LOKI': 33.90,
+    'IDUNN': 33.90, 'VIDAR': 29.90, 'VALKYRIA': 29.90, 'FREYA': 29.90
+  };
+
+  return [
+    { id: "100g", label: "BURGER 100g", price: 0 },
+    { id: "180g", label: "BURGER 180g", price: itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' ? 7 : 6 },
+    { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: itemName === 'YGGDRASIL' ? 27 : 26 },
+    { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: itemName === 'YGGDRASIL' ? 16 : 13 },
+  ];
+};
+
+const getPortionSizes = (itemName: string) => {
+  if (itemName === 'Batata Simples' || itemName === 'Batata Especial') {
+    return [
+      { id: "p", label: "P 170g", price: 0 },
+      { id: "g", label: "G 350g", price: 13 },
+    ];
+  }
+  return [];
+};
 
 const BEVERAGES = [
   { id: "conti_cola", label: "CONTI COLA LATA", price: 3.99 },
@@ -70,16 +93,21 @@ const DONENESS = [
 
 export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const { add, open: openCart } = useCart();
-  const [size, setSize] = useState("100g");
+  const [size, setSize] = useState("");
   const [beverage, setBeverage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [doneness, setDoneness] = useState("ao_ponto");
   const [notes, setNotes] = useState("");
   const [qty, setQty] = useState(1);
 
+  const burgerSizes = useMemo(() => item ? getBurgerSizes(item.name) : [], [item]);
+  const portionSizes = useMemo(() => item ? getPortionSizes(item.name) : [], [item]);
+  const allSizes = useMemo(() => [...burgerSizes, ...portionSizes], [burgerSizes, portionSizes]);
+
   useEffect(() => {
     if (open && item) {
-      setSize("100g");
+      const initialSizes = [...getBurgerSizes(item.name), ...getPortionSizes(item.name)];
+      setSize(initialSizes.length > 0 ? initialSizes[0].id : "");
       setBeverage("");
       setSelectedExtras([]);
       setDoneness("ao_ponto");
@@ -92,12 +120,12 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     if (!item) return 0;
     const cleaned = item.price.replace(/[^\d,]/g, "").replace(",", ".");
     return parseFloat(cleaned) || 0;
-  }, [item?.price]);
+  }, [item]);
 
   const totalPrice = useMemo(() => {
     if (!item) return 0;
     let total = basePrice;
-    const selectedSize = BURGER_SIZES.find(s => s.id === size);
+    const selectedSize = allSizes.find(s => s.id === size);
     if (selectedSize) total += selectedSize.price;
 
     if (beverage) {
@@ -111,17 +139,17 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     });
 
     return total * qty;
-  }, [item, basePrice, size, beverage, selectedExtras, qty]);
+  }, [item, basePrice, allSizes, size, beverage, selectedExtras, qty]);
 
   if (!item) return null;
 
   const handleAdd = () => {
-    const sizeLabel = BURGER_SIZES.find(s => s.id === size)?.label;
+    const sizeLabel = allSizes.find(s => s.id === size)?.label;
     const bevLabel = BEVERAGES.find(b => b.id === beverage)?.label;
     const extrasLabels = selectedExtras.map(id => ADDITIONALS.find(e => e.id === id)?.label).filter(Boolean) as string[];
     const donenessLabel = DONENESS.find(d => d.id === doneness)?.label;
 
-    add({
+    const cartItem = {
       name: item.name,
       price: formatBRL(totalPrice / qty),
       img: item.img,
@@ -132,23 +160,10 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
         doneness: donenessLabel,
         notes: notes.trim() || undefined
       }
-    });
-    
-    // We add the rest as multiple items if qty > 1, or we could update useCart to handle qty in add
-    // For simplicity with current useCart, let's just repeat the add call
-    for (let i = 1; i < qty; i++) {
-      add({
-        name: item.name,
-        price: formatBRL(totalPrice / qty),
-        img: item.img,
-        options: {
-          burgerSize: sizeLabel,
-          beverage: bevLabel,
-          extras: extrasLabels,
-          doneness: donenessLabel,
-          notes: notes.trim() || undefined
-        }
-      });
+    };
+
+    for (let i = 0; i < qty; i++) {
+      add(cartItem);
     }
 
     toast.success(`${qty}x ${item.name} adicionado ao pedido`);
@@ -182,32 +197,32 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               )}
             </DialogHeader>
 
-            {/* Escolha 1 opção - Obrigatório */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-tight">Escolha 1 opção</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">Obrigatório</p>
+            {allSizes.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
+                  <div>
+                    <h4 className="font-bold text-sm uppercase tracking-tight">Escolha 1 opção</h4>
+                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">Obrigatório</p>
+                  </div>
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">1/1</span>
                 </div>
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">1/1</span>
+                <RadioGroup value={size} onValueChange={setSize} className="gap-0">
+                  {allSizes.map((s) => (
+                    <Label
+                      key={s.id}
+                      className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
+                    >
+                      <div className="flex items-center gap-3">
+                        <RadioGroupItem value={s.id} />
+                        <span className="text-sm font-medium">{s.label}</span>
+                      </div>
+                      <span className="text-sm font-bold text-primary">{formatBRL(basePrice + s.price)}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
               </div>
-              <RadioGroup value={size} onValueChange={setSize} className="gap-0">
-                {BURGER_SIZES.map((s) => (
-                  <Label
-                    key={s.id}
-                    className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
-                  >
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value={s.id} />
-                      <span className="text-sm font-medium">{s.label}</span>
-                    </div>
-                    <span className="text-sm font-bold text-primary">{formatBRL(basePrice + s.price)}</span>
-                  </Label>
-                ))}
-              </RadioGroup>
-            </div>
+            )}
 
-            {/* Conti 1,99 - Opcional */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -235,7 +250,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </RadioGroup>
             </div>
 
-            {/* Adicionais - Opcional */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -265,7 +279,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </div>
             </div>
 
-            {/* Ponto do Hamburguer */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -287,7 +300,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </RadioGroup>
             </div>
 
-            {/* Observações */}
             <div className="space-y-3">
               <h4 className="font-bold text-sm uppercase tracking-tight">Observações</h4>
               <Textarea
@@ -305,7 +317,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
           </div>
         </ScrollArea>
 
-        {/* Footer Fixo */}
         <div className="absolute bottom-0 inset-x-0 bg-card border-t border-border p-4 sm:p-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 bg-background border border-border rounded-lg p-1">
             <button
