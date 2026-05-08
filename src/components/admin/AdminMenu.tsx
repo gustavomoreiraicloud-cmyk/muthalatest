@@ -120,7 +120,9 @@ export default function AdminMenu() {
     load();
   };
 
-  const filtered = filter === "all" ? items : items.filter((i) => i.category === filter);
+  const filtered = useMemo(() => {
+    return filter === "all" ? items : items.filter((i) => i.category === filter);
+  }, [items, filter]);
 
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
