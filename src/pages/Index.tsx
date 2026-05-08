@@ -218,7 +218,7 @@ const Index = () => {
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
                 <ShoppingBag className="w-4 h-4 text-primary" /> 
-                <span className="font-medium text-white">Mínimo {formatBRL(settings?.min_order ?? 30)}</span>
+                <span className="font-medium text-white">Entrega em toda Assis</span>
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@ const Index = () => {
             <h2 className="font-display text-5xl md:text-7xl mb-4 uppercase leading-none">
               Sabores <span className="font-serif-italic normal-case text-gradient-gold">lendários</span>
             </h2>
-            <p className="text-muted-foreground text-sm md:text-lg">Pedido mínimo de {formatBRL(settings?.min_order ?? 30)} para entregas.</p>
+            <p className="text-muted-foreground text-sm md:text-lg">Peça agora e receba em casa com rapidez.</p>
           </div>
 
           {/* Tabs - Mobile Optimized */}
