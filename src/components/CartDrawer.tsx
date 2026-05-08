@@ -365,7 +365,7 @@ export default function CartDrawer() {
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
-      setConfirmation({ orderNumber: order.order_number });
+      setConfirmation({ orderNumber: order.order_number, orderId: order.id });
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
