@@ -21,6 +21,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Muthala Burger" },
       { name: "description", content: "O melhor hambúrguer artesanal de Assis" },
+      { property: "og:title", content: "Muthala Burger" },
+      { name: "twitter:title", content: "Muthala Burger" },
+      { property: "og:description", content: "O melhor hambúrguer artesanal de Assis" },
+      { name: "twitter:description", content: "O melhor hambúrguer artesanal de Assis" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       {
