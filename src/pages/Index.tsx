@@ -218,7 +218,7 @@ const Index = () => {
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
                 <ShoppingBag className="w-4 h-4 text-primary" /> 
-                <span className="font-medium text-white">Entrega em toda Assis</span>
+                <span className="font-medium text-white">Consulte área de entrega</span>
               </div>
             </div>
           </div>

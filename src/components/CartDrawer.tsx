@@ -188,7 +188,7 @@ export default function CartDrawer() {
       const data = await response.json();
 
       if (!data || data.length === 0) {
-        toast.error("Endereço não encontrado. Selecione o bairro manualmente.");
+        toast.error("Não encontramos este endereço em Assis. Verifique os dados ou chame no WhatsApp.");
         return;
       }
 
@@ -208,7 +208,7 @@ export default function CartDrawer() {
         setDeliveryRangeId(range.id);
         toast.success(`Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`);
       } else {
-        toast.error("Distância fora da área de entrega atendida.");
+        toast.error("Este endereço parece estar fora da nossa área de entrega.");
       }
     } catch (err) {
       console.error(err);
@@ -370,7 +370,7 @@ export default function CartDrawer() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("save order failed", err);
-      toast.error("Não foi possível registrar o pedido. Verifique os dados e tente de novo.");
+      toast.error("Não foi possível registrar o pedido. Verifique o endereço e tente novamente.");
     } finally {
       setSubmitting(false);
     }
