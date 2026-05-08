@@ -14,8 +14,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkCompatProps>(
       <Link
         ref={ref}
         to={to as any}
-        activeProps={{ className: activeClassName }}
-        pendingProps={{ className: pendingClassName }}
+        activeProps={{ className: activeClassName } as any}
         className={className}
         {...props}
       />
