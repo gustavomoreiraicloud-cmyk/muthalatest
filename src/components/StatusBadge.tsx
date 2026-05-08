@@ -11,7 +11,7 @@ const StatusBadge = ({ className = "" }: Props) => {
 
   return (
     <span
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-bold uppercase tracking-wider ${
+      className={`inline-flex items-center gap-2 px-3 py-1.5 border text-xs font-bold uppercase tracking-wider ${
         open
           ? "bg-[hsl(142_40%_45%/0.1)] border-[hsl(142_60%_45%/0.5)] text-[hsl(142_60%_55%)]"
           : "bg-destructive/10 border-destructive/40 text-destructive"
