@@ -118,7 +118,7 @@ export default function CartDrawer() {
   const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
   const fee = (deliveryMethod === "retirada" || freeShipping) 
     ? 0 
-    : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
+    : (selectedRange ? Number(selectedRange.fee) : DEFAULT_DELIVERY_FEE);
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
