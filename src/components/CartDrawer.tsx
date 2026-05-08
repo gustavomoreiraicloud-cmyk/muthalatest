@@ -282,22 +282,22 @@ export default function CartDrawer() {
 
       if (orderError) throw orderError;
 
-      // 2. Inserir os itens do pedido
+      // 2. Inserir os itens do pedido para relatórios detalhados
       const itemsToInsert = items.map((i) => ({
         order_id: order.id,
         product_id: (i as any).id || null,
         product_name: i.name,
         quantity: i.qty,
-        price: i.price,
-        subtotal: i.price * i.qty,
+        price: Number(i.price),
+        subtotal: Number(i.price) * i.qty,
         options: i.options || [],
       }));
 
       const { error: itemsError } = await supabase
         .from("order_items")
-        .insert(itemsToInsert);
+        .insert(itemsToInsert as any);
 
-      if (itemsError) throw itemsError;
+      if (itemsError) console.error("Error inserting order items:", itemsError);
 
       setConfirmation({ orderNumber: order.order_number });
       clear();
