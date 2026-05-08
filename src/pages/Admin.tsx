@@ -27,7 +27,7 @@ export default function Admin() {
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center gap-4">
         <h1 className="font-display text-3xl">Acesso negado</h1>
         <p className="text-muted-foreground max-w-md">
-          Sua conta ({user.email}) não tem permissão de administrador. Solicite ao dono da loja.
+          Sua conta não tem permissão de administrador.
         </p>
         <Button variant="outline" onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>
           Sair
@@ -51,7 +51,7 @@ export default function Admin() {
         <div className="container mx-auto flex items-center justify-between py-3 px-4">
           <div>
             <h1 className="font-display text-xl uppercase">Painel Muthala</h1>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+            <p className="text-xs text-muted-foreground">Administrador</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>
             <LogOut className="w-4 h-4" /> Sair
