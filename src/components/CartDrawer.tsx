@@ -165,11 +165,14 @@ export default function CartDrawer() {
     lines.push(`Nome: ${name}`);
     lines.push(`Telefone: ${phone}`);
     lines.push("");
-    lines.push("📍 *ENDEREÇO DE ENTREGA*");
-    lines.push(`${street}, ${number}`);
-    lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
-    if (complement) lines.push(`Complemento: ${complement}`);
-    if (reference) lines.push(`Referência: ${reference}`);
+    lines.push(`🚚 *MÉTODO:* ${deliveryMethod === "entrega" ? "Entrega" : "Retirada no Local"}`);
+    if (deliveryMethod === "entrega") {
+      lines.push("📍 *ENDEREÇO DE ENTREGA*");
+      lines.push(`${street}, ${number}`);
+      lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
+      if (complement) lines.push(`Complemento: ${complement}`);
+      if (reference) lines.push(`Referência: ${reference}`);
+    }
     lines.push("");
     lines.push("🛒 *PEDIDO*");
     items.forEach((i) => {
