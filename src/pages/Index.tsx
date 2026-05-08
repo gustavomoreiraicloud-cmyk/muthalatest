@@ -150,14 +150,17 @@ const Index = () => {
         <div className="absolute inset-0 bg-background/50" />
         <div className="container mx-auto relative z-10 py-12 md:py-20">
           <div className="max-w-3xl animate-fade-in-up">
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 uppercase">
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-2 uppercase">
               <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span> Burguer
             </h1>
+            <p className="text-sm md:text-base text-primary font-bold mb-4 tracking-widest uppercase">
+              Hamburgueria • Assis/SP
+            </p>
             <p className="text-base md:text-xl text-foreground/90 max-w-xl mb-2 font-semibold">
-              Smash de carne nobre, pão dourado na manteiga e molho exclusivo da casa.
+              O sabor dos deuses direto na sua mesa. Smash de carne nobre e pão selado na manteiga.
             </p>
             <p className="text-sm md:text-base text-muted-foreground max-w-xl mb-6">
-              Peça direto pelo WhatsApp e receba quentinho na sua porta.
+              Primeiro pedido na loja? Use o cupom <b>PRIMEIRO5</b> e ganhe 5% de desconto!
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
               <Button asChild size="lg" className="relative bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-base md:text-lg px-8 md:px-10 h-14 md:h-16 shadow-glow animate-pulse-cta cursor-pointer">
