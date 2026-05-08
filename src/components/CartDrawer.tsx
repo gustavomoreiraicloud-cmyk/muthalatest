@@ -231,15 +231,6 @@ export default function CartDrawer() {
     }
   };
 
-    const orderNumber = (inserted as any)?.order_number ?? null;
-    const url = buildWhatsAppLink(buildOrderMessage(orderNumber));
-    window.open(url, "_blank", "noopener,noreferrer");
-
-    setConfirmation({ orderNumber });
-    clear();
-    setSubmitting(false);
-  };
-
   const resetAll = () => {
     setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhood("");
     setComplement(""); setReference(""); setNotes(""); setChangeFor("");
