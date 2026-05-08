@@ -182,41 +182,54 @@ export default function CartDrawer() {
     }
 
     setSubmitting(true);
-    const { data: inserted, error } = await supabase
-      .from("orders")
-      .insert({
-        customer_name: name,
-        customer_phone: phone,
-        items: items.map((i) => ({ 
-          name: i.name, 
-          qty: i.qty, 
-          price: i.price,
-          options: i.options 
-        })),
-        subtotal,
-        discount,
-        delivery_fee: fee,
-        total,
-        coupon_code: coupon?.code ?? null,
-        payment_method: payment,
-        change_for: payment === "dinheiro" && changeFor ? parsePrice(changeFor) : null,
-        address_street: street,
-        address_number: number,
-        address_neighborhood: neighborhood,
-        address_complement: complement || null,
-        address_reference: reference || null,
-        notes: notes || null,
-        status: "novo",
-      })
-      .select("order_number")
-      .maybeSingle();
+    try {
+      const { data: inserted, error } = await supabase
+        .from("orders")
+        .insert({
+          customer_name: name,
+          customer_phone: phone,
+          items: items.map((i) => ({ 
+            name: i.name, 
+            qty: i.qty, 
+            price: i.price,
+            options: i.options 
+          })),
+          subtotal: Number(subtotal),
+          discount: Number(discount),
+          delivery_fee: Number(fee),
+          total: Number(total),
+          coupon_code: coupon?.code ?? null,
+          payment_method: payment,
+          change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
+          address_street: street,
+          address_number: number,
+          address_neighborhood: neighborhood,
+          address_complement: complement || null,
+          address_reference: reference || null,
+          notes: notes || null,
+          status: "novo",
+        })
+        .select("order_number")
+        .maybeSingle();
 
-    if (error) {
-      console.error("save order failed", error);
-      toast.error("Não foi possível registrar o pedido. Tente de novo.");
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+
+      const orderNumber = (inserted as any)?.order_number ?? null;
+      const url = buildWhatsAppLink(buildOrderMessage(orderNumber));
+      window.open(url, "_blank", "noopener,noreferrer");
+
+      setConfirmation({ orderNumber });
+      clear();
+    } catch (err) {
+      console.error("save order failed", err);
+      toast.error("Não foi possível registrar o pedido. Verifique os dados e tente de novo.");
+    } finally {
       setSubmitting(false);
-      return;
     }
+  };
 
     const orderNumber = (inserted as any)?.order_number ?? null;
     const url = buildWhatsAppLink(buildOrderMessage(orderNumber));
