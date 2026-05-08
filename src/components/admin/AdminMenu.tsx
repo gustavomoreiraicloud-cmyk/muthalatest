@@ -20,8 +20,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Pencil, Plus, Trash2, Loader2, Upload } from "lucide-react";
+import { Pencil, Plus, Trash2, Loader2, Upload, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { ASSET_MAP } from "@/pages/Index";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type MenuItem = {
   id: string;
