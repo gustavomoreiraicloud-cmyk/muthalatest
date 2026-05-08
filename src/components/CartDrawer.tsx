@@ -400,7 +400,7 @@ export default function CartDrawer() {
             <div className="w-full space-y-3">
               <Button asChild size="lg" className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold">
                 <a 
-                  href={buildWhatsAppLink(buildOrderMessage(confirmation.orderNumber))}
+                  href={buildWhatsAppLink(buildOrderMessage(confirmation.orderNumber, confirmation.orderId))}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2"
