@@ -187,7 +187,12 @@ export default function CartDrawer() {
       .insert({
         customer_name: name,
         customer_phone: phone,
-        items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+        items: items.map((i) => ({ 
+          name: i.name, 
+          qty: i.qty, 
+          price: i.price,
+          options: i.options 
+        })),
         subtotal,
         discount,
         delivery_fee: fee,
