@@ -7,7 +7,5 @@ export const buildWhatsAppLink = (text: string = DEFAULT_WHATSAPP_TEXT) => {
     typeof navigator !== "undefined" &&
     /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  return isMobile
-    ? `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`
-    : `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`;
+  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodedText}`;
 };
