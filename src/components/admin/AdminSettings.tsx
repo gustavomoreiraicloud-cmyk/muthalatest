@@ -140,7 +140,8 @@ export default function AdminSettings() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>Taxa de entrega (R$)</Label>
+            <Label>Taxa de entrega Padrão (R$)</Label>
+            <p className="text-[10px] text-muted-foreground mb-1 leading-tight">Usada caso o bairro não tenha taxa específica.</p>
             <Input
               type="number" step="0.01" min="0"
               value={s.delivery_fee}
