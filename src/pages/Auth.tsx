@@ -11,27 +11,34 @@ import { toast } from "sonner";
 export default function Auth() {
   const { signIn, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user && isAdmin) navigate({ to: "/admin", replace: true });
+    if (!loading && user && isAdmin) {
+      console.log("Usuário já logado, redirecionando para /admin");
+      navigate({ to: "/admin", replace: true });
+    }
   }, [loading, user, isAdmin, navigate]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log("Tentando login com:", username);
     setSubmitting(true);
-    const { error } = await signIn(email, password);
+    const { error } = await signIn(username, password);
     setSubmitting(false);
+    
     if (error) {
-      toast.error("Credenciais inválidas");
+      console.error("Erro no login:", error);
+      toast.error(error);
       return;
     }
+    
+    console.log("Login bem-sucedido!");
     toast.success("Bem-vindo!");
     navigate({ to: "/admin", replace: true });
   };
-
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
@@ -52,8 +59,9 @@ export default function Auth() {
             <Input
               id="username"
               type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="off"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
@@ -62,6 +70,7 @@ export default function Auth() {
             <Input
               id="password"
               type="password"
+              autoComplete="off"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -75,4 +84,3 @@ export default function Auth() {
     </div>
   );
 }
-
