@@ -27,7 +27,7 @@ export default function Admin() {
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center gap-4">
         <h1 className="font-display text-3xl">Acesso negado</h1>
         <p className="text-muted-foreground max-w-md">
-          Sua conta ({user.email}) não tem permissão de administrador. Solicite ao dono da loja.
+          Sua conta não tem permissão de administrador.
         </p>
         <Button variant="outline" onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>
           Sair
