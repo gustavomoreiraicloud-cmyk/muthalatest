@@ -274,24 +274,40 @@ export default function CartDrawer() {
           ) : (
             <>
               <ul className="space-y-3 mb-6">
-                {items.map((i) => {
+                {items.map((i, idx) => {
                   const lineTotal = parsePrice(i.price) * i.qty;
+                  const itemKey = `${i.name}-${idx}`;
+                  const uniqueId = i.name + JSON.stringify(i.options || {});
                   return (
-                    <li key={i.name} className="flex gap-3 items-center bg-background/40 border border-border rounded-xl p-3">
-                      <img src={i.img} alt={i.name} className="w-16 h-16 rounded-lg object-cover shrink-0" loading="lazy" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm truncate">{i.name}</p>
-                        <p className="text-xs text-muted-foreground">{i.price}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => dec(i.name)} aria-label="Diminuir" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Minus className="w-3 h-3" /></button>
-                          <span className="text-sm font-bold w-6 text-center">{i.qty}</span>
-                          <button onClick={() => inc(i.name)} aria-label="Aumentar" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Plus className="w-3 h-3" /></button>
-                          <button onClick={() => remove(i.name)} aria-label="Remover" className="ml-auto w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-destructive hover:text-destructive"><Trash2 className="w-3 h-3" /></button>
+                    <li key={itemKey} className="flex flex-col gap-3 bg-background/40 border border-border rounded-xl p-3">
+                      <div className="flex gap-3 items-center">
+                        <img src={i.img} alt={i.name} className="w-16 h-16 rounded-lg object-cover shrink-0" loading="lazy" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{i.name}</p>
+                          <p className="text-xs text-muted-foreground">{i.price}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <button onClick={() => dec(uniqueId)} aria-label="Diminuir" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Minus className="w-3 h-3" /></button>
+                            <span className="text-sm font-bold w-6 text-center">{i.qty}</span>
+                            <button onClick={() => inc(uniqueId)} aria-label="Aumentar" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Plus className="w-3 h-3" /></button>
+                            <button onClick={() => remove(uniqueId)} aria-label="Remover" className="ml-auto w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-destructive hover:text-destructive"><Trash2 className="w-3 h-3" /></button>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="font-display text-primary text-lg">{formatBRL(lineTotal)}</p>
                         </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className="font-display text-primary text-lg">{formatBRL(lineTotal)}</p>
-                      </div>
+                      
+                      {i.options && (
+                        <div className="text-[10px] text-muted-foreground space-y-1 pl-1 border-l border-primary/30 ml-2">
+                          {i.options.burgerSize && <p>• <b>Opção:</b> {i.options.burgerSize}</p>}
+                          {i.options.doneness && <p>• <b>Ponto:</b> {i.options.doneness}</p>}
+                          {i.options.beverage && <p>• <b>Bebida:</b> {i.options.beverage}</p>}
+                          {i.options.extras && i.options.extras.length > 0 && (
+                            <p>• <b>Adicionais:</b> {i.options.extras.join(", ")}</p>
+                          )}
+                          {i.options.notes && <p className="italic">• "{i.options.notes}"</p>}
+                        </div>
+                      )}
                     </li>
                   );
                 })}
