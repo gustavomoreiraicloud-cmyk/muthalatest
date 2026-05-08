@@ -22,6 +22,7 @@ import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
 
 type PaymentMethod = "pix" | "dinheiro" | "cartao_debito" | "cartao_credito";
+type DeliveryMethod = "entrega" | "retirada";
 
 const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   pix: "PIX",
@@ -33,9 +34,18 @@ const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 const checkoutSchema = z.object({
   name: z.string().trim().min(2, "Nome muito curto").max(80),
   phone: z.string().trim().min(10, "Telefone inválido").max(20),
-  street: z.string().trim().min(2, "Informe a rua").max(120),
-  number: z.string().trim().min(1, "Informe o número").max(10),
-  neighborhoodId: z.string().min(1, "Selecione o bairro"),
+  deliveryMethod: z.enum(["entrega", "retirada"]),
+  street: z.string().trim().max(120).optional(),
+  number: z.string().trim().max(10).optional(),
+  neighborhoodId: z.string().optional(),
+}).refine((data) => {
+  if (data.deliveryMethod === "entrega") {
+    return !!data.street && !!data.number && !!data.neighborhoodId;
+  }
+  return true;
+}, {
+  message: "Preencha todos os campos do endereço para entrega",
+  path: ["street"],
 });
 
 type Coupon = {
