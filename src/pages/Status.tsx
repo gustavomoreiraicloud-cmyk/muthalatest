@@ -70,7 +70,7 @@ export default function OrderStatus() {
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
             <form onSubmit={handleSearch} className="flex gap-2">
               <Input 
-                placeholder="ID do pedido" 
+                placeholder="Ex: 5821" 
                 value={orderId} 
                 onChange={(e) => setOrderId(e.target.value)}
                 className="bg-background"
