@@ -299,8 +299,9 @@ export default function CartDrawer() {
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
-      setConfirmation({ orderNumber: order.order_number });
-      clear();
+      // setConfirmation({ orderNumber: order.order_number }); // Já estava aqui
+      // clear(); // Já estava aqui
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("save order failed", err);
       toast.error("Não foi possível registrar o pedido. Verifique os dados e tente de novo.");
