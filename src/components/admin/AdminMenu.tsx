@@ -160,7 +160,7 @@ export default function AdminMenu() {
             <div className="relative group shrink-0">
               {it.image_url ? (
                 <img 
-                  src={it.image_url} 
+                  src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url} 
                   alt={it.name} 
                   className="w-20 h-20 rounded-lg object-cover border border-border shadow-sm"
                 />
