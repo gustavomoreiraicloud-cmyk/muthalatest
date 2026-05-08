@@ -172,7 +172,7 @@ const Index = () => {
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm">
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border">
-                <Flame className="w-3.5 h-3.5 text-primary" /> Smash na hora
+                <Flame className="w-3.5 h-3.5 text-primary" /> Feitos na hora
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border">
                 <ShoppingBag className="w-3.5 h-3.5 text-primary" /> Mínimo {formatBRL(settings?.min_order ?? 30)}
@@ -204,7 +204,7 @@ const Index = () => {
             </p>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { icon: Flame, label: "Smash na hora" },
+                { icon: Flame, label: "Feitos na hora" },
                 { icon: Leaf, label: "Ingredientes frescos" },
                 { icon: Award, label: "Receita autoral" },
               ].map((f) => (
