@@ -248,8 +248,8 @@ export default function CartDrawer() {
       const { data: user } = await supabase.auth.getUser();
       
       // 1. Inserir o pedido principal
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
+      const { data: order, error: orderError } = await (supabase
+        .from("orders") as any)
         .insert({
           customer_name: name,
           customer_phone: phone,
@@ -270,6 +270,12 @@ export default function CartDrawer() {
           notes: notes || null,
           status: "novo",
           user_id: user.user?.id || null,
+          items: items.map((i) => ({ 
+            name: i.name, 
+            qty: i.qty, 
+            price: i.price,
+            options: i.options 
+          }))
         })
         .select()
         .single();
