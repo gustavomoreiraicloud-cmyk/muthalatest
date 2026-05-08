@@ -8,6 +8,6 @@ export const buildWhatsAppLink = (text: string = DEFAULT_WHATSAPP_TEXT) => {
     /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   return isMobile
-    ? `https://wa.me/${WHATSAPP_PHONE}?text=${encodedText}`
+    ? `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`
     : `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`;
 };

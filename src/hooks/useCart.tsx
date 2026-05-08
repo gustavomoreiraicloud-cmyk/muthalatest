@@ -5,14 +5,21 @@ export type CartItem = {
   price: string; // "R$ 29,90"
   img: string;
   qty: number;
+  options?: {
+    burgerSize?: string;
+    beverage?: string;
+    extras?: string[];
+    doneness?: string;
+    notes?: string;
+  };
 };
 
 type CartContextType = {
   items: CartItem[];
   add: (item: Omit<CartItem, "qty">) => void;
-  remove: (name: string) => void;
-  inc: (name: string) => void;
-  dec: (name: string) => void;
+  remove: (id: string) => void;
+  inc: (id: string) => void;
+  dec: (id: string) => void;
   clear: () => void;
   count: number;
   total: number; // numeric
@@ -25,7 +32,8 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "muthala_cart_v1";
 
-const parsePrice = (p: string): number => {
+const parsePrice = (p: string | number): number => {
+  if (typeof p === "number") return p;
   const cleaned = p.replace(/[^\d,]/g, "").replace(",", ".");
   const n = parseFloat(cleaned);
   return Number.isFinite(n) ? n : 0;
@@ -33,6 +41,12 @@ const parsePrice = (p: string): number => {
 
 const formatBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+// Helper to generate unique ID for same product with different options
+const getItemId = (item: Omit<CartItem, "qty">) => {
+  if (!item.options) return item.name;
+  return `${item.name}-${JSON.stringify(item.options)}`;
+};
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -55,8 +69,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const add: CartContextType["add"] = (item) => {
+    const id = getItemId(item);
     setItems((prev) => {
-      const idx = prev.findIndex((i) => i.name === item.name);
+      const idx = prev.findIndex((i) => getItemId(i) === id);
       if (idx >= 0) {
         const next = [...prev];
         next[idx] = { ...next[idx], qty: next[idx].qty + 1 };
@@ -66,18 +81,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const remove = (name: string) =>
-    setItems((prev) => prev.filter((i) => i.name !== name));
+  const remove = (id: string) =>
+    setItems((prev) => prev.filter((i) => getItemId(i) !== id));
 
-  const inc = (name: string) =>
+  const inc = (id: string) =>
     setItems((prev) =>
-      prev.map((i) => (i.name === name ? { ...i, qty: i.qty + 1 } : i))
+      prev.map((i) => (getItemId(i) === id ? { ...i, qty: i.qty + 1 } : i))
     );
 
-  const dec = (name: string) =>
+  const dec = (id: string) =>
     setItems((prev) =>
       prev
-        .map((i) => (i.name === name ? { ...i, qty: i.qty - 1 } : i))
+        .map((i) => (getItemId(i) === id ? { ...i, qty: i.qty - 1 } : i))
         .filter((i) => i.qty > 0)
     );
 
