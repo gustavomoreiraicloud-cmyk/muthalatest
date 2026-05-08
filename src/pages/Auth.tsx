@@ -42,20 +42,19 @@ export default function Auth() {
           </div>
           <div>
             <h1 className="font-display text-2xl uppercase">Painel Admin</h1>
-            <p className="text-xs text-muted-foreground">Acesso restrito ao dono</p>
+            <p className="text-xs text-muted-foreground">Acesso restrito</p>
           </div>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="username">Usuário</Label>
             <Input
-              id="email"
-              type="email"
+              id="username"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="email"
             />
           </div>
           <div>
@@ -66,18 +65,14 @@ export default function Auth() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
             />
           </div>
           <Button type="submit" disabled={submitting} className="w-full bg-gradient-gold text-primary-foreground font-bold">
             {submitting ? "Entrando..." : "Entrar"}
           </Button>
         </form>
-
-        <p className="text-xs text-muted-foreground mt-6 text-center">
-          Esqueceu a senha? Entre em contato com o suporte.
-        </p>
       </Card>
     </div>
   );
 }
+
