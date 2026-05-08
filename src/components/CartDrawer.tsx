@@ -211,8 +211,9 @@ export default function CartDrawer() {
     setCoupon(null);
     setCouponCode("");
   };
-
+  const buildOrderMessage = (orderNumber: number | null) => {
     const lines: string[] = [];
+
     lines.push("🍔 *NOVO PEDIDO — MUTHALA BURGER*");
     if (orderNumber) lines.push(`*Pedido #${orderNumber}*`);
     lines.push("━━━━━━━━━━━━━━");
