@@ -217,7 +217,14 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({ name, phone, street, number, neighborhoodId });
+    const parsed = checkoutSchema.safeParse({ 
+      name, 
+      phone, 
+      deliveryMethod,
+      street: deliveryMethod === "entrega" ? street : undefined, 
+      number: deliveryMethod === "entrega" ? number : undefined, 
+      neighborhoodId: deliveryMethod === "entrega" ? neighborhoodId : undefined 
+    });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
