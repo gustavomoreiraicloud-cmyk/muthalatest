@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Loader2, TrendingUp, ShoppingBag, DollarSign, Award } from "lucide-react";
+import { Loader2, TrendingUp, ShoppingBag, DollarSign, Calendar, CreditCard, Wallet, MapPin } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import {
   ResponsiveContainer,
@@ -11,6 +11,9 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
 type Order = {
@@ -19,6 +22,8 @@ type Order = {
   items: Array<{ name: string; qty: number }>;
   status: string;
   created_at: string;
+  payment_method: string;
+  delivery_method: string;
 };
 
 export default function AdminDashboard() {
