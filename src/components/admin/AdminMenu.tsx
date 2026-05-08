@@ -264,18 +264,29 @@ export default function AdminMenu() {
               <div className="p-4 rounded-lg bg-muted/30 border border-border space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Plus className="w-4 h-4 text-primary" />
-                  <h4 className="font-bold text-sm uppercase">Gerenciar Adicionais e Opções</h4>
+                  <h4 className="font-bold text-sm uppercase">Adicionais e Adereços</h4>
                 </div>
-                <p className="text-[10px] text-muted-foreground uppercase leading-tight">
-                  No momento, os adicionais (bacon, queijos, etc.) e as opções de combo são globais para todos os hambúrgueres e porções. 
-                  Você pode editá-los diretamente no código ou me pedir para mudar os valores específicos.
-                </p>
                 <div className="grid grid-cols-2 gap-2 text-[10px] uppercase font-bold">
-                  <div className="p-2 bg-background border border-border rounded">Bacon +R$ 6,90</div>
-                  <div className="p-2 bg-background border border-border rounded">Queijo +R$ 4,90</div>
-                  <div className="p-2 bg-background border border-border rounded">Hambúrguer 180g +R$ 6,00</div>
-                  <div className="p-2 bg-background border border-border rounded">Combo +R$ 26,00</div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Bacon</span>
+                    <span className="text-primary">+R$ 6,90</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Hambúrguer 180g</span>
+                    <span className="text-primary">+R$ 6,00</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Queijo Cheddar</span>
+                    <span className="text-primary">+R$ 4,90</span>
+                  </div>
+                  <div className="p-2 bg-background border border-border rounded flex justify-between">
+                    <span>Combo Completo</span>
+                    <span className="text-primary">+R$ 26,00</span>
+                  </div>
                 </div>
+                <p className="text-[9px] text-muted-foreground uppercase leading-tight italic">
+                  * Estes valores são aplicados automaticamente no momento da compra pelo cliente.
+                </p>
               </div>
 
               <div className="space-y-2">
