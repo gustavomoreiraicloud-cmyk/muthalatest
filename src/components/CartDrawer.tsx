@@ -285,7 +285,18 @@ export default function CartDrawer() {
                   return (
                     <li key={itemKey} className="flex flex-col gap-3 bg-background/40 border border-border rounded-xl p-3">
                       <div className="flex gap-3 items-center">
-                        <img src={i.img} alt={i.name} className="w-16 h-16 rounded-lg object-cover shrink-0" loading="lazy" />
+                        <img 
+                          src={i.img} 
+                          alt={i.name} 
+                          className="w-16 h-16 rounded-lg object-cover shrink-0" 
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src.includes('/src/assets/')) {
+                              target.src = target.src.replace('/src/assets/', '/assets/');
+                            }
+                          }}
+                          loading="lazy" 
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="font-bold text-sm truncate">{i.name}</p>
                           <p className="text-xs text-muted-foreground">{i.price}</p>
