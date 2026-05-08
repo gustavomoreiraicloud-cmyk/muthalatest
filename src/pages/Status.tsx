@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, Clock, Truck, PackageCheck, Search, ShoppingBag, ArrowLeft } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
+import muthalaLogo from "@/assets/muthala-logo.png";
 
 const STATUS_MAP = {
   novo: { label: "Recebido", icon: ShoppingBag, color: "text-blue-400" },
