@@ -449,20 +449,20 @@ export default function CartDrawer() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs">Bairro *</Label>
-                    <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                    <Label className="text-xs">Distância até o local *</Label>
+                    <Select value={deliveryRangeId} onValueChange={setDeliveryRangeId}>
                       <SelectTrigger className="w-full bg-background/50">
-                        <SelectValue placeholder="Selecione seu bairro" />
+                        <SelectValue placeholder="Qual a distância?" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[250px]">
-                        {loadingNeighborhoods ? (
+                        {loadingRanges ? (
                           <div className="flex items-center justify-center p-4">
                             <Loader2 className="w-4 h-4 animate-spin text-primary" />
                           </div>
                         ) : (
-                          neighborhoods.map((n) => (
-                            <SelectItem key={n.id} value={n.id}>
-                              {n.name} — {formatBRL(Number(n.fee))}
+                          deliveryRanges.map((r) => (
+                            <SelectItem key={r.id} value={r.id}>
+                              {r.label} — {formatBRL(Number(r.fee))}
                             </SelectItem>
                           ))
                         )}
