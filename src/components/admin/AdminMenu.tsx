@@ -168,14 +168,21 @@ export default function AdminMenu() {
               </div>
               <p className="text-xs text-muted-foreground truncate">{it.description}</p>
             </div>
-            <div className="text-right">
-              <p className="font-display text-primary">R$ {Number(it.price).toFixed(2)}</p>
-              <div className="flex items-center gap-1 mt-1 justify-end">
-                <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} />
-                <Button size="icon" variant="ghost" onClick={() => setEditing(it)}>
+            <div className="text-right flex items-center gap-4">
+              <div className="flex flex-col items-end">
+                <p className="font-display text-primary whitespace-nowrap">R$ {Number(it.price).toFixed(2)}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold">
+                    {it.available ? "Ativo" : "Pausado"}
+                  </span>
+                  <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} />
+                </div>
+              </div>
+              <div className="flex items-center gap-1 border-l border-border pl-4">
+                <Button size="icon" variant="ghost" onClick={() => setEditing(it)} title="Editar">
                   <Pencil className="w-4 h-4" />
                 </Button>
-                <Button size="icon" variant="ghost" onClick={() => remove(it.id)}>
+                <Button size="icon" variant="ghost" onClick={() => remove(it.id)} title="Excluir">
                   <Trash2 className="w-4 h-4 text-destructive" />
                 </Button>
               </div>
