@@ -108,7 +108,7 @@ const Index = () => {
   const toDetail = (it: typeof dbItems[number]): DetailItem => ({
     name: it.name,
     price: formatBRL(Number(it.price)),
-    img: it.image_url || FALLBACK_IMG,
+    img: (it.image_url && ASSET_MAP[it.image_url]) || it.image_url || FALLBACK_IMG,
     desc: it.description ?? undefined,
     ingredients: it.ingredients ?? undefined,
   });
