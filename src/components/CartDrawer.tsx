@@ -382,7 +382,7 @@ export default function CartDrawer() {
             <CheckCircle2 className="w-20 h-20 text-[hsl(142_76%_45%)] mb-4" />
             <h2 className="font-display text-3xl uppercase mb-2">Pedido enviado!</h2>
             <p className="text-sm text-muted-foreground mb-6 mt-2">
-              Abrimos o WhatsApp com seu pedido organizado. <b>Envie a mensagem</b> para a gente confirmar e combinar a entrega! 🙏
+              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site ou aguardar nosso contato se necessário. 🙏
             </p>
             <Button onClick={resetAll} size="lg" className="w-full bg-gradient-gold text-primary-foreground font-bold">
               Fechar
