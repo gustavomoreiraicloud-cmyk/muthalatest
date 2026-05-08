@@ -115,7 +115,9 @@ export default function CartDrawer() {
     return 0;
   })();
   const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
-  const fee = freeShipping ? 0 : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
+  const fee = (deliveryMethod === "retirada" || freeShipping) 
+    ? 0 
+    : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
