@@ -393,11 +393,26 @@ export default function CartDrawer() {
             <CheckCircle2 className="w-20 h-20 text-[hsl(142_76%_45%)] mb-4" />
             <h2 className="font-display text-3xl uppercase mb-2">Pedido enviado!</h2>
             <p className="text-sm text-muted-foreground mb-6 mt-2">
-              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site ou aguardar nosso contato se necessário. 🙏
+              Seu pedido foi recebido com sucesso! Use o botão abaixo para enviar o pedido via WhatsApp e acompanhar o status com nossa equipe. 🙏
             </p>
-            <Button onClick={resetAll} size="lg" className="w-full bg-gradient-gold text-primary-foreground font-bold">
-              Fechar
-            </Button>
+            
+            <div className="w-full space-y-3">
+              <Button asChild size="lg" className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold">
+                <a 
+                  href={buildWhatsAppLink(buildOrderMessage(confirmation.orderNumber))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Enviar no WhatsApp
+                </a>
+              </Button>
+
+              <Button onClick={resetAll} variant="outline" size="lg" className="w-full font-bold">
+                Fechar
+              </Button>
+            </div>
           </div>
         </SheetContent>
       </Sheet>
