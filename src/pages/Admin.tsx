@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, ShoppingBag, UtensilsCrossed, Settings as SettingsIcon, Loader2, BarChart3, Tag, UserCog } from "lucide-react";
+import { LogOut, ShoppingBag, UtensilsCrossed, Settings as SettingsIcon, Loader2, BarChart3, Tag, UserCog, MapPin } from "lucide-react";
 
 export default function Admin() {
   const { user, isAdmin, loading, signOut } = useAuth();
