@@ -40,7 +40,7 @@ const checkoutSchema = z.object({
   deliveryRangeId: z.string().optional(),
 }).refine((data) => {
   if (data.deliveryMethod === "entrega") {
-    return !!data.street && !!data.number && !!data.neighborhoodId;
+    return !!data.street && !!data.number && !!data.deliveryRangeId;
   }
   return true;
 }, {
