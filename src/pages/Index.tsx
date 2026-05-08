@@ -202,10 +202,10 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
               <Button asChild size="lg" className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-16 shadow-glow animate-pulse-cta">
-                <button onClick={openCart}>
-                  <MessageCircle className="mr-2 w-6 h-6" />
+                <a href="#menu">
+                  <ShoppingBag className="mr-2 w-6 h-6" />
                   Pedir agora
-                </button>
+                </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border-2 border-primary/50 text-white hover:bg-primary hover:text-primary-foreground font-bold text-lg px-8 h-16 backdrop-blur-sm">
                 <a href="#menu">Ver cardápio</a>
@@ -514,16 +514,14 @@ const Index = () => {
             <span className="text-sm">{cartCount} {cartCount === 1 ? "item" : "itens"}</span>
           </button>
         )}
-        <a
-          href={whatsappLink}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={openCart}
           aria-label="Pedir agora"
-          className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
+          className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-gradient-fire text-primary-foreground font-black uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
         >
-          <MessageCircle className="w-6 h-6 animate-bounce" />
+          <ShoppingBag className="w-6 h-6 animate-pulse" />
           <span className="hidden md:inline">Pedir agora</span>
-        </a>
+        </button>
       </div>
 
       <ItemDetailDialog
