@@ -308,28 +308,28 @@ const Index = () => {
             <p className="text-center text-muted-foreground py-20">Cardápio em breve.</p>
           ) : (
             <>
-              <div className="mb-6 flex items-center gap-4">
-                <span className="w-12 h-1 bg-gradient-gold rounded-full" />
-                <h3 className="font-display text-3xl md:text-4xl uppercase">{current.label}</h3>
+              <div className="mb-6 flex items-center gap-3">
+                <span className="w-8 md:w-12 h-1 bg-gradient-gold rounded-full" />
+                <h3 className="font-display text-2xl md:text-4xl uppercase tracking-tight">{current.label}</h3>
               </div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+              <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-fade-in">
                 {current.items.map((item) => {
                   const detail = toDetail(item);
                   return (
                     <Card
                       key={item.id}
                       onClick={() => setDetailItem(detail)}
-                      className={`group overflow-hidden bg-card border transition-smooth shadow-deep flex flex-col cursor-pointer ${
-                        item.highlight ? "border-primary/60 shadow-glow" : "border-border hover:border-primary/50"
+                      className={`group overflow-hidden bg-card/60 border transition-all duration-300 shadow-xl hover:shadow-glow/20 flex flex-col cursor-pointer ${
+                        item.highlight ? "border-primary/60 shadow-glow/30" : "border-border/50 hover:border-primary/40"
                       }`}
                     >
                       {item.highlight && (
-                        <div className="bg-gradient-gold text-primary-foreground text-xs font-bold uppercase tracking-wider py-1.5 px-4 text-center">
-                          ⭐ Destaque da casa
+                        <div className="bg-gradient-gold text-primary-foreground text-[10px] md:text-xs font-black uppercase tracking-widest py-1.5 px-4 text-center">
+                          ⭐ Destaque
                         </div>
                       )}
-                      <div className="aspect-[4/3] overflow-hidden bg-muted">
+                      <div className="aspect-[16/10] xs:aspect-[4/3] overflow-hidden bg-muted">
                         <img
                           src={detail.img}
                           alt={item.name}
@@ -345,25 +345,15 @@ const Index = () => {
                           height={576}
                         />
                       </div>
-                      <div className="p-6 flex-1 flex flex-col">
-                        <div className="flex items-start justify-between gap-3 mb-2">
-                          <h4 className="font-display text-2xl uppercase leading-tight">{item.name}</h4>
+                      <div className="p-4 md:p-6 flex-1 flex flex-col">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h4 className="font-display text-xl md:text-2xl uppercase leading-none tracking-tight">{item.name}</h4>
                         </div>
                         {item.description && (
-                          <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">{item.description}</p>
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">{item.description}</p>
                         )}
-                        {item.ingredients?.length > 0 && (
-                          <ul className="text-xs text-muted-foreground/90 space-y-1 mb-4 flex-1 line-clamp-4">
-                            {item.ingredients.slice(0, 4).map((ing) => (
-                              <li key={ing} className="flex gap-2">
-                                <span className="text-primary">•</span>
-                                <span>{ing}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        <div className="flex items-end justify-between gap-4 pt-3 mt-auto border-t border-border">
-                          <p className="font-bold text-primary text-2xl whitespace-nowrap font-display">
+                        <div className="flex items-center justify-between gap-2 pt-3 mt-auto border-t border-border/40">
+                          <p className="font-bold text-primary text-xl md:text-2xl whitespace-nowrap font-display">
                             {formatBRL(Number(item.price))}
                           </p>
                           <Button
@@ -372,9 +362,9 @@ const Index = () => {
                               e.stopPropagation();
                               setDetailItem(detail);
                             }}
-                            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold"
+                            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-8 md:h-10 text-xs md:text-sm"
                           >
-                            <Plus className="w-4 h-4 mr-1" /> Adicionar
+                            <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Pedir
                           </Button>
                         </div>
                       </div>
