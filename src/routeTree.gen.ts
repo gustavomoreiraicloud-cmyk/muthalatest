@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminCuponsRouteImport } from './routes/admin.cupons'
 import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 
 const AuthRoute = AuthRouteImport.update({
@@ -41,6 +42,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCuponsRoute = AdminCuponsRouteImport.update({
+  id: '/cupons',
+  path: '/cupons',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCardapioRoute = AdminCardapioRouteImport.update({
   id: '/cardapio',
   path: '/cardapio',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/admin/cardapio'
+    | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/admin/cardapio'
+    | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/admin/cardapio'
+    | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
   fileRoutesById: FileRoutesById
@@ -142,6 +154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/cupons': {
+      id: '/admin/cupons'
+      path: '/cupons'
+      fullPath: '/admin/cupons'
+      preLoaderRoute: typeof AdminCuponsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cardapio': {
       id: '/admin/cardapio'
       path: '/cardapio'
@@ -154,12 +173,14 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminCardapioRoute: typeof AdminCardapioRoute
+  AdminCuponsRoute: typeof AdminCuponsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCardapioRoute: AdminCardapioRoute,
+  AdminCuponsRoute: AdminCuponsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminPedidosRoute: AdminPedidosRoute,
 }
