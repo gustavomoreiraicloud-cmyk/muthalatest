@@ -35,7 +35,7 @@ const checkoutSchema = z.object({
   phone: z.string().trim().min(10, "Telefone inválido").max(20),
   street: z.string().trim().min(2, "Informe a rua").max(120),
   number: z.string().trim().min(1, "Informe o número").max(10),
-  neighborhood: z.string().trim().min(2, "Informe o bairro").max(80),
+  neighborhoodId: z.string().min(1, "Selecione o bairro"),
 });
 
 type Coupon = {
