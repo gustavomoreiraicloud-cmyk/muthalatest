@@ -85,19 +85,19 @@ export default function CartDrawer() {
 
   const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
 
-  // Load neighborhoods
+  // Load delivery ranges
   useEffect(() => {
-    const loadNeighborhoods = async () => {
-      setLoadingNeighborhoods(true);
+    const loadRanges = async () => {
+      setLoadingRanges(true);
       const { data } = await supabase
-        .from("neighborhoods")
+        .from("delivery_ranges")
         .select("*")
         .eq("active", true)
-        .order("name");
-      setNeighborhoods(data || []);
-      setLoadingNeighborhoods(false);
+        .order("min_km");
+      setDeliveryRanges(data || []);
+      setLoadingRanges(false);
     };
-    if (isOpen) loadNeighborhoods();
+    if (isOpen) loadRanges();
   }, [isOpen]);
 
   // Reset confirmation when reopening
@@ -106,7 +106,7 @@ export default function CartDrawer() {
   }, [isOpen]);
 
   // Compute discount + total
-  const selectedNeighborhood = neighborhoods.find(n => n.id === neighborhoodId);
+  const selectedRange = deliveryRanges.find(r => r.id === deliveryRangeId);
   
   const discount = (() => {
     if (!coupon) return 0;
