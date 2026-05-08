@@ -59,12 +59,20 @@ export default function OrderStatus() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => window.location.href = "/"} className="gap-2">
-            <ArrowLeft className="w-4 h-4" /> Voltar
+      <div className="w-full max-w-md space-y-8">
+        <div className="flex flex-col items-center gap-6">
+          <a href="/" className="group transition-transform hover:scale-110 duration-300">
+            <img src={muthalaLogo} alt="Muthala Logo" className="w-24 h-24 object-contain" />
+          </a>
+          <div className="text-center space-y-1">
+            <h1 className="font-display text-4xl md:text-5xl uppercase tracking-tighter leading-none">
+              <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span> Burguer
+            </h1>
+            <p className="text-[10px] text-primary font-bold tracking-[0.3em] uppercase opacity-80">O Sabor dos Deuses</p>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => window.location.href = "/"} className="gap-2 text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="w-4 h-4" /> Voltar ao Início
           </Button>
-          <h1 className="font-display text-2xl uppercase">Muthala Burger</h1>
         </div>
 
         {!order && !loading && (
