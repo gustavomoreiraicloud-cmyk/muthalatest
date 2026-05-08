@@ -390,51 +390,82 @@ export default function CartDrawer() {
                 </div>
               </div>
 
-              {/* Endereço */}
+              {/* Método de Entrega */}
               <div className="space-y-3 mb-5">
-                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
-                  <MapPin className="w-4 h-4" /> Endereço de entrega
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-2">
-                    <Label className="text-xs">Rua *</Label>
-                    <Input maxLength={120} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="R. Smith Vasconcelos" />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Número *</Label>
-                    <Input maxLength={10} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="312" />
-                  </div>
-                </div>
-                <div>
-                  <Label className="text-xs">Bairro *</Label>
-                  <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
-                    <SelectTrigger className="w-full bg-background/50">
-                      <SelectValue placeholder="Selecione seu bairro" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[250px]">
-                      {loadingNeighborhoods ? (
-                        <div className="flex items-center justify-center p-4">
-                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                        </div>
-                      ) : (
-                        neighborhoods.map((n) => (
-                          <SelectItem key={n.id} value={n.id}>
-                            {n.name} — {formatBRL(Number(n.fee))}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Complemento</Label>
-                  <Input maxLength={80} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto 21, bloco B" />
-                </div>
-                <div>
-                  <Label className="text-xs">Ponto de referência</Label>
-                  <Input maxLength={120} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Próximo ao mercado..." />
+                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">📦 Como prefere receber?</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setDeliveryMethod("entrega")}
+                    className={`p-3 rounded-lg border flex flex-col items-center gap-1 transition-smooth ${
+                      deliveryMethod === "entrega"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background/40"
+                    }`}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    <span className="text-sm font-bold">Entrega</span>
+                  </button>
+                  <button
+                    onClick={() => setDeliveryMethod("retirada")}
+                    className={`p-3 rounded-lg border flex flex-col items-center gap-1 transition-smooth ${
+                      deliveryMethod === "retirada"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background/40"
+                    }`}
+                  >
+                    <MapPin className="w-5 h-5" />
+                    <span className="text-sm font-bold">Retirada</span>
+                  </button>
                 </div>
               </div>
+
+              {/* Endereço (apenas se for entrega) */}
+              {deliveryMethod === "entrega" && (
+                <div className="space-y-3 mb-5">
+                  <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
+                    <MapPin className="w-4 h-4" /> Endereço de entrega
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2">
+                      <Label className="text-xs">Rua *</Label>
+                      <Input maxLength={120} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="R. Smith Vasconcelos" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Número *</Label>
+                      <Input maxLength={10} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="312" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Bairro *</Label>
+                    <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                      <SelectTrigger className="w-full bg-background/50">
+                        <SelectValue placeholder="Selecione seu bairro" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[250px]">
+                        {loadingNeighborhoods ? (
+                          <div className="flex items-center justify-center p-4">
+                            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                          </div>
+                        ) : (
+                          neighborhoods.map((n) => (
+                            <SelectItem key={n.id} value={n.id}>
+                              {n.name} — {formatBRL(Number(n.fee))}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Complemento</Label>
+                    <Input maxLength={80} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto 21, bloco B" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Ponto de referência</Label>
+                    <Input maxLength={120} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Próximo ao mercado..." />
+                  </div>
+                </div>
+              )}
 
               {/* Pagamento */}
               <div className="space-y-3 mb-5">
