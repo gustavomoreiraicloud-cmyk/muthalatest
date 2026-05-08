@@ -384,7 +384,24 @@ export default function CartDrawer() {
                 </div>
                 <div>
                   <Label className="text-xs">Bairro *</Label>
-                  <Input maxLength={80} value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="Centro" />
+                  <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                    <SelectTrigger className="w-full bg-background/50">
+                      <SelectValue placeholder="Selecione seu bairro" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[250px]">
+                      {loadingNeighborhoods ? (
+                        <div className="flex items-center justify-center p-4">
+                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        </div>
+                      ) : (
+                        neighborhoods.map((n) => (
+                          <SelectItem key={n.id} value={n.id}>
+                            {n.name} — {formatBRL(Number(n.fee))}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label className="text-xs">Complemento</Label>
