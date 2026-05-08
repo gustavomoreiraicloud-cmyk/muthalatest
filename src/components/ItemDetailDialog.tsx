@@ -78,7 +78,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    if (open) {
+    if (open && item) {
       setSize("100g");
       setBeverage("");
       setSelectedExtras([]);
@@ -86,7 +86,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       setNotes("");
       setQty(1);
     }
-  }, [open]);
+  }, [open, item]);
 
   if (!item) return null;
 
