@@ -37,8 +37,6 @@ const getBurgerSizes = (itemName: string) => {
     'IDUNN': 33.90, 'VIDAR': 29.90, 'VALKYRIA': 29.90, 'FREYA': 29.90
   };
 
-  const base = basePrices[itemName] || 0;
-  
   return [
     { id: "100g", label: "BURGER 100g", price: 0 },
     { id: "180g", label: "BURGER 180g", price: itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' ? 7 : 6 },
@@ -48,13 +46,7 @@ const getBurgerSizes = (itemName: string) => {
 };
 
 const getPortionSizes = (itemName: string) => {
-  if (itemName === 'Batata Simples') {
-    return [
-      { id: "p", label: "P 170g", price: 0 },
-      { id: "g", label: "G 350g", price: 13 },
-    ];
-  }
-  if (itemName === 'Batata Especial') {
+  if (itemName === 'Batata Simples' || itemName === 'Batata Especial') {
     return [
       { id: "p", label: "P 170g", price: 0 },
       { id: "g", label: "G 350g", price: 13 },
@@ -101,28 +93,6 @@ const DONENESS = [
 
 export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const { add, open: openCart } = useCart();
-  const [size, setSize] = useState("100g");
-  const [beverage, setBeverage] = useState("");
-  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
-  const [doneness, setDoneness] = useState("ao_ponto");
-  const [notes, setNotes] = useState("");
-  const [qty, setQty] = useState(1);
-
-  useEffect(() => {
-    if (open && item) {
-      setSize("100g");
-      setBeverage("");
-      setSelectedExtras([]);
-      setDoneness("ao_ponto");
-      setNotes("");
-      setQty(1);
-    }
-  }, [open, item]);
-
-  const burgerSizes = useMemo(() => item ? getBurgerSizes(item.name) : [], [item]);
-  const portionSizes = useMemo(() => item ? getPortionSizes(item.name) : [], [item]);
-  const allSizes = useMemo(() => [...burgerSizes, ...portionSizes], [burgerSizes, portionSizes]);
-
   const [size, setSize] = useState("");
   const [beverage, setBeverage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
@@ -130,10 +100,14 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const [notes, setNotes] = useState("");
   const [qty, setQty] = useState(1);
 
+  const burgerSizes = useMemo(() => item ? getBurgerSizes(item.name) : [], [item]);
+  const portionSizes = useMemo(() => item ? getPortionSizes(item.name) : [], [item]);
+  const allSizes = useMemo(() => [...burgerSizes, ...portionSizes], [burgerSizes, portionSizes]);
+
   useEffect(() => {
     if (open && item) {
-      const sizes = [...getBurgerSizes(item.name), ...getPortionSizes(item.name)];
-      setSize(sizes.length > 0 ? sizes[0].id : "");
+      const initialSizes = [...getBurgerSizes(item.name), ...getPortionSizes(item.name)];
+      setSize(initialSizes.length > 0 ? initialSizes[0].id : "");
       setBeverage("");
       setSelectedExtras([]);
       setDoneness("ao_ponto");
@@ -146,7 +120,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     if (!item) return 0;
     const cleaned = item.price.replace(/[^\d,]/g, "").replace(",", ".");
     return parseFloat(cleaned) || 0;
-  }, [item?.price]);
+  }, [item]);
 
   const totalPrice = useMemo(() => {
     if (!item) return 0;
@@ -175,7 +149,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     const extrasLabels = selectedExtras.map(id => ADDITIONALS.find(e => e.id === id)?.label).filter(Boolean) as string[];
     const donenessLabel = DONENESS.find(d => d.id === doneness)?.label;
 
-    add({
+    const cartItem = {
       name: item.name,
       price: formatBRL(totalPrice / qty),
       img: item.img,
@@ -186,21 +160,10 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
         doneness: donenessLabel,
         notes: notes.trim() || undefined
       }
-    });
-    
-    for (let i = 1; i < qty; i++) {
-      add({
-        name: item.name,
-        price: formatBRL(totalPrice / qty),
-        img: item.img,
-        options: {
-          burgerSize: sizeLabel,
-          beverage: bevLabel,
-          extras: extrasLabels,
-          doneness: donenessLabel,
-          notes: notes.trim() || undefined
-        }
-      });
+    };
+
+    for (let i = 0; i < qty; i++) {
+      add(cartItem);
     }
 
     toast.success(`${qty}x ${item.name} adicionado ao pedido`);
@@ -234,7 +197,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               )}
             </DialogHeader>
 
-            {/* Opções de Tamanho/Combo */}
             {allSizes.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
@@ -261,7 +223,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </div>
             )}
 
-            {/* Conti 1,99 - Opcional */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -289,7 +250,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </RadioGroup>
             </div>
 
-            {/* Adicionais - Opcional */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -319,7 +279,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </div>
             </div>
 
-            {/* Ponto do Hamburguer */}
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
@@ -341,7 +300,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </RadioGroup>
             </div>
 
-            {/* Observações */}
             <div className="space-y-3">
               <h4 className="font-bold text-sm uppercase tracking-tight">Observações</h4>
               <Textarea
@@ -359,7 +317,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
           </div>
         </ScrollArea>
 
-        {/* Footer Fixo */}
         <div className="absolute bottom-0 inset-x-0 bg-card border-t border-border p-4 sm:p-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 bg-background border border-border rounded-lg p-1">
             <button
