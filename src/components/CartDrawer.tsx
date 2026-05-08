@@ -281,7 +281,7 @@ export default function CartDrawer() {
                 {items.map((i, idx) => {
                   const lineTotal = parsePrice(i.price) * i.qty;
                   const itemKey = `${i.name}-${idx}`;
-                  const uniqueId = i.name + JSON.stringify(i.options || {});
+                  const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
                   return (
                     <li key={itemKey} className="flex flex-col gap-3 bg-background/40 border border-border rounded-xl p-3">
                       <div className="flex gap-3 items-center">
