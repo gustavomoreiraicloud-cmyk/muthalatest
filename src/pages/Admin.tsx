@@ -51,7 +51,7 @@ export default function Admin() {
         <div className="container mx-auto flex items-center justify-between py-3 px-4">
           <div>
             <h1 className="font-display text-xl uppercase">Painel Muthala</h1>
-            <p className="text-xs text-muted-foreground">Administrador</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Logado como: {user?.username}</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>
             <LogOut className="w-4 h-4" /> Sair
