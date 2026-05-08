@@ -370,7 +370,7 @@ export default function CartDrawer() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("save order failed", err);
-      toast.error("Não foi possível registrar o pedido. Verifique os dados e tente de novo.");
+      toast.error("Não foi possível registrar o pedido. Verifique o endereço e tente novamente.");
     } finally {
       setSubmitting(false);
     }
