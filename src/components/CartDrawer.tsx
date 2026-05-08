@@ -97,7 +97,7 @@ export default function CartDrawer() {
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
 
-  const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
+  const [confirmation, setConfirmation] = useState<{ orderNumber: number | null; orderId: string | null } | null>(null);
 
   // Load delivery ranges
   useEffect(() => {
