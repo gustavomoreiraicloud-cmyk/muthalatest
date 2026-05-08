@@ -9,8 +9,9 @@ import { formatBRL } from "@/hooks/useCart";
 const STATUS_MAP = {
   novo: { label: "Recebido", icon: ShoppingBag, color: "text-blue-400" },
   preparo: { label: "Em Preparo", icon: Clock, color: "text-yellow-400" },
+  pronto: { label: "Pedido Pronto", icon: PackageCheck, color: "text-purple-400" },
   entrega: { label: "Saiu para Entrega", icon: Truck, color: "text-orange-400" },
-  finalizado: { label: "Entregue", icon: PackageCheck, color: "text-green-400" },
+  finalizado: { label: "Entregue", icon: CheckCircle2, color: "text-green-400" },
   cancelado: { label: "Cancelado", icon: PackageCheck, color: "text-destructive" },
 };
 
@@ -114,6 +115,7 @@ export default function OrderStatus() {
                       <p className="text-sm text-muted-foreground mt-2">
                         {order.status === 'novo' && "Estamos recebendo seu pedido."}
                         {order.status === 'preparo' && "Seu lanche está sendo forjado com maestria."}
+                        {order.status === 'pronto' && "Seu pedido está pronto! Se for retirada, pode vir buscar."}
                         {order.status === 'entrega' && "Um guerreiro está a caminho do seu endereço."}
                         {order.status === 'finalizado' && "Pedido entregue. Bom apetite!"}
                         {order.status === 'cancelado' && "Este pedido foi cancelado."}
