@@ -75,6 +75,7 @@ export default function CartDrawer() {
   const [complement, setComplement] = useState("");
   const [reference, setReference] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("pix");
+  const [needsChange, setNeedsChange] = useState<boolean | null>(null);
   const [changeFor, setChangeFor] = useState("");
   const [notes, setNotes] = useState("");
   const [couponCode, setCouponCode] = useState("");
