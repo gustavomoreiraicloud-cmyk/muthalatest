@@ -80,7 +80,7 @@ export default function OrderStatus() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              O código do pedido está no link enviado no seu WhatsApp após a finalização da compra.
+              Digite o número de 4 dígitos que apareceu na tela após você finalizar o seu pedido.
             </p>
           </Card>
         )}
