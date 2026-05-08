@@ -229,7 +229,7 @@ export default function CartDrawer() {
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: street,
           address_number: number,
-          address_neighborhood: neighborhood,
+          address_neighborhood: selectedNeighborhood?.name || null,
           address_complement: complement || null,
           address_reference: reference || null,
           notes: notes || null,
