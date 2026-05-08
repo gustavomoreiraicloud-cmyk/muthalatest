@@ -514,16 +514,14 @@ const Index = () => {
             <span className="text-sm">{cartCount} {cartCount === 1 ? "item" : "itens"}</span>
           </button>
         )}
-        <a
-          href={whatsappLink}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={openCart}
           aria-label="Pedir agora"
-          className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-black uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
+          className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-gradient-fire text-primary-foreground font-black uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
         >
-          <MessageCircle className="w-6 h-6 animate-bounce" />
+          <ShoppingBag className="w-6 h-6 animate-pulse" />
           <span className="hidden md:inline">Pedir agora</span>
-        </a>
+        </button>
       </div>
 
       <ItemDetailDialog
