@@ -181,7 +181,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden bg-card border-border h-full md:h-[90vh] flex flex-col sm:rounded-3xl">
         <ScrollArea className="flex-1">
-          <div className="relative aspect-video sm:aspect-[21/9] overflow-hidden">
+          <div className="relative aspect-square sm:aspect-video max-h-[300px] mx-auto overflow-hidden">
             <img 
               src={item.img} 
               alt={item.name} 
