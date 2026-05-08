@@ -308,7 +308,7 @@ function ImagePicker({ value, onChange }: { value: string; onChange: (url: strin
   return (
     <div className="space-y-2">
       {value && (
-        <img src={value.replace('/src/assets/', '/assets/')} alt="preview" className="w-32 h-32 rounded object-cover border border-border" />
+        <img src={value} alt="preview" className="w-32 h-32 rounded object-cover border border-border" />
       )}
       <div className="flex gap-2">
         <Button
