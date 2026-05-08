@@ -9,38 +9,174 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminCuponsRouteImport } from './routes/admin.cupons'
+import { Route as AdminContaRouteImport } from './routes/admin.conta'
+import { Route as AdminConfigRouteImport } from './routes/admin.config'
+import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPedidosRoute = AdminPedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCuponsRoute = AdminCuponsRouteImport.update({
+  id: '/cupons',
+  path: '/cupons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContaRoute = AdminContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfigRoute = AdminConfigRouteImport.update({
+  id: '/config',
+  path: '/config',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCardapioRoute = AdminCardapioRouteImport.update({
+  id: '/cardapio',
+  path: '/cardapio',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
+  '/admin/cupons': typeof AdminCuponsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
+  '/admin/cupons': typeof AdminCuponsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
+  '/admin/cupons': typeof AdminCuponsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/admin'
+    | '/auth'
+    | '/admin/cardapio'
+    | '/admin/config'
+    | '/admin/conta'
+    | '/admin/cupons'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/$'
+    | '/admin'
+    | '/auth'
+    | '/admin/cardapio'
+    | '/admin/config'
+    | '/admin/conta'
+    | '/admin/cupons'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
+  id:
+    | '__root__'
+    | '/'
+    | '/$'
+    | '/admin'
+    | '/auth'
+    | '/admin/cardapio'
+    | '/admin/config'
+    | '/admin/conta'
+    | '/admin/cupons'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +184,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/pedidos': {
+      id: '/admin/pedidos'
+      path: '/pedidos'
+      fullPath: '/admin/pedidos'
+      preLoaderRoute: typeof AdminPedidosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cupons': {
+      id: '/admin/cupons'
+      path: '/cupons'
+      fullPath: '/admin/cupons'
+      preLoaderRoute: typeof AdminCuponsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/conta': {
+      id: '/admin/conta'
+      path: '/conta'
+      fullPath: '/admin/conta'
+      preLoaderRoute: typeof AdminContaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/config': {
+      id: '/admin/config'
+      path: '/config'
+      fullPath: '/admin/config'
+      preLoaderRoute: typeof AdminConfigRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cardapio': {
+      id: '/admin/cardapio'
+      path: '/cardapio'
+      fullPath: '/admin/cardapio'
+      preLoaderRoute: typeof AdminCardapioRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminCardapioRoute: typeof AdminCardapioRoute
+  AdminConfigRoute: typeof AdminConfigRoute
+  AdminContaRoute: typeof AdminContaRoute
+  AdminCuponsRoute: typeof AdminCuponsRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminPedidosRoute: typeof AdminPedidosRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCardapioRoute: AdminCardapioRoute,
+  AdminConfigRoute: AdminConfigRoute,
+  AdminContaRoute: AdminContaRoute,
+  AdminCuponsRoute: AdminCuponsRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminPedidosRoute: AdminPedidosRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
