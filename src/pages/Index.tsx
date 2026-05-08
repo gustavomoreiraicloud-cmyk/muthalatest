@@ -25,9 +25,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const reviews = [
-  { name: "Carolina M.", text: "Simplesmente o melhor hambúrguer de Assis! O Muthala é insano, carne suculenta e atendimento impecável. Virei cliente fiel.", rating: 5 },
-  { name: "Rafael S.", text: "O Ragnarok é viciante! Tempero perfeito, ingredientes de qualidade e entrega rápida. Recomendo de olhos fechados.", rating: 5 },
-  { name: "Beatriz L.", text: "Pedi o Combo Banquete Nórdico pra família e foi unanimidade. Sabor de hambúrgueria gourmet. Voltaremos sempre.", rating: 5 },
+  { name: "Alessandra Vieira Venceslau", text: "Gente do céu, que delícia, não sou de Assis mas demos o tiro certo, a casa é linda, o atendimento é vipíssimo e a comida, meu Deus, tá no hanking dos melhores hambúrguers da vida, pedi o Odin... espetacular!", rating: 5 },
+  { name: "Bruno de Oliveira", text: "Hamburger maravilhoso, atendimento profissional, ambiente acolhedor. Tudo perfeito a começar pelo blend do hamburguer. Estão de parabéns!", rating: 5 },
+  { name: "Juan Santos", text: "Lugar incrível, ambiente aconchegante e agradável, o lanche é sem explicação de bom, apenas peçam o Bjorn, realmente forjado pelos deuses.", rating: 5 },
+  { name: "Dra. Sandra Regina", text: "Ambiente arejado, muitas opções de mesa. Achei interessante pois agrada famílias com crianças, casais e grupos de amigo. Os jogos são maravilhosos e os lanches suculentos!", rating: 5 },
+  { name: "Manuella Caron", text: "Ambiente confortável e limpo, garçons gentis, o lanche é maravilhoso, o atendimento é rápido e eficiente. Recomendo muito!!", rating: 5 },
+  { name: "Ana Luisa", text: "Lanches maravilhosos e dignos de nórdicos, ambiente muito aconchegante, atendimento impecável, garçons super simpáticos.", rating: 5 },
 ];
 
 const Index = () => {
@@ -344,7 +347,7 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground text-lg">Baseado em 98 avaliações de clientes reais</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((r) => (
               <Card key={r.name} className="p-8 bg-card border-border shadow-deep">
                 <div className="flex gap-1 mb-4">
