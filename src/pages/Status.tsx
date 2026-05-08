@@ -136,7 +136,7 @@ export default function OrderStatus() {
 
               <div className="border-t border-border mt-6 pt-6 space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Resumo</h4>
+                  <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 border-b border-border/50 pb-2">Detalhes do Pedido</h4>
                   <ul className="space-y-2">
                     {order.items?.map((item: any, i: number) => (
                       <li key={i} className="flex justify-between text-sm">
