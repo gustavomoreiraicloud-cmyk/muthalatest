@@ -347,14 +347,17 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground text-lg">Baseado em 98 avaliações de clientes reais</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviews.map((r) => (
-              <Card key={r.name} className="p-8 bg-card border-border shadow-deep">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(r.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-primary text-primary" />
-                  ))}
-                </div>
+          <div className="relative group">
+            <div className="flex overflow-hidden gap-6 py-4">
+              <div className="flex animate-infinite-scroll gap-6 hover:[animation-play-state:paused]">
+                {[...reviews, ...reviews].map((r, idx) => (
+                  <Card key={`${r.name}-${idx}`} className="w-[300px] md:w-[400px] shrink-0 p-8 bg-card border-border shadow-deep hover:border-primary/50 transition-smooth">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(r.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                      ))}
+                    </div>
+
                 <p className="text-foreground/90 leading-relaxed mb-6 italic">"{r.text}"</p>
                 <p className="font-semibold">{r.name}</p>
               </Card>
