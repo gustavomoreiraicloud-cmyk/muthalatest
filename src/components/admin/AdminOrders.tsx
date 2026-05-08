@@ -77,36 +77,31 @@ const sendPushNotification = (title: string, body: string) => {
   };
 };
 
-// Beep usando Web Audio (sem precisar de arquivo)
+// Som de notificação mais longo e chamativo
 const playBeep = () => {
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.type = "sine";
-    o.frequency.value = 880;
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
-    o.start();
-    o.stop(ctx.currentTime + 0.55);
-    setTimeout(() => {
-      const o2 = ctx.createOscillator();
-      const g2 = ctx.createGain();
-      o2.connect(g2);
-      g2.connect(ctx.destination);
-      o2.type = "sine";
-      o2.frequency.value = 1320;
-      g2.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g2.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
-      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
-      o2.start();
-      o2.stop(ctx.currentTime + 0.55);
-    }, 250);
-  } catch {
-    /* ignore */
+    
+    const playNote = (freq: number, start: number, duration: number) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.type = "sine";
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + start);
+      g.gain.exponentialRampToValueAtTime(0.5, ctx.currentTime + start + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
+      o.start(ctx.currentTime + start);
+      o.stop(ctx.currentTime + start + duration + 0.1);
+    };
+
+    // Sequência de 3 bipes (estilo campainha)
+    playNote(880, 0, 0.4);
+    playNote(1100, 0.5, 0.4);
+    playNote(1320, 1.0, 0.6);
+  } catch (err) {
+    console.error("Erro ao tocar som:", err);
   }
 };
 
@@ -229,7 +224,7 @@ export default function AdminOrders() {
       supabase.removeChannel(ch);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soundOn]);
+  }, [soundOn, notifyOn]);
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("orders").update({ status }).eq("id", id);
