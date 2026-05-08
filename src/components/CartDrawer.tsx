@@ -299,8 +299,8 @@ export default function CartDrawer() {
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
-      // setConfirmation({ orderNumber: order.order_number }); // Já estava aqui
-      // clear(); // Já estava aqui
+      setConfirmation({ orderNumber: order.order_number });
+      clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("save order failed", err);
