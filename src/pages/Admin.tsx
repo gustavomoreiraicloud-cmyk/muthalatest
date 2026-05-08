@@ -40,6 +40,7 @@ export default function Admin() {
     { to: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
     { to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
     { to: "/admin/cardapio", label: "Cardápio", icon: UtensilsCrossed },
+    { to: "/admin/bairros", label: "Fretes", icon: MapPin },
     { to: "/admin/cupons", label: "Cupons", icon: Tag },
     { to: "/admin/config", label: "Configurações", icon: SettingsIcon },
     { to: "/admin/conta", label: "Minha conta", icon: UserCog },
