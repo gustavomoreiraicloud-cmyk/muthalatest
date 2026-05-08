@@ -37,10 +37,10 @@ const checkoutSchema = z.object({
   deliveryMethod: z.enum(["entrega", "retirada"]),
   street: z.string().trim().max(120).optional(),
   number: z.string().trim().max(10).optional(),
-  neighborhoodId: z.string().optional(),
+  deliveryRangeId: z.string().optional(),
 }).refine((data) => {
   if (data.deliveryMethod === "entrega") {
-    return !!data.street && !!data.number && !!data.neighborhoodId;
+    return !!data.street && !!data.number && !!data.deliveryRangeId;
   }
   return true;
 }, {
@@ -69,9 +69,9 @@ export default function CartDrawer() {
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
-  const [neighborhoodId, setNeighborhoodId] = useState("");
-  const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
-  const [loadingNeighborhoods, setLoadingNeighborhoods] = useState(false);
+  const [deliveryRangeId, setDeliveryRangeId] = useState("");
+  const [deliveryRanges, setDeliveryRanges] = useState<any[]>([]);
+  const [loadingRanges, setLoadingRanges] = useState(false);
   const [complement, setComplement] = useState("");
   const [reference, setReference] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("pix");
@@ -85,19 +85,19 @@ export default function CartDrawer() {
 
   const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
 
-  // Load neighborhoods
+  // Load delivery ranges
   useEffect(() => {
-    const loadNeighborhoods = async () => {
-      setLoadingNeighborhoods(true);
+    const loadRanges = async () => {
+      setLoadingRanges(true);
       const { data } = await supabase
-        .from("neighborhoods")
+        .from("delivery_ranges")
         .select("*")
         .eq("active", true)
-        .order("name");
-      setNeighborhoods(data || []);
-      setLoadingNeighborhoods(false);
+        .order("min_km");
+      setDeliveryRanges(data || []);
+      setLoadingRanges(false);
     };
-    if (isOpen) loadNeighborhoods();
+    if (isOpen) loadRanges();
   }, [isOpen]);
 
   // Reset confirmation when reopening
@@ -106,7 +106,7 @@ export default function CartDrawer() {
   }, [isOpen]);
 
   // Compute discount + total
-  const selectedNeighborhood = neighborhoods.find(n => n.id === neighborhoodId);
+  const selectedRange = deliveryRanges.find(r => r.id === deliveryRangeId);
   
   const discount = (() => {
     if (!coupon) return 0;
@@ -118,7 +118,7 @@ export default function CartDrawer() {
   const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
   const fee = (deliveryMethod === "retirada" || freeShipping) 
     ? 0 
-    : (selectedNeighborhood ? Number(selectedNeighborhood.fee) : DEFAULT_DELIVERY_FEE);
+    : (selectedRange ? Number(selectedRange.fee) : DEFAULT_DELIVERY_FEE);
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
@@ -170,7 +170,7 @@ export default function CartDrawer() {
     if (deliveryMethod === "entrega") {
       lines.push("📍 *ENDEREÇO DE ENTREGA*");
       lines.push(`${street}, ${number}`);
-      lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
+      lines.push(`Distância: ${selectedRange?.label || 'Não informada'}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
@@ -236,7 +236,7 @@ export default function CartDrawer() {
       deliveryMethod,
       street: deliveryMethod === "entrega" ? street : undefined, 
       number: deliveryMethod === "entrega" ? number : undefined, 
-      neighborhoodId: deliveryMethod === "entrega" ? neighborhoodId : undefined 
+      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined 
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
@@ -265,7 +265,7 @@ export default function CartDrawer() {
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: deliveryMethod === "entrega" ? street : null,
           address_number: deliveryMethod === "entrega" ? number : null,
-          address_neighborhood: deliveryMethod === "entrega" ? (selectedNeighborhood?.name || null) : "Retirada no Local",
+          address_neighborhood: deliveryMethod === "entrega" ? (selectedRange?.label || null) : "Retirada no Local",
           address_complement: deliveryMethod === "entrega" ? (complement || null) : null,
           address_reference: deliveryMethod === "entrega" ? (reference || null) : null,
           notes: notes || null,
@@ -294,9 +294,9 @@ export default function CartDrawer() {
   };
 
   const resetAll = () => {
-    setName(""); setPhone(""); setStreet(""); setNumber(""); setNeighborhoodId("");
+    setName(""); setPhone(""); setStreet(""); setNumber(""); setDeliveryRangeId("");
     setComplement(""); setReference(""); setNotes(""); setChangeFor("");
-    setCoupon(null); setCouponCode(""); setPayment("pix");
+    setCoupon(null); setCouponCode(""); setPayment("pix"); setNeedsChange(null);
     setConfirmation(null);
     close();
   };
@@ -449,20 +449,20 @@ export default function CartDrawer() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs">Bairro *</Label>
-                    <Select value={neighborhoodId} onValueChange={setNeighborhoodId}>
+                    <Label className="text-xs">Distância até o local *</Label>
+                    <Select value={deliveryRangeId} onValueChange={setDeliveryRangeId}>
                       <SelectTrigger className="w-full bg-background/50">
-                        <SelectValue placeholder="Selecione seu bairro" />
+                        <SelectValue placeholder="Qual a distância?" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[250px]">
-                        {loadingNeighborhoods ? (
+                        {loadingRanges ? (
                           <div className="flex items-center justify-center p-4">
                             <Loader2 className="w-4 h-4 animate-spin text-primary" />
                           </div>
                         ) : (
-                          neighborhoods.map((n) => (
-                            <SelectItem key={n.id} value={n.id}>
-                              {n.name} — {formatBRL(Number(n.fee))}
+                          deliveryRanges.map((r) => (
+                            <SelectItem key={r.id} value={r.id}>
+                              {r.label} — {formatBRL(Number(r.fee))}
                             </SelectItem>
                           ))
                         )}

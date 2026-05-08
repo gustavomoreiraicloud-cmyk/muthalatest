@@ -53,6 +53,36 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_ranges: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          fee: number
+          id: string
+          label: string
+          max_km: number | null
+          min_km: number
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          fee: number
+          id?: string
+          label: string
+          max_km?: number | null
+          min_km: number
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          fee?: number
+          id?: string
+          label?: string
+          max_km?: number | null
+          min_km?: number
+        }
+        Relationships: []
+      }
       menu_items: {
         Row: {
           available: boolean
@@ -94,33 +124,6 @@ export type Database = {
           name?: string
           price?: number
           sort_order?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      neighborhoods: {
-        Row: {
-          active: boolean
-          created_at: string | null
-          fee: number
-          id: string
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string | null
-          fee?: number
-          id?: string
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          active?: boolean
-          created_at?: string | null
-          fee?: number
-          id?: string
-          name?: string
           updated_at?: string | null
         }
         Relationships: []
