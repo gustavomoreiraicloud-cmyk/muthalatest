@@ -47,14 +47,14 @@ export default function AdminDashboard() {
   const stats = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
     
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    // Se a loja ainda não abriu hoje (antes das 18h), mostrar os dados desde o início da última noite de operação
+    // Por padrão, vamos focar no faturamento do "dia operacional" (de hoje até o fechamento)
+    const operationalDay = new Date(today);
 
     const validOrders = orders.filter((o) => o.status !== "cancelado");
-    const todayOrders = validOrders.filter((o) => new Date(o.created_at) >= today);
-    const monthOrders = validOrders.filter((o) => new Date(o.created_at) >= startOfMonth);
+    const todayOrders = validOrders.filter((o) => new Date(o.created_at) >= operationalDay);
+    const monthOrders = validOrders.filter((o) => new Date(o.created_at) >= new Date(now.getFullYear(), now.getMonth(), 1));
 
     const todayRevenue = todayOrders.reduce((s, o) => s + Number(o.total), 0);
     const monthRevenue = monthOrders.reduce((s, o) => s + Number(o.total), 0);
