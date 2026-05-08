@@ -182,7 +182,17 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       <DialogContent className="max-w-2xl p-0 overflow-hidden bg-card border-border h-[90vh] flex flex-col">
         <ScrollArea className="flex-1">
           <div className="relative aspect-video sm:aspect-[21/9] overflow-hidden">
-            <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+            <img 
+              src={item.img} 
+              alt={item.name} 
+              className="w-full h-full object-cover" 
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src.includes('/src/assets/')) {
+                  target.src = target.src.replace('/src/assets/', '/assets/');
+                }
+              }}
+            />
           </div>
           
           <div className="p-6 space-y-8 pb-32">
