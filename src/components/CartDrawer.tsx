@@ -37,7 +37,7 @@ const checkoutSchema = z.object({
   deliveryMethod: z.enum(["entrega", "retirada"]),
   street: z.string().trim().max(120).optional(),
   number: z.string().trim().max(10).optional(),
-  neighborhoodId: z.string().optional(),
+  deliveryRangeId: z.string().optional(),
 }).refine((data) => {
   if (data.deliveryMethod === "entrega") {
     return !!data.street && !!data.number && !!data.neighborhoodId;
