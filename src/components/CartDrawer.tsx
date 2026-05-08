@@ -194,6 +194,18 @@ export default function CartDrawer() {
     if (discount > 0) lines.push(`Desconto (${coupon?.code}): -${formatBRL(discount)}`);
     lines.push(`Taxa de entrega: ${freeShipping ? "GRÁTIS 🎉" : formatBRL(fee)}`);
     lines.push(`*TOTAL: ${formatBRL(total)}*`);
+    if (payment === "dinheiro") {
+      lines.push(`💵 Pagamento: Dinheiro`);
+      if (needsChange === true && changeFor) {
+        const val = Number(parsePrice(changeFor));
+        lines.push(`👉 *Troco para: ${formatBRL(val)}*`);
+        lines.push(`👉 *Levar: ${formatBRL(val - total)}*`);
+      } else {
+        lines.push(`👉 *Não precisa de troco*`);
+      }
+    } else {
+      lines.push(`💳 Pagamento: ${PAYMENT_LABELS[payment]}`);
+    }
     lines.push("");
     lines.push("💳 *PAGAMENTO*");
     lines.push(PAYMENT_LABELS[payment]);
