@@ -245,23 +245,22 @@ export default function CartDrawer() {
 
     setSubmitting(true);
     try {
-      const { data: inserted, error } = await supabase
+      const { data: user } = await supabase.auth.getUser();
+      
+      // 1. Inserir o pedido principal
+      const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           customer_name: name,
           customer_phone: phone,
-          items: items.map((i) => ({ 
-            name: i.name, 
-            qty: i.qty, 
-            price: i.price,
-            options: i.options 
-          })),
+          delivery_method: deliveryMethod,
           subtotal: Number(subtotal),
           discount: Number(discount),
           delivery_fee: Number(fee),
           total: Number(total),
           coupon_code: coupon?.code ?? null,
           payment_method: payment,
+          needs_change: needsChange === true,
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: deliveryMethod === "entrega" ? street : null,
           address_number: deliveryMethod === "entrega" ? number : null,
@@ -270,20 +269,31 @@ export default function CartDrawer() {
           address_reference: deliveryMethod === "entrega" ? (reference || null) : null,
           notes: notes || null,
           status: "novo",
+          user_id: user.user?.id || null,
         })
-        .select("order_number")
-        .maybeSingle();
+        .select()
+        .single();
 
-      if (error) {
-        console.error("Supabase error:", error);
-        throw error;
-      }
+      if (orderError) throw orderError;
 
-      const orderNumber = (inserted as any)?.order_number ?? null;
-      const url = buildWhatsAppLink(buildOrderMessage(orderNumber));
-      window.open(url, "_blank", "noopener,noreferrer");
+      // 2. Inserir os itens do pedido
+      const itemsToInsert = items.map((i) => ({
+        order_id: order.id,
+        product_id: (i as any).id || null,
+        product_name: i.name,
+        quantity: i.qty,
+        price: i.price,
+        subtotal: i.price * i.qty,
+        options: i.options || [],
+      }));
 
-      setConfirmation({ orderNumber });
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(itemsToInsert);
+
+      if (itemsError) throw itemsError;
+
+      setConfirmation({ orderNumber: order.order_number });
       clear();
     } catch (err) {
       console.error("save order failed", err);
