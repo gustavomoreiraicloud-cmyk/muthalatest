@@ -229,7 +229,7 @@ export default function AdminOrders() {
       supabase.removeChannel(ch);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soundOn]);
+  }, [soundOn, notifyOn]);
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("orders").update({ status }).eq("id", id);
