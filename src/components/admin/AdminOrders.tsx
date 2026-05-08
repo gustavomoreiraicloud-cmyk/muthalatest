@@ -13,13 +13,15 @@ type Order = {
   order_number: number | null;
   customer_name: string | null;
   customer_phone: string | null;
-  items: Array<{ name: string; qty: number; price: string }>;
+  items: Array<{ name: string; qty: number; price: string; options?: any }>;
   subtotal: number | null;
   discount: number | null;
   delivery_fee: number | null;
+  delivery_method: string | null;
   total: number;
   coupon_code: string | null;
   payment_method: string | null;
+  needs_change: boolean | null;
   change_for: number | null;
   address_street: string | null;
   address_number: string | null;
