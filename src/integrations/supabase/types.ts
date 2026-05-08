@@ -98,6 +98,33 @@ export type Database = {
         }
         Relationships: []
       }
+      neighborhoods: {
+        Row: {
+          active: boolean
+          created_at: string | null
+          fee: number
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string | null
+          fee?: number
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string | null
+          fee?: number
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           address_complement: string | null
