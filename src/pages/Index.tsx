@@ -151,7 +151,7 @@ const Index = () => {
         <div className="container mx-auto relative z-10 py-12 md:py-20">
           <div className="max-w-3xl animate-fade-in-up">
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-4 uppercase">
-              <span className="font-serif-italic normal-case text-gradient-fire">Muthala</span> Burguer
+              <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span> Burguer
             </h1>
             <p className="text-base md:text-xl text-foreground/90 max-w-xl mb-2 font-semibold">
               Smash de carne nobre, pão dourado na manteiga e molho exclusivo da casa.
