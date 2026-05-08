@@ -88,14 +88,14 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     }
   }, [open, item]);
 
-  if (!item) return null;
-
   const basePrice = useMemo(() => {
+    if (!item) return 0;
     const cleaned = item.price.replace(/[^\d,]/g, "").replace(",", ".");
     return parseFloat(cleaned) || 0;
-  }, [item.price]);
+  }, [item?.price]);
 
   const totalPrice = useMemo(() => {
+    if (!item) return 0;
     let total = basePrice;
     const selectedSize = BURGER_SIZES.find(s => s.id === size);
     if (selectedSize) total += selectedSize.price;
@@ -111,7 +111,9 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
     });
 
     return total * qty;
-  }, [basePrice, size, beverage, selectedExtras, qty]);
+  }, [item, basePrice, size, beverage, selectedExtras, qty]);
+
+  if (!item) return null;
 
   const handleAdd = () => {
     const sizeLabel = BURGER_SIZES.find(s => s.id === size)?.label;
