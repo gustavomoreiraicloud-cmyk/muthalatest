@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Star, MapPin, Phone, Instagram, Clock, MessageCircle, Flame, Award, Leaf, ShoppingBag, Plus, Loader2 } from "lucide-react";
+import { Star, MapPin, Phone, Instagram, Clock, MessageCircle, Flame, Award, Leaf, ShoppingBag, Plus, Loader2, ClipboardList } from "lucide-react";
 
 // Import all assets to ensure they are bundled and have stable URLs
 import heroBurger from "@/assets/hero-burger.jpg";
