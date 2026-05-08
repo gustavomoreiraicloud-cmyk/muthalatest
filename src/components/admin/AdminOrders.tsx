@@ -40,12 +40,11 @@ const PAY_LABEL: Record<string, string> = {
   cartao_credito: "Cartão Crédito",
 };
 
-const STATUSES = ["novo", "preparo", "pronto", "entrega", "finalizado", "cancelado"] as const;
+const STATUSES = ["novo", "preparo", "entrega", "finalizado", "cancelado"] as const;
 
 const statusColor: Record<string, string> = {
   novo: "bg-blue-500/20 text-blue-300 border-blue-500/40",
   preparo: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-  pronto: "bg-purple-500/20 text-purple-300 border-purple-500/40",
   entrega: "bg-orange-500/20 text-orange-300 border-orange-500/40",
   finalizado: "bg-green-500/20 text-green-300 border-green-500/40",
   cancelado: "bg-red-500/20 text-red-300 border-red-500/40",
