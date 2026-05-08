@@ -333,7 +333,7 @@ const Index = () => {
                         <img
                           src={detail.img}
                           alt={item.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-700"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-700 brightness-[1.05] contrast-[1.1] saturate-[1.1] [image-rendering:auto]"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (target.src.includes('/src/assets/')) {
