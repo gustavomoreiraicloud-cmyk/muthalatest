@@ -160,11 +160,11 @@ const Index = () => {
               Peça direto pelo WhatsApp e receba quentinho na sua porta.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
-              <Button asChild size="lg" className="relative bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-base md:text-lg px-8 md:px-10 h-14 md:h-16 shadow-glow animate-pulse-cta">
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <Button asChild size="lg" className="relative bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-base md:text-lg px-8 md:px-10 h-14 md:h-16 shadow-glow animate-pulse-cta cursor-pointer">
+                <button onClick={openCart}>
                   <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-                  Pedir agora pelo WhatsApp
-                </a>
+                  Pedir agora
+                </button>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold text-base px-6 md:px-8 h-14 md:h-16">
                 <a href="#menu">Ver cardápio</a>
