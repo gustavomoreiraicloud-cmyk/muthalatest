@@ -68,6 +68,7 @@ export default function CartDrawer() {
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
   const [neighborhoodId, setNeighborhoodId] = useState("");
   const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
   const [loadingNeighborhoods, setLoadingNeighborhoods] = useState(false);
