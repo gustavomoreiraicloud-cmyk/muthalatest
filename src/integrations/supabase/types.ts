@@ -268,6 +268,8 @@ export type Database = {
           hours: string | null
           id: string
           is_open: boolean
+          latitude: number | null
+          longitude: number | null
           min_order: number
           phone: string
           store_name: string
@@ -280,6 +282,8 @@ export type Database = {
           hours?: string | null
           id?: string
           is_open?: boolean
+          latitude?: number | null
+          longitude?: number | null
           min_order?: number
           phone?: string
           store_name?: string
@@ -292,6 +296,8 @@ export type Database = {
           hours?: string | null
           id?: string
           is_open?: boolean
+          latitude?: number | null
+          longitude?: number | null
           min_order?: number
           phone?: string
           store_name?: string

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Minus, Plus, Trash2, ShoppingBag, MessageCircle, CheckCircle2, MapPin, CreditCard, Tag, Loader2
+  Minus, Plus, Trash2, ShoppingBag, MessageCircle, CheckCircle2, MapPin, CreditCard, Tag, Loader2, MapPinIcon
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -20,6 +20,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
+
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
 
 type PaymentMethod = "pix" | "dinheiro" | "cartao_debito" | "cartao_credito";
 type DeliveryMethod = "entrega" | "retirada";
@@ -82,6 +94,8 @@ export default function CartDrawer() {
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [calculatingDistance, setCalculatingDistance] = useState(false);
+  const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
 
   const [confirmation, setConfirmation] = useState<{ orderNumber: number | null } | null>(null);
 
@@ -151,13 +165,55 @@ export default function CartDrawer() {
     toast.success(`Cupom ${code} aplicado!`);
   };
 
+  const handleAutoDistance = async () => {
+    if (!street || !number) {
+      toast.error("Preencha a rua e o número primeiro");
+      return;
+    }
+
+    setCalculatingDistance(true);
+    try {
+      const address = `${street}, ${number}, Assis, SP, Brasil`;
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        toast.error("Endereço não encontrado. Selecione o bairro manualmente.");
+        return;
+      }
+
+      const { lat, lon } = data[0];
+      const storeLat = (settings as any)?.latitude || -22.6612;
+      const storeLon = (settings as any)?.longitude || -50.4132;
+
+      const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
+      
+      // Adicionar margem de erro/trajeto (aprox 30% a mais que linha reta)
+      const estimatedRoadDist = dist * 1.3;
+      setDetectedDistance(estimatedRoadDist);
+
+      const range = deliveryRanges.find(r => estimatedRoadDist >= Number(r.min_km) && estimatedRoadDist <= Number(r.max_km));
+      
+      if (range) {
+        setDeliveryRangeId(range.id);
+        toast.success(`Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`);
+      } else {
+        toast.error("Distância fora da área de entrega atendida.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao calcular distância");
+    } finally {
+      setCalculatingDistance(false);
+    }
+  };
   const removeCoupon = () => {
     setCoupon(null);
     setCouponCode("");
   };
-
   const buildOrderMessage = (orderNumber: number | null) => {
     const lines: string[] = [];
+
     lines.push("🍔 *NOVO PEDIDO — MUTHALA BURGER*");
     if (orderNumber) lines.push(`*Pedido #${orderNumber}*`);
     lines.push("━━━━━━━━━━━━━━");
@@ -327,7 +383,7 @@ export default function CartDrawer() {
             <CheckCircle2 className="w-20 h-20 text-[hsl(142_76%_45%)] mb-4" />
             <h2 className="font-display text-3xl uppercase mb-2">Pedido enviado!</h2>
             <p className="text-sm text-muted-foreground mb-6 mt-2">
-              Abrimos o WhatsApp com seu pedido organizado. <b>Envie a mensagem</b> para a gente confirmar e combinar a entrega! 🙏
+              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site ou aguardar nosso contato se necessário. 🙏
             </p>
             <Button onClick={resetAll} size="lg" className="w-full bg-gradient-gold text-primary-foreground font-bold">
               Fechar
@@ -466,7 +522,21 @@ export default function CartDrawer() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs">Distância até o local *</Label>
+                    <div className="flex justify-between items-end mb-1">
+                      <Label className="text-xs">Distância até o local *</Label>
+                      <button 
+                        onClick={handleAutoDistance}
+                        disabled={calculatingDistance || !street || !number}
+                        className="text-[10px] text-primary hover:underline flex items-center gap-0.5 disabled:opacity-50"
+                      >
+                        {calculatingDistance ? (
+                          <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                        ) : (
+                          <MapPinIcon className="w-2.5 h-2.5" />
+                        )}
+                        Calcular distância
+                      </button>
+                    </div>
                     <Select value={deliveryRangeId} onValueChange={setDeliveryRangeId}>
                       <SelectTrigger className="w-full bg-background/50">
                         <SelectValue placeholder="Qual a distância?" />
@@ -625,7 +695,7 @@ export default function CartDrawer() {
               className="w-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-bold"
             >
               <MessageCircle className="w-5 h-5 mr-2" />
-              {submitting ? "Enviando..." : "Enviar pedido pelo WhatsApp"}
+              {submitting ? "Enviando..." : "Confirmar pedido"}
             </Button>
             <button onClick={clear} className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth">
               Limpar carrinho
