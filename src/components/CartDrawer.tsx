@@ -170,7 +170,7 @@ export default function CartDrawer() {
     if (deliveryMethod === "entrega") {
       lines.push("📍 *ENDEREÇO DE ENTREGA*");
       lines.push(`${street}, ${number}`);
-      lines.push(`Bairro: ${selectedNeighborhood?.name || 'Não informado'}`);
+      lines.push(`Distância: ${selectedRange?.label || 'Não informada'}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
