@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminCuponsRouteImport } from './routes/admin.cupons'
+import { Route as AdminContaRouteImport } from './routes/admin.conta'
 import { Route as AdminConfigRouteImport } from './routes/admin.config'
 import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 
@@ -48,6 +49,11 @@ const AdminCuponsRoute = AdminCuponsRouteImport.update({
   path: '/cupons',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContaRoute = AdminContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfigRoute = AdminConfigRouteImport.update({
   id: '/config',
   path: '/config',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
   '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
   '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/config': typeof AdminConfigRoute
+  '/admin/conta': typeof AdminContaRoute
   '/admin/cupons': typeof AdminCuponsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/cardapio'
     | '/admin/config'
+    | '/admin/conta'
     | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/cardapio'
     | '/admin/config'
+    | '/admin/conta'
     | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/cardapio'
     | '/admin/config'
+    | '/admin/conta'
     | '/admin/cupons'
     | '/admin/dashboard'
     | '/admin/pedidos'
@@ -173,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCuponsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/conta': {
+      id: '/admin/conta'
+      path: '/conta'
+      fullPath: '/admin/conta'
+      preLoaderRoute: typeof AdminContaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/config': {
       id: '/admin/config'
       path: '/config'
@@ -193,6 +212,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminCardapioRoute: typeof AdminCardapioRoute
   AdminConfigRoute: typeof AdminConfigRoute
+  AdminContaRoute: typeof AdminContaRoute
   AdminCuponsRoute: typeof AdminCuponsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
@@ -201,6 +221,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCardapioRoute: AdminCardapioRoute,
   AdminConfigRoute: AdminConfigRoute,
+  AdminContaRoute: AdminContaRoute,
   AdminCuponsRoute: AdminCuponsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminPedidosRoute: AdminPedidosRoute,
