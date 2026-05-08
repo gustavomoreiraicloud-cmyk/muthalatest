@@ -236,7 +236,7 @@ export default function CartDrawer() {
       deliveryMethod,
       street: deliveryMethod === "entrega" ? street : undefined, 
       number: deliveryMethod === "entrega" ? number : undefined, 
-      neighborhoodId: deliveryMethod === "entrega" ? neighborhoodId : undefined 
+      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined 
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
