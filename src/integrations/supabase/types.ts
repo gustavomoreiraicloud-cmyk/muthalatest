@@ -14,16 +14,237 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      coupons: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          min_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string | null
+          description?: string | null
+          discount_type: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          min_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          min_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      menu_items: {
+        Row: {
+          available: boolean
+          category: string
+          created_at: string | null
+          description: string | null
+          highlight: boolean
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          name: string
+          price: number
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          available?: boolean
+          category: string
+          created_at?: string | null
+          description?: string | null
+          highlight?: boolean
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name: string
+          price: number
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          available?: boolean
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          highlight?: boolean
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name?: string
+          price?: number
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address_complement: string | null
+          address_neighborhood: string | null
+          address_number: string | null
+          address_reference: string | null
+          address_street: string | null
+          change_for: number | null
+          coupon_code: string | null
+          created_at: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          delivery_fee: number
+          discount: number
+          id: string
+          items: Json
+          notes: string | null
+          order_number: number
+          payment_method: string | null
+          status: string
+          subtotal: number | null
+          total: number
+          updated_at: string | null
+        }
+        Insert: {
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_reference?: string | null
+          address_street?: string | null
+          change_for?: number | null
+          coupon_code?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivery_fee?: number
+          discount?: number
+          id?: string
+          items: Json
+          notes?: string | null
+          order_number?: number
+          payment_method?: string | null
+          status?: string
+          subtotal?: number | null
+          total: number
+          updated_at?: string | null
+        }
+        Update: {
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_reference?: string | null
+          address_street?: string | null
+          change_for?: number | null
+          coupon_code?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivery_fee?: number
+          discount?: number
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_number?: number
+          payment_method?: string | null
+          status?: string
+          subtotal?: number | null
+          total?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      store_settings: {
+        Row: {
+          address: string | null
+          business_hours: Json | null
+          delivery_fee: number
+          hours: string | null
+          id: string
+          is_open: boolean
+          min_order: number
+          phone: string
+          store_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_hours?: Json | null
+          delivery_fee?: number
+          hours?: string | null
+          id?: string
+          is_open?: boolean
+          min_order?: number
+          phone?: string
+          store_name?: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_hours?: Json | null
+          delivery_fee?: number
+          hours?: string | null
+          id?: string
+          is_open?: boolean
+          min_order?: number
+          phone?: string
+          store_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +371,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const
