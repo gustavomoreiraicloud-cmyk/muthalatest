@@ -705,4 +705,4 @@ export default function CartDrawer() {
     </Sheet>
   );
 }
-
+  const buildOrderMessage = (orderNumber: number | null) => {
