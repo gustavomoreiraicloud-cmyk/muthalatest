@@ -179,7 +179,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-card border-border h-[90vh] flex flex-col">
+      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-card border-border h-full md:h-[90vh] flex flex-col sm:rounded-3xl">
         <ScrollArea className="flex-1">
           <div className="relative aspect-video sm:aspect-[21/9] overflow-hidden">
             <img 
@@ -327,18 +327,18 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
           </div>
         </ScrollArea>
 
-        <div className="absolute bottom-0 inset-x-0 bg-card border-t border-border p-4 sm:p-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 bg-background border border-border rounded-lg p-1">
+        <div className="absolute bottom-0 inset-x-0 bg-card border-t border-border p-4 md:p-6 flex items-center justify-between gap-3 md:gap-4 pb-safe">
+          <div className="flex items-center gap-2 md:gap-3 bg-background border border-border rounded-xl p-1 shrink-0">
             <button
               onClick={() => setQty(Math.max(1, qty - 1))}
-              className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+              className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="w-8 text-center font-bold">{qty}</span>
+            <span className="w-6 text-center font-black text-sm md:text-base">{qty}</span>
             <button
               onClick={() => setQty(qty + 1)}
-              className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+              className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -346,9 +346,9 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
           <Button
             onClick={handleAdd}
-            className="flex-1 h-12 bg-gradient-gold text-primary-foreground hover:opacity-95 font-bold uppercase tracking-wide text-sm"
+            className="flex-1 h-12 md:h-14 bg-gradient-gold text-primary-foreground hover:opacity-95 font-black uppercase tracking-widest text-xs md:text-sm rounded-xl shadow-glow"
           >
-            Adicionar <span className="mx-2">•</span> {formatBRL(totalPrice)}
+            Adicionar <span className="mx-2 opacity-50 font-normal">|</span> {formatBRL(totalPrice)}
           </Button>
         </div>
       </DialogContent>
