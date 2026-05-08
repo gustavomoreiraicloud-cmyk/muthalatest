@@ -188,7 +188,7 @@ export default function CartDrawer() {
       const data = await response.json();
 
       if (!data || data.length === 0) {
-        toast.error("Endereço não encontrado. Selecione o bairro manualmente.");
+        toast.error("Não encontramos este endereço em Assis. Verifique os dados ou chame no WhatsApp.");
         return;
       }
 
