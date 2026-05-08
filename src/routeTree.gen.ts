@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -40,11 +41,17 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCardapioRoute = AdminCardapioRouteImport.update({
+  id: '/cardapio',
+  path: '/cardapio',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/cardapio': typeof AdminCardapioRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/pedidos': typeof AdminPedidosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/admin/dashboard' | '/admin/pedidos'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/admin/cardapio'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/admin/dashboard' | '/admin/pedidos'
+  to:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/admin/cardapio'
+    | '/admin/dashboard'
+    | '/admin/pedidos'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/auth'
+    | '/admin/cardapio'
     | '/admin/dashboard'
     | '/admin/pedidos'
   fileRoutesById: FileRoutesById
@@ -120,15 +142,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/cardapio': {
+      id: '/admin/cardapio'
+      path: '/cardapio'
+      fullPath: '/admin/cardapio'
+      preLoaderRoute: typeof AdminCardapioRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminCardapioRoute: typeof AdminCardapioRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCardapioRoute: AdminCardapioRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminPedidosRoute: AdminPedidosRoute,
 }
