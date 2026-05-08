@@ -221,7 +221,7 @@ export default function CartDrawer() {
     setCoupon(null);
     setCouponCode("");
   };
-  const buildOrderMessage = (orderNumber: number | null) => {
+  const buildOrderMessage = (orderNumber: number | null, orderId: string | null = null) => {
     const lines: string[] = [];
 
     lines.push("🍔 *NOVO PEDIDO — MUTHALA BURGER*");
