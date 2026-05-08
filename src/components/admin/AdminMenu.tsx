@@ -130,6 +130,13 @@ export default function AdminMenu() {
 
   return (
     <div className="space-y-4">
+      <Alert className="bg-primary/10 border-primary/30">
+        <AlertCircle className="h-4 w-4 text-primary" />
+        <AlertDescription className="text-xs text-primary font-bold">
+          Dica: Os adicionais (bacon, queijos, etc.) e variações de peso (100g/180g) são gerenciados automaticamente pelo sistema de acordo com o nome do item.
+        </AlertDescription>
+      </Alert>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-2xl uppercase">Cardápio ({items.length})</h2>
         <div className="flex gap-2">
