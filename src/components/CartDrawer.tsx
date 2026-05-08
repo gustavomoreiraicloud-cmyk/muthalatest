@@ -43,6 +43,16 @@ const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   cartao_credito: "Cartão de Crédito",
 };
 
+type PaymentMethod = "pix" | "dinheiro" | "cartao_debito" | "cartao_credito";
+type DeliveryMethod = "entrega" | "retirada";
+
+const PAYMENT_LABELS: Record<PaymentMethod, string> = {
+  pix: "PIX",
+  dinheiro: "Dinheiro",
+  cartao_debito: "Cartão de Débito",
+  cartao_credito: "Cartão de Crédito",
+};
+
 const checkoutSchema = z.object({
   name: z.string().trim().min(2, "Nome muito curto").max(80),
   phone: z.string().trim().min(10, "Telefone inválido").max(20),
