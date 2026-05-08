@@ -347,7 +347,7 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground text-lg">Baseado em 98 avaliações de clientes reais</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((r) => (
               <Card key={r.name} className="p-8 bg-card border-border shadow-deep">
                 <div className="flex gap-1 mb-4">
