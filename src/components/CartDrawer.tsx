@@ -165,10 +165,49 @@ export default function CartDrawer() {
     toast.success(`Cupom ${code} aplicado!`);
   };
 
-  const removeCoupon = () => {
-    setCoupon(null);
-    setCouponCode("");
+  const handleAutoDistance = async () => {
+    if (!street || !number) {
+      toast.error("Preencha a rua e o número primeiro");
+      return;
+    }
+
+    setCalculatingDistance(true);
+    try {
+      const address = `${street}, ${number}, Assis, SP, Brasil`;
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        toast.error("Endereço não encontrado. Selecione o bairro manualmente.");
+        return;
+      }
+
+      const { lat, lon } = data[0];
+      const storeLat = (settings as any)?.latitude || -22.6612;
+      const storeLon = (settings as any)?.longitude || -50.4132;
+
+      const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
+      
+      // Adicionar margem de erro/trajeto (aprox 30% a mais que linha reta)
+      const estimatedRoadDist = dist * 1.3;
+      setDetectedDistance(estimatedRoadDist);
+
+      const range = deliveryRanges.find(r => estimatedRoadDist >= Number(r.min_km) && estimatedRoadDist <= Number(r.max_km));
+      
+      if (range) {
+        setDeliveryRangeId(range.id);
+        toast.success(`Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`);
+      } else {
+        toast.error("Distância fora da área de entrega atendida.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao calcular distância");
+    } finally {
+      setCalculatingDistance(false);
+    }
   };
+
 
   const buildOrderMessage = (orderNumber: number | null) => {
     const lines: string[] = [];
