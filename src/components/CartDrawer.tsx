@@ -69,9 +69,9 @@ export default function CartDrawer() {
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
-  const [neighborhoodId, setNeighborhoodId] = useState("");
-  const [neighborhoods, setNeighborhoods] = useState<any[]>([]);
-  const [loadingNeighborhoods, setLoadingNeighborhoods] = useState(false);
+  const [deliveryRangeId, setDeliveryRangeId] = useState("");
+  const [deliveryRanges, setDeliveryRanges] = useState<any[]>([]);
+  const [loadingRanges, setLoadingRanges] = useState(false);
   const [complement, setComplement] = useState("");
   const [reference, setReference] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("pix");
