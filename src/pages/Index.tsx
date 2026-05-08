@@ -337,7 +337,7 @@ const Index = () => {
                           ⭐ Destaque
                         </div>
                       )}
-                      <div className="aspect-[16/10] xs:aspect-[4/3] overflow-hidden bg-muted">
+                      <div className="aspect-square overflow-hidden bg-muted">
                         <img
                           src={detail.img}
                           alt={item.name}
