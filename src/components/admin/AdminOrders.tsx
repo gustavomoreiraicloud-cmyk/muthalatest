@@ -285,7 +285,7 @@ export default function AdminOrders() {
       {orders.length === 0 ? (
         <Card className="p-12 text-center text-muted-foreground">Nenhum pedido ainda.</Card>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-4">
           {orders.map((o) => {
             const fullAddr = [o.address_street, o.address_number].filter(Boolean).join(", ");
             const mapsUrl = fullAddr
@@ -294,98 +294,140 @@ export default function AdminOrders() {
             const waUrl = o.customer_phone
               ? `https://wa.me/${o.customer_phone.replace(/\D/g, "")}`
               : null;
+              
             return (
-              <Card key={o.id} className="p-4 bg-card border-border">
-                <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-display text-lg text-primary">#{o.order_number ?? o.id.slice(0, 6)}</span>
-                      <span className="font-bold">{o.customer_name || "Cliente"}</span>
+              <Card key={o.id} className="overflow-hidden bg-card border-border shadow-md">
+                {/* Header do Card - Informações Principais */}
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-muted/20">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 px-3 py-1 rounded-lg border border-primary/20">
+                      <span className="font-display text-xl text-primary leading-none">#{o.order_number ?? o.id.slice(0, 6)}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {o.customer_phone || "—"} · {new Date(o.created_at).toLocaleString("pt-BR")}
-                    </p>
+                    <div>
+                      <h3 className="font-bold text-lg leading-none mb-1">{o.customer_name || "Cliente"}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(o.created_at).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })} • {o.customer_phone || "—"}
+                      </p>
+                    </div>
                   </div>
-                  <Badge className={STATUS_CONFIG[o.status]?.color ?? ""} variant="outline">
-                    {STATUS_CONFIG[o.status]?.label ?? o.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge className={`${STATUS_CONFIG[o.status]?.color ?? ""} px-3 py-1 text-xs uppercase font-black`} variant="outline">
+                      {STATUS_CONFIG[o.status]?.label ?? o.status}
+                    </Badge>
+                  </div>
                 </div>
 
-                {/* Endereço */}
-                {fullAddr && (
-                  <div className="text-xs bg-background/40 border border-border rounded p-2 mb-3">
-                    <p className="font-bold mb-0.5">📍 Endereço</p>
-                    <p>{fullAddr}{o.address_neighborhood ? ` — ${o.address_neighborhood}` : ""}</p>
-                    {o.address_complement && <p>Compl.: {o.address_complement}</p>}
-                    {o.address_reference && <p>Ref.: {o.address_reference}</p>}
-                    {mapsUrl && (
-                      <a href={mapsUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                        Abrir no Google Maps ↗
-                      </a>
-                    )}
-                  </div>
-                )}
+                <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-border">
+                  {/* Coluna 1: Itens e Observações */}
+                  <div className="p-4 space-y-4">
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">Itens do Pedido</h4>
+                      <ul className="space-y-3">
+                        {o.items?.map((it, idx) => (
+                          <li key={idx} className="bg-background/40 rounded-lg p-2 border border-border/50">
+                            <div className="flex justify-between items-start">
+                              <span className="font-bold text-sm leading-tight">
+                                <span className="text-primary mr-1">{it.qty}×</span> {it.name}
+                              </span>
+                              <span className="text-xs font-medium text-muted-foreground">{it.price}</span>
+                            </div>
+                            {it.options && Object.keys(it.options).length > 0 && (
+                              <div className="mt-1.5 pt-1.5 border-t border-border/30 grid grid-cols-1 gap-0.5 text-[10px] text-muted-foreground">
+                                {it.options.burgerSize && <span>📏 {it.options.burgerSize}</span>}
+                                {it.options.doneness && <span>🔥 {it.options.doneness}</span>}
+                                {it.options.beverage && <span>🥤 {it.options.beverage}</span>}
+                                {it.options.extras && it.options.extras.length > 0 && (
+                                  <span>➕ {it.options.extras.join(", ")}</span>
+                                )}
+                                {it.options.notes && <span className="italic text-primary/80">📝 {it.options.notes}</span>}
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                <ul className="text-sm space-y-2 mb-3">
-                  {o.items?.map((it, idx) => (
-                    <li key={idx}>
-                      <div className="flex justify-between">
-                        <span className="font-bold">• {it.qty}× {it.name}</span>
-                        <span className="text-muted-foreground">{it.price}</span>
+                    {o.notes && (
+                      <div className="p-3 bg-primary/5 border border-primary/10 rounded-lg">
+                        <p className="text-[10px] font-black uppercase text-primary mb-1">Observação Geral</p>
+                        <p className="text-xs italic leading-relaxed">{o.notes}</p>
                       </div>
-                      {it.options && Object.keys(it.options).length > 0 && (
-                        <div className="text-[11px] text-muted-foreground ml-4 space-y-0.5">
-                          {it.options.burgerSize && <p>Tamanho: {it.options.burgerSize}</p>}
-                          {it.options.doneness && <p>Ponto: {it.options.doneness}</p>}
-                          {it.options.beverage && <p>Bebida: {it.options.beverage}</p>}
-                          {it.options.extras && it.options.extras.length > 0 && (
-                            <p>Adicionais: {it.options.extras.join(", ")}</p>
-                          )}
-                          {it.options.notes && <p className="italic">Obs item: {it.options.notes}</p>}
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                    )}
+                  </div>
 
-                {/* Pagamento + valores */}
-                <div className="text-xs bg-background/40 border border-border rounded p-2 mb-3 space-y-0.5">
-                  <p>💳 <b>{PAY_LABEL[o.payment_method ?? ""] ?? "—"}</b>
-                    {o.payment_method === "dinheiro" && o.change_for
-                      ? ` — troco p/ ${formatBRL(Number(o.change_for))} (levar ${formatBRL(Number(o.change_for) - Number(o.total))})`
-                      : ""}
-                  </p>
-                  <p className="text-muted-foreground">
-                    Subtotal {formatBRL(Number(o.subtotal ?? o.total))}
-                    {Number(o.discount) > 0 && ` · Desc ${o.coupon_code ? `(${o.coupon_code}) ` : ""}-${formatBRL(Number(o.discount))}`}
-                    {` · Entrega ${formatBRL(Number(o.delivery_fee ?? 0))}`}
-                  </p>
+                  {/* Coluna 2: Entrega e Pagamento */}
+                  <div className="p-4 space-y-4 bg-muted/5">
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">Entrega e Contato</h4>
+                      {fullAddr ? (
+                        <div className="space-y-2">
+                          <div className="text-xs leading-relaxed">
+                            <p className="font-bold">📍 {fullAddr}</p>
+                            <p className="text-muted-foreground">{o.address_neighborhood || "Bairro não informado"}</p>
+                            {(o.address_complement || o.address_reference) && (
+                              <p className="text-[10px] mt-1 text-muted-foreground italic border-l-2 border-border pl-2">
+                                {o.address_complement && `Compl: ${o.address_complement} `}
+                                {o.address_reference && `Ref: ${o.address_reference}`}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            {mapsUrl && (
+                              <Button asChild size="sm" variant="secondary" className="h-8 text-[10px] font-bold">
+                                <a href={mapsUrl} target="_blank" rel="noreferrer">📍 Ver no Mapa</a>
+                              </Button>
+                            )}
+                            {waUrl && (
+                              <Button asChild size="sm" variant="secondary" className="h-8 text-[10px] font-bold text-green-500 hover:text-green-600">
+                                <a href={waUrl} target="_blank" rel="noreferrer">💬 WhatsApp</a>
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">🏃 Retirada no Local</Badge>
+                      )}
+                    </div>
+
+                    <div className="pt-4 border-t border-border">
+                      <div className="flex justify-between items-center mb-3">
+                        <div>
+                          <p className="text-[10px] font-black uppercase text-muted-foreground">Pagamento</p>
+                          <p className="text-xs font-bold">💳 {PAY_LABEL[o.payment_method ?? ""] ?? "—"}</p>
+                          {o.payment_method === "dinheiro" && o.change_for && (
+                            <p className="text-[10px] text-orange-400 font-bold mt-0.5">
+                              Troco p/ {formatBRL(Number(o.change_for))} (Levar {formatBRL(Number(o.change_for) - Number(o.total))})
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-black uppercase text-muted-foreground">Total</p>
+                          <p className="font-display text-2xl text-primary leading-none">{formatBRL(Number(o.total))}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {o.notes && (
-                  <p className="text-xs italic bg-background/40 border border-border rounded p-2 mb-3">
-                    📝 {o.notes}
-                  </p>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border">
-                  <span className="font-display text-xl text-primary">{formatBRL(Number(o.total))}</span>
-                  <div className="flex flex-wrap gap-1">
-                    {waUrl && (
-                      <Button asChild size="sm" variant="outline">
-                        <a href={waUrl} target="_blank" rel="noreferrer">WhatsApp</a>
-                      </Button>
-                    )}
-                    <Button size="sm" variant="outline" onClick={() => printOrder(o)}>
-                      <Printer className="w-3.5 h-3.5" />
+                {/* Footer do Card - Ações */}
+                <div className="p-3 bg-muted/20 border-t border-border flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => printOrder(o)} className="h-9 px-3">
+                      <Printer className="w-4 h-4 mr-2" /> <span className="text-xs font-bold">Imprimir</span>
                     </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
                     {STATUSES.map((s) => (
                       <Button
                         key={s}
                         size="sm"
                         variant={o.status === s ? "default" : "outline"}
                         onClick={() => updateStatus(o.id, s)}
-                        className={`text-[10px] uppercase font-bold ${o.status === s ? '' : 'opacity-70 hover:opacity-100'}`}
+                        className={`h-9 px-3 text-[10px] uppercase font-black transition-all ${
+                          o.status === s 
+                            ? 'bg-primary shadow-glow' 
+                            : 'opacity-60 hover:opacity-100'
+                        }`}
                       >
                         {STATUS_CONFIG[s].label}
                       </Button>
