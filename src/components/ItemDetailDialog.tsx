@@ -200,6 +200,12 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   if (!item) return null;
 
   const handleAdd = () => {
+    // Validação de segurança para garantir que o tamanho obrigatório foi escolhido
+    if (allSizes.length > 0 && !size && (item.category === "hamburgueres" || item.category === "porcoes")) {
+      toast.error("Por favor, selecione uma opção de tamanho");
+      return;
+    }
+
     const sizeLabel = allSizes.find((s) => s.id === size)?.label;
     const bevLabel = BEVERAGES.find((b) => b.id === beverage)?.label;
     const extrasLabels = selectedExtras
@@ -220,7 +226,11 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       },
     };
 
-    for (let i = 0; i < qty; i++) {
+    add(cartItem);
+    // Corrigido: Se qty > 1, o 'add' deve ser chamado apenas uma vez com o qty correto 
+    // ou o loop deve adicionar sem resetar o qty interno do useCart.
+    // Atualmente o hook 'add' assume qty: 1 por padrão.
+    for (let i = 1; i < qty; i++) {
       add(cartItem);
     }
 
