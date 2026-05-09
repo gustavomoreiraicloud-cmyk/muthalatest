@@ -494,6 +494,10 @@ export default function CartDrawer() {
       localStorage.setItem("last_order_number", String(order.order_number));
       localStorage.setItem("last_order_phone", phone);
 
+      // Abrir o WhatsApp após salvar no banco de dados para garantir o envio do comprovante/detalhes
+      const message = buildOrderMessage(order.order_number, order.id);
+      window.open(buildWhatsAppLink(message), "_blank");
+
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -1095,9 +1099,9 @@ export default function CartDrawer() {
                   {submitting ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
                   ) : (
-                    <MessageCircle className="w-6 h-6 fill-current" />
+                    <CheckCircle2 className="w-6 h-6 fill-current" />
                   )}
-                  <span>Finalizar via WhatsApp</span>
+                  <span>{isOpenStore ? "Finalizar Pedido" : "Loja Fechada"}</span>
                 </div>
               </Button>
             </div>
