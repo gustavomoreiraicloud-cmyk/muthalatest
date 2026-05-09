@@ -1,18 +1,22 @@
 import { useState, FormEvent, useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Lock } from "lucide-react";
+import { Lock, User, Mail, Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Auth() {
-  const { signIn, user, isAdmin, loading } = useAuth();
+  const { signIn, signUp, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
+  const search = useSearch({ from: "/auth" }) as { redirect?: string; mode?: string };
+  const [isSignUp, setIsSignUp] = useState(search.mode === "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
