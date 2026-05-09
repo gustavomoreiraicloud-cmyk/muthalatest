@@ -69,17 +69,18 @@ const checkoutSchema = z
     deliveryMethod: z.enum(["entrega", "retirada"]),
     street: z.string().trim().max(120).optional(),
     number: z.string().trim().max(10).optional(),
+    neighborhood: z.string().trim().max(120).optional(),
     deliveryRangeId: z.string().optional(),
   })
   .refine(
     (data) => {
       if (data.deliveryMethod === "entrega") {
-        return !!data.street && !!data.number && !!data.deliveryRangeId;
+        return !!data.street && !!data.number && !!data.neighborhood && !!data.deliveryRangeId;
       }
       return true;
     },
     {
-      message: "Preencha todos os campos do endereço para entrega",
+      message: "Preencha Rua, Número e Bairro para entrega",
       path: ["street"],
     },
   );
