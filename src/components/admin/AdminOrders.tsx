@@ -413,8 +413,9 @@ export default function AdminOrders() {
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   const activeOrders = orders.filter(
-    (o) => o.status === "novo" || o.status === "preparo" || o.status === "entrega",
+    (o) => o.status === "novo" || o.status === "preparo",
   );
+  const deliveryOrders = orders.filter((o) => o.status === "entrega");
   const finishedOrders = orders.filter(
     (o) => o.status === "finalizado" || o.status === "cancelado",
   );
@@ -471,7 +472,7 @@ export default function AdminOrders() {
             Ativos ({activeOrders.length})
           </TabsTrigger>
           <TabsTrigger value="entregando" className="text-xs uppercase font-bold">
-            Entregando ({orders.filter(o => o.status === 'entrega').length})
+            Entregando ({deliveryOrders.length})
           </TabsTrigger>
           <TabsTrigger value="finalizados" className="text-xs uppercase font-bold">
             Histórico ({finishedOrders.length})
@@ -481,7 +482,7 @@ export default function AdminOrders() {
         {(["ativos", "entregando", "finalizados"] as const).map((tab) => {
           let list = [];
           if (tab === "ativos") list = activeOrders;
-          else if (tab === "entregando") list = orders.filter(o => o.status === "entrega");
+          else if (tab === "entregando") list = deliveryOrders;
           else list = finishedOrders;
 
           return (
