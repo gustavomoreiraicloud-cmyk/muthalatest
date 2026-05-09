@@ -751,15 +751,26 @@ export default function CartDrawer() {
                     <MapPin className="w-4 h-4" /> Endereço de entrega
                   </h3>
                   <div className="space-y-3">
-                    <div>
-                      <Label className="text-xs">CEP (Opcional - Preenche a rua)</Label>
-                      <Input
-                        placeholder="00000-000"
-                        maxLength={9}
-                        value={cep}
-                        onChange={(e) => handleCEPChange(e.target.value)}
-                        inputMode="numeric"
-                      />
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label className="text-xs">CEP *</Label>
+                        <Input
+                          placeholder="00000-000"
+                          maxLength={9}
+                          value={cep}
+                          onChange={(e) => handleCEPChange(e.target.value)}
+                          inputMode="numeric"
+                          className="font-bold"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Bairro</Label>
+                        <Input
+                          value={neighborhood}
+                          onChange={(e) => setNeighborhood(e.target.value)}
+                          placeholder="Centro"
+                        />
+                      </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div className="col-span-2">
@@ -774,6 +785,7 @@ export default function CartDrawer() {
                       <div>
                         <Label className="text-xs">Número *</Label>
                         <Input
+                          id="address-number"
                           maxLength={10}
                           value={number}
                           onChange={(e) => setNumber(e.target.value)}
