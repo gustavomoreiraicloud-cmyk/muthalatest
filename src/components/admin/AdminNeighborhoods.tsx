@@ -96,48 +96,90 @@ export default function AdminNeighborhoods() {
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl uppercase">Taxas por Distância ({items.length})</h2>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card/50 p-6 rounded-2xl border border-border">
+        <div>
+          <h2 className="font-display text-3xl uppercase text-primary">Gestão de Fretes</h2>
+          <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">
+            Configuração automática baseada em KM
+          </p>
+        </div>
         <Button
           onClick={() => setEditing({ ...empty })}
-          className="bg-gradient-gold text-primary-foreground font-bold"
+          className="bg-gradient-gold text-primary-foreground font-bold h-12 px-6 rounded-xl hover:scale-105 transition-transform"
         >
-          <Plus className="w-4 h-4" /> Nova Faixa
+          <Plus className="w-5 h-5 mr-2" /> Nova Faixa
         </Button>
       </div>
 
-      <div className="grid gap-2">
-        {items.map((it) => (
-          <Card
-            key={it.id}
-            className={`p-4 flex items-center gap-4 bg-card border-border ${!it.active ? "opacity-60" : ""}`}
-          >
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <MapPin className="w-5 h-5 text-primary" />
+      <div className="grid gap-4">
+        {items.length === 0 ? (
+          <div className="text-center py-20 bg-card/30 rounded-3xl border-2 border-dashed border-border flex flex-col items-center gap-4">
+            <div className="p-4 rounded-full bg-muted/50">
+              <Navigation className="w-10 h-10 text-muted-foreground opacity-20" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-lg">{it.label}</p>
-              <p className="text-sm text-muted-foreground">Taxa: {formatBRL(Number(it.fee))}</p>
+            <div className="max-w-xs">
+              <p className="font-bold text-lg">Nenhuma faixa configurada</p>
+              <p className="text-sm text-muted-foreground">Adicione faixas de distância para que o sistema possa calcular o frete automaticamente.</p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold">
-                  {it.active ? "Ativo" : "Pausado"}
-                </span>
-                <Switch checked={it.active} onCheckedChange={() => toggleActive(it)} />
+            <Button onClick={() => setEditing({ ...empty })} variant="outline" className="mt-2">
+              Começar agora
+            </Button>
+          </div>
+        ) : (
+          items.map((it) => (
+            <Card
+              key={it.id}
+              className={`group overflow-hidden bg-card border-border transition-all hover:border-primary/50 hover:shadow-lg ${!it.active ? "opacity-60 grayscale-[0.5]" : ""}`}
+            >
+              <div className="flex items-center p-5 gap-5">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${it.active ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                  <Car className="w-7 h-7" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-display text-xl uppercase tracking-tight">{it.label}</p>
+                    {it.active ? (
+                      <span className="bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/20">Ativo</span>
+                    ) : (
+                      <span className="bg-muted text-muted-foreground text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-border">Inativo</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 text-sm font-bold">
+                    <span className="text-primary">{formatBRL(Number(it.fee))}</span>
+                    <span className="text-muted-foreground/30">•</span>
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <Navigation className="w-3 h-3" />
+                      {it.min_km}km até {it.max_km ? `${it.max_km}km` : '∞'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 pr-4 border-r border-border">
+                    <Switch checked={it.active} onCheckedChange={() => toggleActive(it)} className="data-[state=checked]:bg-emerald-500" />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button size="icon" variant="ghost" onClick={() => setEditing(it)} className="hover:bg-primary/10 hover:text-primary rounded-xl">
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => remove(it.id)} className="hover:bg-destructive/10 hover:text-destructive rounded-xl">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-1 border-l border-border pl-4">
-                <Button size="icon" variant="ghost" onClick={() => setEditing(it)}>
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button size="icon" variant="ghost" onClick={() => remove(it.id)}>
-                  <Trash2 className="w-4 h-4 text-destructive" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
+              <div className="h-1 bg-gradient-to-r from-primary/5 via-primary/20 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Card>
+          ))
+        )}
+      </div>
+
+      <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex items-start gap-3">
+        <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+        <div className="text-xs text-blue-200/80 leading-relaxed">
+          <p className="font-bold text-blue-400 uppercase mb-1">Como funciona?</p>
+          <p>O sistema usa o <b>KM real</b> calculado via GPS. Certifique-se de que as faixas não se sobreponham. Se o KM do cliente não cair em nenhuma faixa ativa, o sistema usará a <b>Taxa Padrão</b> definida nas Configurações Gerais.</p>
+        </div>
       </div>
 
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
