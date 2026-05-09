@@ -223,9 +223,16 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       add(cartItem);
     }
 
-    toast.success(`${qty}x ${item.name} adicionado ao pedido`);
+    // Success feedback with more "premium" toast
+    toast.success(`${qty}x ${item.name} no carrinho!`, {
+      description: "Continue pedindo ou finalize agora.",
+      icon: <Plus className="w-4 h-4 text-green-500" />,
+      duration: 3000,
+    });
+    
     onClose();
-    setTimeout(openCart, 200);
+    // Brief delay to let the dialog close before opening drawer
+    setTimeout(openCart, 350);
   };
 
   const toggleExtra = (id: string) => {
