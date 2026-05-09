@@ -61,6 +61,8 @@ export default function AdminSettings() {
         is_open: s.is_open,
         hours: s.hours,
         business_hours: (s.business_hours ?? DEFAULT_HOURS) as never,
+        pix_key: s.pix_key,
+        pix_qr_code_url: s.pix_qr_code_url,
       })
       .eq("id", s.id);
     setSaving(false);
