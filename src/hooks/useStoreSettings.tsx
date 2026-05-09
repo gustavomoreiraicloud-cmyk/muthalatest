@@ -26,7 +26,7 @@ export function useStoreSettings() {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      const { data } = await supabase.from("store_settings").select("*").maybeSingle();
+      const { data } = await supabase.from("store_settings_public").select("*").maybeSingle();
       if (mounted) {
         setSettings(data as unknown as StoreSettings | null);
         setLoading(false);
