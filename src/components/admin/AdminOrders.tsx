@@ -618,27 +618,30 @@ export default function AdminOrders() {
                       )}
                     </div>
 
-                    <div className="pt-4 border-t border-border">
-                      <div className="flex justify-between items-center mb-3">
+                    <div className="pt-6 border-t border-border/50">
+                      <div className="flex justify-between items-end mb-2">
                         <div>
-                          <p className="text-[10px] font-black uppercase text-muted-foreground">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">
                             Pagamento
                           </p>
-                          <p className="text-xs font-bold">
-                            💳 {PAY_LABEL[o.payment_method ?? ""] ?? "—"}
-                          </p>
-                          {o.payment_method === "dinheiro" && o.change_for && (
-                            <p className="text-[10px] text-orange-400 font-bold mt-0.5">
-                              Troco p/ {formatBRL(Number(o.change_for))} (Levar{" "}
-                              {formatBRL(Number(o.change_for) - Number(o.total))})
-                            </p>
-                          )}
+                          <div className="flex flex-col gap-1">
+                            <Badge variant="outline" className="w-fit border-primary/30 text-primary font-black uppercase text-[10px] px-2 py-0.5">
+                              {PAY_LABEL[o.payment_method ?? ""] ?? "—"}
+                            </Badge>
+                            {o.payment_method === "dinheiro" && o.change_for && (
+                              <div className="p-2 bg-orange-500/10 border border-orange-500/20 rounded text-[10px] text-orange-400 font-black uppercase mt-1">
+                                Troco p/ {formatBRL(Number(o.change_for))}
+                                <br />
+                                <span className="text-foreground">Levar {formatBRL(Number(o.change_for) - Number(o.total))}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] font-black uppercase text-muted-foreground">
-                            Total
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
+                            Total Geral
                           </p>
-                          <p className="font-display text-2xl text-primary leading-none">
+                          <p className="font-display text-4xl text-primary leading-none shadow-glow-sm">
                             {formatBRL(Number(o.total))}
                           </p>
                         </div>
