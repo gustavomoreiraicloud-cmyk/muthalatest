@@ -227,9 +227,6 @@ export default function AdminDashboard() {
                   .badge{padding:4px 8px;border-radius:4px;font-size:10px;font-weight:bold;text-transform:uppercase}
                   @media print { .no-print { display: none } }
                 </style></head><body>
-                  <div class="no-print" style="margin-bottom: 20px;">
-                    <button onclick="window.print()" style="padding: 10px 20px; background: #e94560; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🖨️ Imprimir / Salvar PDF</button>
-                  </div>
                   <div class="header">
                     <div>
                       <div class="title">MUTHALA BURGER</div>
@@ -283,8 +280,9 @@ export default function AdminDashboard() {
                   </div>
                   <script>
                     window.onload = () => {
-                      // Opcional: auto disparar print
-                      // setTimeout(() => window.print(), 500);
+                      window.print();
+                      // Tentar fechar a janela após a impressão, mas pode ser bloqueado
+                      // window.close(); 
                     };
                   </script>
                 </body></html>
