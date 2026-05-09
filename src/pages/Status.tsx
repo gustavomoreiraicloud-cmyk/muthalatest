@@ -12,7 +12,7 @@ import {
   Search,
   ShoppingBag,
   ArrowLeft,
-  Award,
+  
 } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import muthalaLogo from "@/assets/muthala-logo.png";
