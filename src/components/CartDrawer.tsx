@@ -27,6 +27,7 @@ import {
   MapPinIcon,
   User,
   LogOut,
+  Clock,
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
