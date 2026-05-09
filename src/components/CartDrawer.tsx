@@ -126,8 +126,6 @@ export default function CartDrawer() {
   const [couponCode, setCouponCode] = useState("");
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
-  const [usePoints, setUsePoints] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
@@ -159,17 +157,6 @@ export default function CartDrawer() {
         setName(user.user_metadata?.full_name || "");
         setPhone(user.user_metadata?.phone || "");
       }
-      
-      // Load points
-      const loadPoints = async () => {
-        const { data } = await supabase
-          .from("profiles")
-          .select("points")
-          .eq("id", user.id)
-          .maybeSingle();
-        if (data) setUserPoints(data.points || 0);
-      };
-      loadPoints();
     }
   }, [user, isOpen, name]);
 
@@ -207,8 +194,7 @@ export default function CartDrawer() {
       : selectedRange
         ? Number(selectedRange.fee)
         : DEFAULT_DELIVERY_FEE;
-  const pointsDiscount = usePoints ? Math.min(userPoints, subtotal - discount) : 0;
-  const total = Math.max(0, subtotal - discount - pointsDiscount + fee);
+  const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
     const code = couponCode.trim().toUpperCase();
@@ -411,7 +397,7 @@ export default function CartDrawer() {
           options: i.options,
         })),
         _user_id: (user as any)?.id || undefined,
-        _points_used: pointsDiscount,
+        _points_used: 0,
       });
 
       if (orderError) throw orderError;
@@ -601,9 +587,9 @@ export default function CartDrawer() {
               <div className="mb-6">
                 {!user ? (
                   <Card className="p-4 bg-primary/5 border-dashed border-primary/30 text-center">
-                    <p className="text-xs font-bold uppercase text-primary mb-2">Fidelidade Muthala</p>
+                    <p className="text-xs font-bold uppercase text-primary mb-2">Sua conta Muthala</p>
                     <p className="text-[10px] text-muted-foreground mb-3">
-                      Crie sua conta para ganhar pontos e salvar seus endereços.
+                      Crie sua conta para salvar seus endereços e agilizar pedidos.
                     </p>
                     <Button 
                       size="sm" 
@@ -863,22 +849,6 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="border-t border-border px-6 py-4 space-y-2 bg-background/40">
-            {userPoints > 0 && (
-              <div className="flex items-center justify-between p-3 bg-primary/10 border border-primary/30 rounded-xl mb-2">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-primary" />
-                  <div>
-                    <p className="text-[10px] font-black uppercase text-primary leading-none">Fidelidade</p>
-                    <p className="text-xs font-bold">{userPoints} pontos disponíveis</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-muted-foreground">USAR?</span>
-                  <Switch checked={usePoints} onCheckedChange={setUsePoints} />
-                </div>
-              </div>
-            )}
-
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
               <span>{formatBRL(subtotal)}</span>
@@ -887,12 +857,6 @@ export default function CartDrawer() {
               <div className="flex justify-between text-sm text-[hsl(142_76%_55%)]">
                 <span>Desconto Cupom</span>
                 <span>-{formatBRL(discount)}</span>
-              </div>
-            )}
-            {pointsDiscount > 0 && (
-              <div className="flex justify-between text-sm text-[hsl(142_76%_55%)]">
-                <span>Cashback (Pontos)</span>
-                <span>-{formatBRL(pointsDiscount)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
