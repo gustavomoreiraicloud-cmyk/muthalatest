@@ -190,70 +190,90 @@ export default function AdminNeighborhoods() {
             </DialogTitle>
           </DialogHeader>
           {editing && (
-            <div className="space-y-4">
-              <div>
-                <Label>Rótulo (Ex: 2km a 4km)</Label>
-                <Input
-                  value={editing.label ?? ""}
-                  onChange={(e) => setEditing({ ...editing, label: e.target.value })}
-                  placeholder="Ex: Até 2km"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>KM Mínimo</Label>
+              <div className="space-y-5 py-4">
+                <div className="space-y-2">
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome da Faixa</Label>
                   <Input
-                    type="number"
-                    step="0.1"
-                    value={editing.min_km ?? 0}
-                    onChange={(e) =>
-                      setEditing({ ...editing, min_km: parseFloat(e.target.value) || 0 })
-                    }
+                    className="h-12 rounded-xl bg-muted/30 border-border focus:border-primary/50"
+                    value={editing.label ?? ""}
+                    onChange={(e) => setEditing({ ...editing, label: e.target.value })}
+                    placeholder="Ex: Entrega Local (Até 2km)"
                   />
                 </div>
-                <div>
-                  <Label>KM Máximo (opcional)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={editing.max_km ?? ""}
-                    onChange={(e) =>
-                      setEditing({
-                        ...editing,
-                        max_km: e.target.value ? parseFloat(e.target.value) : null,
-                      })
-                    }
-                    placeholder="Deixe vazio para 'acima de'"
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Distância Mínima (km)</Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        className="h-12 rounded-xl bg-muted/30 border-border pl-10"
+                        value={editing.min_km ?? 0}
+                        onChange={(e) =>
+                          setEditing({ ...editing, min_km: parseFloat(e.target.value) || 0 })
+                        }
+                      />
+                      <Navigation className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Distância Máxima (km)</Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        className="h-12 rounded-xl bg-muted/30 border-border pl-10"
+                        value={editing.max_km ?? ""}
+                        onChange={(e) =>
+                          setEditing({
+                            ...editing,
+                            max_km: e.target.value ? parseFloat(e.target.value) : null,
+                          })
+                        }
+                        placeholder="Infinito"
+                      />
+                      <Navigation className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Valor da Taxa (R$)</Label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      step="0.50"
+                      min="0"
+                      className="h-12 rounded-xl bg-muted/30 border-border pl-10 text-xl font-display text-primary"
+                      value={editing.fee ?? 0}
+                      onChange={(e) => setEditing({ ...editing, fee: parseFloat(e.target.value) || 0 })}
+                    />
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">R$</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border">
+                  <div>
+                    <Label className="font-bold uppercase text-xs cursor-pointer">Faixa Habilitada</Label>
+                    <p className="text-[10px] text-muted-foreground">Define se esta regra de cálculo está ativa</p>
+                  </div>
+                  <Switch
+                    checked={editing.active ?? true}
+                    onCheckedChange={(v) => setEditing({ ...editing, active: v })}
+                    className="data-[state=checked]:bg-emerald-500"
                   />
                 </div>
               </div>
-              <div>
-                <Label>Taxa de Entrega (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.50"
-                  min="0"
-                  value={editing.fee ?? 0}
-                  onChange={(e) => setEditing({ ...editing, fee: parseFloat(e.target.value) || 0 })}
-                />
-              </div>
-              <div className="flex items-center justify-between p-2 rounded bg-muted/20">
-                <Label className="cursor-pointer">Faixa Ativa</Label>
-                <Switch
-                  checked={editing.active ?? true}
-                  onCheckedChange={(v) => setEditing({ ...editing, active: v })}
-                />
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)}>
-              Cancelar
-            </Button>
-            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">
-              Salvar
-            </Button>
-          </DialogFooter>
+            )}
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="ghost" onClick={() => setEditing(null)} className="h-12 rounded-xl font-bold uppercase text-xs">
+                Descartar
+              </Button>
+              <Button onClick={save} className="h-12 rounded-xl bg-gradient-gold text-primary-foreground font-bold px-8 hover:scale-105 transition-transform uppercase text-xs">
+                Salvar Faixa
+              </Button>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
