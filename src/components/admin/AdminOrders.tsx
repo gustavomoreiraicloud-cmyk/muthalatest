@@ -316,8 +316,15 @@ export default function AdminOrders() {
         const o = payload.new as Order;
         if (!knownIds.current.has(o.id)) {
           knownIds.current.add(o.id);
-          // Som e notificações globais são tratados no Admin.tsx agora
-          // Aqui mantemos apenas o toast local para feedback imediato se o adm estiver na aba de pedidos
+          // O som e notificação global agora são tratados no Admin.tsx
+          // Aqui tocamos o som apenas se estiver na página de pedidos para garantir feedback
+          if (soundOn) playBeep();
+          if (notifyOn) {
+            sendPushNotification(
+              "🍔 NOVO PEDIDO!",
+              `Novo pedido de ${o.customer_name || "cliente"} recebido agora.`,
+            );
+          }
           toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
             duration: 15000,
             action: {
