@@ -28,11 +28,15 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    supabase.from("store_settings").select("*").maybeSingle().then(({ data, error }) => {
-      if (error) toast.error("Erro ao carregar");
-      setS(data as unknown as Settings);
-      setLoading(false);
-    });
+    supabase
+      .from("store_settings")
+      .select("*")
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) toast.error("Erro ao carregar");
+        setS(data as unknown as Settings);
+        setLoading(false);
+      });
   }, []);
 
   const bh: BusinessHours = s?.business_hours ?? DEFAULT_HOURS;
@@ -81,7 +85,10 @@ export default function AdminSettings() {
 
         <div>
           <Label>Nome da loja</Label>
-          <Input value={s.store_name} onChange={(e) => setS({ ...s, store_name: e.target.value })} />
+          <Input
+            value={s.store_name}
+            onChange={(e) => setS({ ...s, store_name: e.target.value })}
+          />
         </div>
         <div>
           <Label>WhatsApp (com DDD, ex: +5518997962510)</Label>
@@ -89,7 +96,10 @@ export default function AdminSettings() {
         </div>
         <div>
           <Label>Endereço</Label>
-          <Input value={s.address ?? ""} onChange={(e) => setS({ ...s, address: e.target.value })} />
+          <Input
+            value={s.address ?? ""}
+            onChange={(e) => setS({ ...s, address: e.target.value })}
+          />
         </div>
         <div>
           <Label>Texto de horário (exibido no rodapé)</Label>
@@ -104,19 +114,20 @@ export default function AdminSettings() {
         <div className="space-y-2 pt-2 border-t border-border">
           <Label>Horários por dia da semana</Label>
           <p className="text-xs text-muted-foreground">
-            Quando a loja estiver fechada, o site mostra automaticamente "Abrimos em..." baseado nestes horários.
+            Quando a loja estiver fechada, o site mostra automaticamente "Abrimos em..." baseado
+            nestes horários.
           </p>
           <div className="space-y-2 mt-2">
             {DAY_LABELS.map((label, idx) => {
               const key = String(idx);
               const day = bh[key] ?? { open: false, from: "18:00", to: "23:00" };
               return (
-                <div key={key} className="flex items-center gap-2 p-2 rounded-lg border border-border bg-background/40">
+                <div
+                  key={key}
+                  className="flex items-center gap-2 p-2 rounded-lg border border-border bg-background/40"
+                >
                   <div className="w-20 text-sm font-bold">{label}</div>
-                  <Switch
-                    checked={day.open}
-                    onCheckedChange={(v) => updateDay(key, { open: v })}
-                  />
+                  <Switch checked={day.open} onCheckedChange={(v) => updateDay(key, { open: v })} />
                   <Input
                     type="time"
                     disabled={!day.open}
@@ -132,7 +143,9 @@ export default function AdminSettings() {
                     onChange={(e) => updateDay(key, { to: e.target.value })}
                     className="w-28"
                   />
-                  {!day.open && <span className="text-xs text-muted-foreground ml-auto">Fechado</span>}
+                  {!day.open && (
+                    <span className="text-xs text-muted-foreground ml-auto">Fechado</span>
+                  )}
                 </div>
               );
             })}
@@ -141,9 +154,13 @@ export default function AdminSettings() {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>Taxa de entrega Padrão (R$)</Label>
-            <p className="text-[10px] text-muted-foreground mb-1 leading-tight">Usada caso o bairro não tenha taxa específica.</p>
+            <p className="text-[10px] text-muted-foreground mb-1 leading-tight">
+              Usada caso o bairro não tenha taxa específica.
+            </p>
             <Input
-              type="number" step="0.01" min="0"
+              type="number"
+              step="0.01"
+              min="0"
               value={s.delivery_fee}
               onChange={(e) => setS({ ...s, delivery_fee: parseFloat(e.target.value) || 0 })}
             />
@@ -151,14 +168,20 @@ export default function AdminSettings() {
           <div>
             <Label>Pedido mínimo (R$)</Label>
             <Input
-              type="number" step="0.01" min="0"
+              type="number"
+              step="0.01"
+              min="0"
               value={s.min_order}
               onChange={(e) => setS({ ...s, min_order: parseFloat(e.target.value) || 0 })}
             />
           </div>
         </div>
 
-        <Button onClick={save} disabled={saving} className="w-full bg-gradient-gold text-primary-foreground font-bold">
+        <Button
+          onClick={save}
+          disabled={saving}
+          className="w-full bg-gradient-gold text-primary-foreground font-bold"
+        >
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>
       </Card>

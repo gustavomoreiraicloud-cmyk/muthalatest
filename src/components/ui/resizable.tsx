@@ -16,11 +16,7 @@ const ResizablePanelGroup = ({ className, ...props }: any) => (
 // @ts-ignore
 const ResizablePanel = ResizablePrimitive.Panel;
 
-const ResizableHandle = ({
-  withHandle,
-  className,
-  ...props
-}: any) => (
+const ResizableHandle = ({ withHandle, className, ...props }: any) => (
   // @ts-ignore
   <ResizablePrimitive.PanelResizeHandle
     className={cn(

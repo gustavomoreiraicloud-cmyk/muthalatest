@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function AdminAccount() {
   const { user, updateCredentials } = useAuth();
-  
+
   const [oldUsername, setOldUsername] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [savingUser, setSavingUser] = useState(false);
@@ -24,7 +24,7 @@ export default function AdminAccount() {
       return toast.error("Preencha o usuário atual e o novo");
     }
     setSavingUser(true);
-    // Para atualizar só o usuário, precisamos passar a senha atual também. 
+    // Para atualizar só o usuário, precisamos passar a senha atual também.
     // Como simplificamos, vamos pedir tudo no mesmo fluxo ou usar a senha atual salva.
     // Mas seguindo o pedido: "peça o anterior e o novo"
     toast.info("Para segurança, altere usuário e senha juntos ou use os campos abaixo");
@@ -38,7 +38,7 @@ export default function AdminAccount() {
     if (newPassword !== confirmPassword) {
       return toast.error("As senhas não coincidem");
     }
-    
+
     setSavingPassword(true);
     const { error } = await updateCredentials(oldUsername, newUsername, oldPassword, newPassword);
     setSavingPassword(false);
@@ -67,7 +67,7 @@ export default function AdminAccount() {
         <p className="text-xs text-muted-foreground">
           Usuário atual logado: <b className="text-primary">{user?.username}</b>
         </p>
-        
+
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Usuário Anterior</Label>
@@ -92,7 +92,7 @@ export default function AdminAccount() {
             <KeyRound className="w-5 h-5 text-primary" />
             <h3 className="font-bold text-sm uppercase">Segurança</h3>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <Label>Senha Anterior</Label>

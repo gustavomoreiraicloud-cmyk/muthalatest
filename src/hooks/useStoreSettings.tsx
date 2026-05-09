@@ -12,6 +12,9 @@ export type StoreSettings = {
   is_open: boolean;
   hours: string | null;
   business_hours: BusinessHours | null;
+  latitude: number | null;
+  longitude: number | null;
+  estimated_delivery_time: number | null;
 };
 
 export function useStoreSettings() {
@@ -35,7 +38,7 @@ export function useStoreSettings() {
         { event: "*", schema: "public", table: "store_settings" },
         (payload) => {
           if (payload.new) setSettings(payload.new as unknown as StoreSettings);
-        }
+        },
       )
       .subscribe();
     return () => {

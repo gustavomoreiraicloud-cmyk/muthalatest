@@ -4,4 +4,3 @@ import IndexPage from "@/pages/Index";
 export const Route = createFileRoute("/")({
   component: IndexPage,
 });
-

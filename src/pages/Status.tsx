@@ -3,7 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckCircle2, Clock, Truck, PackageCheck, Search, ShoppingBag, ArrowLeft } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  Truck,
+  PackageCheck,
+  Search,
+  ShoppingBag,
+  ArrowLeft,
+} from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import muthalaLogo from "@/assets/muthala-logo.png";
 
@@ -34,9 +42,9 @@ export default function OrderStatus() {
     if (!id) return;
     setLoading(true);
     setSearched(true);
-    
+
     let query = supabase.from("orders").select("*");
-    
+
     if (id.length === 4 && /^\d+$/.test(id)) {
       query = query.eq("order_number", parseInt(id));
     } else {
@@ -44,7 +52,7 @@ export default function OrderStatus() {
     }
 
     const { data, error } = await query.maybeSingle();
-    
+
     if (data) {
       setOrder(data);
       // Subscrever a mudanças específicas deste pedido para notificar o cliente
@@ -52,27 +60,27 @@ export default function OrderStatus() {
         .channel(`order-status-${data.id}`)
         .on(
           "postgres_changes",
-          { 
-            event: "UPDATE", 
-            schema: "public", 
+          {
+            event: "UPDATE",
+            schema: "public",
             table: "orders",
-            filter: `id=eq.${data.id}` 
+            filter: `id=eq.${data.id}`,
           },
           (payload) => {
             const updatedOrder = payload.new as any;
             setOrder(updatedOrder);
-            
+
             // Notificação do navegador se o status mudou
             if (updatedOrder.status !== data.status) {
               const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
               if (Notification.permission === "granted") {
                 new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
                   body: `Seu pedido #${updatedOrder.order_number} mudou de status!`,
-                  icon: "/muthala-logo.png"
+                  icon: "/muthala-logo.png",
                 });
               }
             }
-          }
+          },
         )
         .subscribe();
 
@@ -85,7 +93,7 @@ export default function OrderStatus() {
         supabase.removeChannel(channel);
       };
     }
-    
+
     setLoading(false);
     if (error) console.error(error);
   };
@@ -104,11 +112,19 @@ export default function OrderStatus() {
           </a>
           <div className="text-center space-y-1">
             <h1 className="font-display text-4xl md:text-5xl uppercase tracking-tighter leading-none">
-              <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span> Burguer
+              <span className="font-serif-italic normal-case text-gradient-fire">MUTHALA</span>{" "}
+              Burguer
             </h1>
-            <p className="text-[10px] text-primary font-bold tracking-[0.3em] uppercase opacity-80">O Sabor dos Deuses</p>
+            <p className="text-[10px] text-primary font-bold tracking-[0.3em] uppercase opacity-80">
+              O Sabor dos Deuses
+            </p>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => window.location.href = "/"} className="gap-2 text-muted-foreground hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => (window.location.href = "/")}
+            className="gap-2 text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="w-4 h-4" /> Voltar ao Início
           </Button>
         </div>
@@ -117,9 +133,9 @@ export default function OrderStatus() {
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
             <form onSubmit={handleSearch} className="flex gap-2">
-              <Input 
-                placeholder="Ex: 5821" 
-                value={orderId} 
+              <Input
+                placeholder="Ex: 5821"
+                value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 className="bg-background"
               />
@@ -148,28 +164,34 @@ export default function OrderStatus() {
                   #{order.order_number}
                 </span>
               </div>
-              
+
               <div className="flex flex-col items-center text-center py-4">
                 {(() => {
                   const s = (STATUS_MAP as any)[order.status] || STATUS_MAP.novo;
                   const Icon = s.icon;
                   return (
                     <>
-                      <div className={`w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 ${s.color}`}>
+                      <div
+                        className={`w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 ${s.color}`}
+                      >
                         <Icon className="w-10 h-10" />
                       </div>
                       <h3 className="font-display text-3xl uppercase">{s.label}</h3>
                       <p className="text-sm text-muted-foreground mt-2">
-                        {order.status === 'novo' && "Novo Pedido recebido."}
-                        {order.status === 'preparo' && "Seu lanche está sendo preparado com maestria."}
-                        {order.status === 'entrega' && "Um guerreiro está a caminho do seu endereço."}
-                        {order.status === 'finalizado' && "Pedido entregue. Bom apetite!"}
-                        {order.status === 'cancelado' && "Este pedido foi cancelado."}
+                        {order.status === "novo" && "Novo Pedido recebido."}
+                        {order.status === "preparo" &&
+                          "Seu lanche está sendo preparado com maestria."}
+                        {order.status === "entrega" &&
+                          "Um guerreiro está a caminho do seu endereço."}
+                        {order.status === "finalizado" && "Pedido entregue. Bom apetite!"}
+                        {order.status === "cancelado" && "Este pedido foi cancelado."}
                       </p>
-                      
-                      {['novo', 'preparo'].includes(order.status) && (
+
+                      {["novo", "preparo"].includes(order.status) && (
                         <div className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/10 w-full">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Previsão de Entrega</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">
+                            Previsão de Entrega
+                          </p>
                           <p className="text-2xl font-display text-primary">45 - 60 min</p>
                           <p className="text-[10px] text-muted-foreground mt-1 italic">
                             Ajustado de acordo com a fila de pedidos atual.
@@ -183,12 +205,18 @@ export default function OrderStatus() {
 
               <div className="border-t border-border mt-6 pt-6 space-y-4">
                 <div>
-                  <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 border-b border-border/50 pb-2">Detalhes do Pedido</h4>
+                  <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 border-b border-border/50 pb-2">
+                    Detalhes do Pedido
+                  </h4>
                   <ul className="space-y-2">
                     {order.items?.map((item: any, i: number) => (
                       <li key={i} className="flex justify-between text-sm">
-                        <span>{item.qty}x {item.name}</span>
-                        <span className="font-bold">{formatBRL(Number(item.price) * item.qty)}</span>
+                        <span>
+                          {item.qty}x {item.name}
+                        </span>
+                        <span className="font-bold">
+                          {formatBRL(Number(item.price) * item.qty)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -196,12 +224,22 @@ export default function OrderStatus() {
 
                 <div className="flex justify-between items-center pt-4 border-t border-border">
                   <span className="font-bold">Total</span>
-                  <span className="font-display text-2xl text-primary">{formatBRL(Number(order.total))}</span>
+                  <span className="font-display text-2xl text-primary">
+                    {formatBRL(Number(order.total))}
+                  </span>
                 </div>
               </div>
             </Card>
 
-            <Button variant="outline" className="w-full" onClick={() => { setOrder(null); setSearched(false); setOrderId(""); }}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setOrder(null);
+                setSearched(false);
+                setOrderId("");
+              }}
+            >
               Consultar outro pedido
             </Button>
           </div>
@@ -210,7 +248,9 @@ export default function OrderStatus() {
         {searched && !loading && !order && (
           <div className="text-center py-8">
             <p className="text-destructive font-bold mb-4">Pedido não encontrado.</p>
-            <Button variant="outline" onClick={() => setSearched(false)}>Tentar novamente</Button>
+            <Button variant="outline" onClick={() => setSearched(false)}>
+              Tentar novamente
+            </Button>
           </div>
         )}
       </div>

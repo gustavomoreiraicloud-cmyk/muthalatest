@@ -133,7 +133,8 @@ export default function AdminMenu() {
       <Alert className="bg-primary/10 border-primary/30">
         <AlertCircle className="h-4 w-4 text-primary" />
         <AlertDescription className="text-xs text-primary font-bold">
-          Dica: Os adicionais (bacon, queijos, etc.) e variações de peso (100g/180g) são gerenciados automaticamente pelo sistema de acordo com o nome do item.
+          Dica: Os adicionais (bacon, queijos, etc.) e variações de peso (100g/180g) são gerenciados
+          automaticamente pelo sistema de acordo com o nome do item.
         </AlertDescription>
       </Alert>
 
@@ -141,15 +142,22 @@ export default function AdminMenu() {
         <h2 className="font-display text-2xl uppercase">Cardápio ({items.length})</h2>
         <div className="flex gap-2">
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-44">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas categorias</SelectItem>
               {CATEGORIES.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                <SelectItem key={c.id} value={c.id}>
+                  {c.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={() => setEditing({ ...empty })} className="bg-gradient-gold text-primary-foreground font-bold">
+          <Button
+            onClick={() => setEditing({ ...empty })}
+            className="bg-gradient-gold text-primary-foreground font-bold"
+          >
             <Plus className="w-4 h-4" /> Novo item
           </Button>
         </div>
@@ -163,12 +171,15 @@ export default function AdminMenu() {
 
       <div className="grid gap-4">
         {filtered.map((it) => (
-          <Card key={it.id} className={`p-4 flex flex-col sm:flex-row items-center gap-4 bg-card border-border transition-all ${!it.available ? "grayscale opacity-60" : "hover:border-primary/30"}`}>
+          <Card
+            key={it.id}
+            className={`p-4 flex flex-col sm:flex-row items-center gap-4 bg-card border-border transition-all ${!it.available ? "grayscale opacity-60" : "hover:border-primary/30"}`}
+          >
             <div className="relative group shrink-0">
               {it.image_url ? (
-                <img 
-                  src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url} 
-                  alt={it.name} 
+                <img
+                  src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url}
+                  alt={it.name}
                   className="w-20 h-20 rounded-lg object-cover border border-border shadow-sm"
                 />
               ) : (
@@ -177,21 +188,29 @@ export default function AdminMenu() {
                 </div>
               )}
             </div>
-            
+
             <div className="flex-1 min-w-0 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap mb-1">
                 <p className="font-bold text-lg truncate">{it.name}</p>
-                {it.highlight && <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold uppercase tracking-wider">Destaque</span>}
+                {it.highlight && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold uppercase tracking-wider">
+                    Destaque
+                  </span>
+                )}
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-bold uppercase tracking-wider">
                   {CATEGORIES.find((c) => c.id === it.category)?.label ?? it.category}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{it.description}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                {it.description}
+              </p>
             </div>
 
             <div className="shrink-0 flex flex-col items-center sm:items-end gap-3 sm:border-l sm:border-border sm:pl-6 min-w-[140px]">
-              <p className="font-display text-2xl text-primary leading-none">R$ {Number(it.price).toFixed(2)}</p>
-              
+              <p className="font-display text-2xl text-primary leading-none">
+                R$ {Number(it.price).toFixed(2)}
+              </p>
+
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">
@@ -199,12 +218,24 @@ export default function AdminMenu() {
                   </span>
                   <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} />
                 </div>
-                
+
                 <div className="flex items-center gap-1">
-                  <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => setEditing(it)} title="Editar">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="h-8 w-8"
+                    onClick={() => setEditing(it)}
+                    title="Editar"
+                  >
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => remove(it.id)} title="Excluir">
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    className="h-8 w-8"
+                    onClick={() => remove(it.id)}
+                    title="Excluir"
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -224,14 +255,26 @@ export default function AdminMenu() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Nome</Label>
-                  <Input value={editing.name ?? ""} onChange={(e) => setEditing({ ...editing, name: e.target.value })} />
+                  <Input
+                    value={editing.name ?? ""}
+                    onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Categoria</Label>
-                  <Select value={editing.category} onValueChange={(v) => setEditing({ ...editing, category: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={editing.category}
+                    onValueChange={(v) => setEditing({ ...editing, category: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
-                      {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}
+                      {CATEGORIES.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -239,16 +282,23 @@ export default function AdminMenu() {
 
               <div className="space-y-2">
                 <Label>Descrição</Label>
-                <Textarea value={editing.description ?? ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} />
+                <Textarea
+                  value={editing.description ?? ""}
+                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Preço Base (R$)</Label>
                   <Input
-                    type="number" step="0.01" min="0"
+                    type="number"
+                    step="0.01"
+                    min="0"
                     value={editing.price ?? 0}
-                    onChange={(e) => setEditing({ ...editing, price: parseFloat(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setEditing({ ...editing, price: parseFloat(e.target.value) || 0 })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -256,7 +306,9 @@ export default function AdminMenu() {
                   <Input
                     type="number"
                     value={editing.sort_order ?? 0}
-                    onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })
+                    }
                   />
                 </div>
               </div>
@@ -300,18 +352,28 @@ export default function AdminMenu() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between p-2 rounded bg-muted/20">
                   <Label className="cursor-pointer">Disponível para venda</Label>
-                  <Switch checked={editing.available ?? true} onCheckedChange={(v) => setEditing({ ...editing, available: v })} />
+                  <Switch
+                    checked={editing.available ?? true}
+                    onCheckedChange={(v) => setEditing({ ...editing, available: v })}
+                  />
                 </div>
                 <div className="flex items-center justify-between p-2 rounded bg-muted/20">
                   <Label className="cursor-pointer">Destaque (⭐)</Label>
-                  <Switch checked={editing.highlight ?? false} onCheckedChange={(v) => setEditing({ ...editing, highlight: v })} />
+                  <Switch
+                    checked={editing.highlight ?? false}
+                    onCheckedChange={(v) => setEditing({ ...editing, highlight: v })}
+                  />
                 </div>
               </div>
             </div>
           )}
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
-            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">Salvar Alterações</Button>
+            <Button variant="outline" onClick={() => setEditing(null)}>
+              Cancelar
+            </Button>
+            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">
+              Salvar Alterações
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -345,7 +407,11 @@ function ImagePicker({ value, onChange }: { value: string; onChange: (url: strin
   return (
     <div className="space-y-2">
       {value && (
-        <img src={(value && ASSET_MAP[value]) || value} alt="preview" className="w-24 h-24 rounded object-cover border border-border" />
+        <img
+          src={(value && ASSET_MAP[value]) || value}
+          alt="preview"
+          className="w-24 h-24 rounded object-cover border border-border"
+        />
       )}
       <div className="flex gap-2">
         <Button

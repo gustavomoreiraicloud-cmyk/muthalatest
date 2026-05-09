@@ -1,7 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Loader2, TrendingUp, ShoppingBag, DollarSign, Calendar, CreditCard, Wallet, MapPin, Clock } from "lucide-react";
+import {
+  Loader2,
+  TrendingUp,
+  ShoppingBag,
+  DollarSign,
+  Calendar,
+  CreditCard,
+  Wallet,
+  MapPin,
+  Clock,
+} from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import {
   ResponsiveContainer,
@@ -47,14 +57,16 @@ export default function AdminDashboard() {
   const stats = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     // Se a loja ainda não abriu hoje (antes das 18h), mostrar os dados desde o início da última noite de operação
     // Por padrão, vamos focar no faturamento do "dia operacional" (de hoje até o fechamento)
     const operationalDay = new Date(today);
 
     const validOrders = orders.filter((o) => o.status !== "cancelado");
     const todayOrders = validOrders.filter((o) => new Date(o.created_at) >= operationalDay);
-    const monthOrders = validOrders.filter((o) => new Date(o.created_at) >= new Date(now.getFullYear(), now.getMonth(), 1));
+    const monthOrders = validOrders.filter(
+      (o) => new Date(o.created_at) >= new Date(now.getFullYear(), now.getMonth(), 1),
+    );
 
     const todayRevenue = todayOrders.reduce((s, o) => s + Number(o.total), 0);
     const monthRevenue = monthOrders.reduce((s, o) => s + Number(o.total), 0);
@@ -65,7 +77,10 @@ export default function AdminDashboard() {
       const method = o.payment_method || "Não informado";
       paymentMap.set(method, (paymentMap.get(method) ?? 0) + 1);
     });
-    const paymentData = [...paymentMap.entries()].map(([name, value]) => ({ name: name.toUpperCase(), value }));
+    const paymentData = [...paymentMap.entries()].map(([name, value]) => ({
+      name: name.toUpperCase(),
+      value,
+    }));
 
     // Entrega vs Retirada
     const deliveryMap = new Map<string, number>();
@@ -73,15 +88,15 @@ export default function AdminDashboard() {
       const method = o.delivery_method || "entrega";
       deliveryMap.set(method, (deliveryMap.get(method) ?? 0) + 1);
     });
-    const deliveryData = [...deliveryMap.entries()].map(([name, value]) => ({ 
-      name: name === "entrega" ? "Entrega" : "Retirada", 
-      value 
+    const deliveryData = [...deliveryMap.entries()].map(([name, value]) => ({
+      name: name === "entrega" ? "Entrega" : "Retirada",
+      value,
     }));
 
     // Top items
     const itemMap = new Map<string, number>();
     validOrders.forEach((o) =>
-      o.items?.forEach((it) => itemMap.set(it.name, (itemMap.get(it.name) ?? 0) + it.qty))
+      o.items?.forEach((it) => itemMap.set(it.name, (itemMap.get(it.name) ?? 0) + it.qty)),
     );
     const top = [...itemMap.entries()]
       .sort((a, b) => b[1] - a[1])
@@ -121,9 +136,19 @@ export default function AdminDashboard() {
 
   const cards = [
     { label: "Vendas hoje", value: stats.todayCount, icon: ShoppingBag, color: "text-blue-400" },
-    { label: "Fila de espera", value: `${orders.filter(o => ["novo", "preparo"].includes(o.status)).length} pedidos`, icon: Clock, color: "text-orange-400" },
+    {
+      label: "Fila de espera",
+      value: `${orders.filter((o) => ["novo", "preparo"].includes(o.status)).length} pedidos`,
+      icon: Clock,
+      color: "text-orange-400",
+    },
     { label: "Vendas mês", value: stats.monthCount, icon: Calendar, color: "text-primary" },
-    { label: "Receita mês", value: formatBRL(stats.monthRevenue), icon: Wallet, color: "text-yellow-400" },
+    {
+      label: "Receita mês",
+      value: formatBRL(stats.monthRevenue),
+      icon: Wallet,
+      color: "text-yellow-400",
+    },
   ];
 
   const COLORS = ["#e94560", "#f97316", "#fbbf24", "#4ade80", "#60a5fa"];
@@ -141,7 +166,9 @@ export default function AdminDashboard() {
         {cards.map((c) => (
           <Card key={c.label} className="p-4 bg-card border-border shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-bold tracking-wider">{c.label}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-bold tracking-wider">
+                {c.label}
+              </p>
               <c.icon className={`w-4 h-4 ${c.color}`} />
             </div>
             <p className="font-display text-2xl md:text-3xl truncate">{c.value}</p>
@@ -159,10 +186,21 @@ export default function AdminDashboard() {
             <ResponsiveContainer>
               <BarChart data={stats.chart}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} axisLine={false} tickLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} axisLine={false} tickLine={false} />
+                <XAxis
+                  dataKey="day"
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <Tooltip
-                  cursor={{ fill: 'hsl(var(--muted)/0.3)' }}
+                  cursor={{ fill: "hsl(var(--muted)/0.3)" }}
                   contentStyle={{
                     background: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
@@ -171,7 +209,12 @@ export default function AdminDashboard() {
                   }}
                   formatter={(v: number) => formatBRL(v)}
                 />
-                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar
+                  dataKey="total"
+                  fill="hsl(var(--primary))"
+                  radius={[4, 4, 0, 0]}
+                  barSize={40}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -181,7 +224,9 @@ export default function AdminDashboard() {
         <Card className="p-4 bg-card border-border">
           <h3 className="font-bold mb-6">Top 5 itens vendidos</h3>
           {stats.top.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-10 text-center">Sem dados suficientes.</p>
+            <p className="text-sm text-muted-foreground py-10 text-center">
+              Sem dados suficientes.
+            </p>
           ) : (
             <ul className="space-y-5">
               {stats.top.map((it, idx) => (
@@ -226,8 +271,8 @@ export default function AdminDashboard() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                   contentStyle={{
+                <Tooltip
+                  contentStyle={{
                     background: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: 8,
@@ -239,8 +284,13 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 gap-2 mt-2">
             {stats.paymentData.map((p, i) => (
               <div key={p.name} className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                <span className="text-muted-foreground font-medium">{p.name}: <span className="text-foreground font-bold">{p.value}</span></span>
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                />
+                <span className="text-muted-foreground font-medium">
+                  {p.name}: <span className="text-foreground font-bold">{p.value}</span>
+                </span>
               </div>
             ))}
           </div>
@@ -267,8 +317,8 @@ export default function AdminDashboard() {
                     <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                   contentStyle={{
+                <Tooltip
+                  contentStyle={{
                     background: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: 8,
@@ -280,8 +330,13 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 gap-2 mt-2">
             {stats.deliveryData.map((p, i) => (
               <div key={p.name} className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[(i + 2) % COLORS.length] }} />
-                <span className="text-muted-foreground font-medium">{p.name}: <span className="text-foreground font-bold">{p.value}</span></span>
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: COLORS[(i + 2) % COLORS.length] }}
+                />
+                <span className="text-muted-foreground font-medium">
+                  {p.name}: <span className="text-foreground font-bold">{p.value}</span>
+                </span>
               </div>
             ))}
           </div>

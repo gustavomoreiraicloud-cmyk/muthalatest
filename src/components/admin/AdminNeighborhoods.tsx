@@ -40,10 +40,7 @@ export default function AdminNeighborhoods() {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("delivery_ranges")
-      .select("*")
-      .order("min_km");
+    const { data, error } = await supabase.from("delivery_ranges").select("*").order("min_km");
     if (error) toast.error("Erro ao carregar faixas");
     setItems((data as any[]) ?? []);
     setLoading(false);
@@ -65,15 +62,15 @@ export default function AdminNeighborhoods() {
       fee: Number(editing.fee),
       active: editing.active ?? true,
     };
-    
+
     const { error } = editing.id
       ? await supabase.from("delivery_ranges").update(payload).eq("id", editing.id)
       : await supabase.from("delivery_ranges").insert(payload);
-    
+
     if (error) {
       return toast.error("Erro ao salvar");
     }
-    
+
     toast.success("Salvo!");
     setEditing(null);
     load();
@@ -102,14 +99,20 @@ export default function AdminNeighborhoods() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-2xl uppercase">Taxas por Distância ({items.length})</h2>
-        <Button onClick={() => setEditing({ ...empty })} className="bg-gradient-gold text-primary-foreground font-bold">
+        <Button
+          onClick={() => setEditing({ ...empty })}
+          className="bg-gradient-gold text-primary-foreground font-bold"
+        >
           <Plus className="w-4 h-4" /> Nova Faixa
         </Button>
       </div>
 
       <div className="grid gap-2">
         {items.map((it) => (
-          <Card key={it.id} className={`p-4 flex items-center gap-4 bg-card border-border ${!it.active ? "opacity-60" : ""}`}>
+          <Card
+            key={it.id}
+            className={`p-4 flex items-center gap-4 bg-card border-border ${!it.active ? "opacity-60" : ""}`}
+          >
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <MapPin className="w-5 h-5 text-primary" />
             </div>
@@ -146,23 +149,36 @@ export default function AdminNeighborhoods() {
             <div className="space-y-4">
               <div>
                 <Label>Rótulo (Ex: 2km a 4km)</Label>
-                <Input value={editing.label ?? ""} onChange={(e) => setEditing({ ...editing, label: e.target.value })} placeholder="Ex: Até 2km" />
+                <Input
+                  value={editing.label ?? ""}
+                  onChange={(e) => setEditing({ ...editing, label: e.target.value })}
+                  placeholder="Ex: Até 2km"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>KM Mínimo</Label>
                   <Input
-                    type="number" step="0.1"
+                    type="number"
+                    step="0.1"
                     value={editing.min_km ?? 0}
-                    onChange={(e) => setEditing({ ...editing, min_km: parseFloat(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setEditing({ ...editing, min_km: parseFloat(e.target.value) || 0 })
+                    }
                   />
                 </div>
                 <div>
                   <Label>KM Máximo (opcional)</Label>
                   <Input
-                    type="number" step="0.1"
+                    type="number"
+                    step="0.1"
                     value={editing.max_km ?? ""}
-                    onChange={(e) => setEditing({ ...editing, max_km: e.target.value ? parseFloat(e.target.value) : null })}
+                    onChange={(e) =>
+                      setEditing({
+                        ...editing,
+                        max_km: e.target.value ? parseFloat(e.target.value) : null,
+                      })
+                    }
                     placeholder="Deixe vazio para 'acima de'"
                   />
                 </div>
@@ -170,20 +186,29 @@ export default function AdminNeighborhoods() {
               <div>
                 <Label>Taxa de Entrega (R$)</Label>
                 <Input
-                  type="number" step="0.50" min="0"
+                  type="number"
+                  step="0.50"
+                  min="0"
                   value={editing.fee ?? 0}
                   onChange={(e) => setEditing({ ...editing, fee: parseFloat(e.target.value) || 0 })}
                 />
               </div>
               <div className="flex items-center justify-between p-2 rounded bg-muted/20">
                 <Label className="cursor-pointer">Faixa Ativa</Label>
-                <Switch checked={editing.active ?? true} onCheckedChange={(v) => setEditing({ ...editing, active: v })} />
+                <Switch
+                  checked={editing.active ?? true}
+                  onCheckedChange={(v) => setEditing({ ...editing, active: v })}
+                />
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
-            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">Salvar</Button>
+            <Button variant="outline" onClick={() => setEditing(null)}>
+              Cancelar
+            </Button>
+            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">
+              Salvar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

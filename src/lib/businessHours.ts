@@ -48,10 +48,14 @@ export function isWithinHours(hours: BusinessHours, now = new Date()): boolean {
 
 /** "Abrimos hoje às 18h" / "Abrimos amanhã às 18h" / "Abrimos terça às 18h" */
 export function formatNextOpening(next: Date, now = new Date()): string {
-  const today = new Date(now); today.setHours(0, 0, 0, 0);
-  const target = new Date(next); target.setHours(0, 0, 0, 0);
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(next);
+  target.setHours(0, 0, 0, 0);
   const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
-  const time = next.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+  const time = next
+    .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+    .replace(":", "h");
   if (diffDays <= 0) return `Abrimos hoje às ${time}`;
   if (diffDays === 1) return `Abrimos amanhã às ${time}`;
   return `Abrimos ${DAY_LABELS[next.getDay()].toLowerCase()} às ${time}`;

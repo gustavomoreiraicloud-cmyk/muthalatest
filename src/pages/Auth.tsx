@@ -26,12 +26,12 @@ export default function Auth() {
     setSubmitting(true);
     const { error } = await signIn(username, password);
     setSubmitting(false);
-    
+
     if (error) {
       toast.error(error);
       return;
     }
-    
+
     toast.success("Bem-vindo!");
     navigate({ to: "/admin", replace: true });
   };
@@ -72,7 +72,11 @@ export default function Auth() {
               required
             />
           </div>
-          <Button type="submit" disabled={submitting} className="w-full bg-gradient-gold text-primary-foreground font-bold">
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-gradient-gold text-primary-foreground font-bold"
+          >
             {submitting ? "Entrando..." : "Entrar"}
           </Button>
         </form>

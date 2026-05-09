@@ -17,7 +17,9 @@ const StatusBadge = ({ className = "" }: Props) => {
           : "bg-destructive/10 border-destructive/40 text-destructive"
       } ${className}`}
     >
-      <span className={`w-2 h-2 rounded-full ${open ? "bg-[hsl(142_70%_50%)]" : "bg-destructive"}`} />
+      <span
+        className={`w-2 h-2 rounded-full ${open ? "bg-[hsl(142_70%_50%)]" : "bg-destructive"}`}
+      />
       {open ? "Aberto" : "Fechado"}
     </span>
   );

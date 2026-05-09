@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus, Info } from "lucide-react";
 import { useCart, formatBRL } from "@/hooks/useCart";
@@ -26,27 +32,77 @@ type Props = {
 };
 
 const getBurgerSizes = (itemName: string) => {
-  if (itemName === 'BALDUR DE OURO' || itemName === 'COMBO BANQUETE NÓRDICO' || itemName.includes('DOG')) {
+  if (
+    itemName === "BALDUR DE OURO" ||
+    itemName === "COMBO BANQUETE NÓRDICO" ||
+    itemName.includes("DOG")
+  ) {
     return [];
   }
-  
+
   const basePrices: Record<string, number> = {
-    'VALHALLA': 52.90, 'YGGDRASIL': 26.90, 'ASGARD': 33.90, 'MUTHALA': 42.90,
-    'RAGNAROK': 42.90, 'ODIN': 39.90, 'JOTUN': 52.90, 'BJORN': 42.90,
-    'BALDUR': 29.90, 'MIDGARD': 39.90, 'BIFROST': 36.90, 'FRIGGA': 36.90, 'LOKI': 33.90,
-    'IDUNN': 33.90, 'VIDAR': 29.90, 'VALKYRIA': 29.90, 'FREYA': 29.90
+    VALHALLA: 52.9,
+    YGGDRASIL: 26.9,
+    ASGARD: 33.9,
+    MUTHALA: 42.9,
+    RAGNAROK: 42.9,
+    ODIN: 39.9,
+    JOTUN: 52.9,
+    BJORN: 42.9,
+    BALDUR: 29.9,
+    MIDGARD: 39.9,
+    BIFROST: 36.9,
+    FRIGGA: 36.9,
+    LOKI: 33.9,
+    IDUNN: 33.9,
+    VIDAR: 29.9,
+    VALKYRIA: 29.9,
+    FREYA: 29.9,
   };
 
   return [
     { id: "100g", label: "BURGER 100g", price: 0 },
-    { id: "180g", label: "BURGER 180g", price: (itemName === 'VALHALLA' || itemName === 'JOTUN' || itemName === 'MUTHALA' || itemName === 'RAGNAROK' || itemName === 'BJORN') ? 6 : 6 },
-    { id: "combo", label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA", price: (itemName === 'YGGDRASIL' || itemName === 'BALDUR' || itemName === 'VIDAR' || itemName === 'VALKYRIA' || itemName === 'FREYA') ? 27 : 26 },
-    { id: "combo_coca", label: "COMBO COCA: BURGER • COCA-COLA LATA", price: (itemName === 'YGGDRASIL' || itemName === 'BALDUR' || itemName === 'VIDAR' || itemName === 'VALKYRIA' || itemName === 'FREYA') ? 16 : 13 },
+    {
+      id: "180g",
+      label: "BURGER 180g",
+      price:
+        itemName === "VALHALLA" ||
+        itemName === "JOTUN" ||
+        itemName === "MUTHALA" ||
+        itemName === "RAGNAROK" ||
+        itemName === "BJORN"
+          ? 6
+          : 6,
+    },
+    {
+      id: "combo",
+      label: "COMBO COMPLETO: BURGER • BATATA P + BEBIDA LATA",
+      price:
+        itemName === "YGGDRASIL" ||
+        itemName === "BALDUR" ||
+        itemName === "VIDAR" ||
+        itemName === "VALKYRIA" ||
+        itemName === "FREYA"
+          ? 27
+          : 26,
+    },
+    {
+      id: "combo_coca",
+      label: "COMBO COCA: BURGER • COCA-COLA LATA",
+      price:
+        itemName === "YGGDRASIL" ||
+        itemName === "BALDUR" ||
+        itemName === "VIDAR" ||
+        itemName === "VALKYRIA" ||
+        itemName === "FREYA"
+          ? 16
+          : 13,
+    },
   ];
 };
 
 const getPortionSizes = (itemName: string) => {
-  if (itemName === 'Batata Simples' || itemName === 'Batata Especial') {
+  if (itemName === "Batata Simples" || itemName === "Batata Especial") {
     return [
       { id: "p", label: "P 170g", price: 0 },
       { id: "g", label: "G 350g", price: 13 },
@@ -100,8 +156,8 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const [notes, setNotes] = useState("");
   const [qty, setQty] = useState(1);
 
-  const burgerSizes = useMemo(() => item ? getBurgerSizes(item.name) : [], [item]);
-  const portionSizes = useMemo(() => item ? getPortionSizes(item.name) : [], [item]);
+  const burgerSizes = useMemo(() => (item ? getBurgerSizes(item.name) : []), [item]);
+  const portionSizes = useMemo(() => (item ? getPortionSizes(item.name) : []), [item]);
   const allSizes = useMemo(() => [...burgerSizes, ...portionSizes], [burgerSizes, portionSizes]);
 
   useEffect(() => {
@@ -125,16 +181,16 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const totalPrice = useMemo(() => {
     if (!item) return 0;
     let total = basePrice;
-    const selectedSize = allSizes.find(s => s.id === size);
+    const selectedSize = allSizes.find((s) => s.id === size);
     if (selectedSize) total += selectedSize.price;
 
     if (beverage) {
-      const selectedBev = BEVERAGES.find(b => b.id === beverage);
+      const selectedBev = BEVERAGES.find((b) => b.id === beverage);
       if (selectedBev) total += selectedBev.price;
     }
 
-    selectedExtras.forEach(extraId => {
-      const extra = ADDITIONALS.find(e => e.id === extraId);
+    selectedExtras.forEach((extraId) => {
+      const extra = ADDITIONALS.find((e) => e.id === extraId);
       if (extra) total += extra.price;
     });
 
@@ -144,10 +200,12 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   if (!item) return null;
 
   const handleAdd = () => {
-    const sizeLabel = allSizes.find(s => s.id === size)?.label;
-    const bevLabel = BEVERAGES.find(b => b.id === beverage)?.label;
-    const extrasLabels = selectedExtras.map(id => ADDITIONALS.find(e => e.id === id)?.label).filter(Boolean) as string[];
-    const donenessLabel = DONENESS.find(d => d.id === doneness)?.label;
+    const sizeLabel = allSizes.find((s) => s.id === size)?.label;
+    const bevLabel = BEVERAGES.find((b) => b.id === beverage)?.label;
+    const extrasLabels = selectedExtras
+      .map((id) => ADDITIONALS.find((e) => e.id === id)?.label)
+      .filter(Boolean) as string[];
+    const donenessLabel = DONENESS.find((d) => d.id === doneness)?.label;
 
     const cartItem = {
       name: item.name,
@@ -158,8 +216,8 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
         beverage: bevLabel,
         extras: extrasLabels,
         doneness: donenessLabel,
-        notes: notes.trim() || undefined
-      }
+        notes: notes.trim() || undefined,
+      },
     };
 
     for (let i = 0; i < qty; i++) {
@@ -172,9 +230,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   };
 
   const toggleExtra = (id: string) => {
-    setSelectedExtras(prev => 
-      prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
-    );
+    setSelectedExtras((prev) => (prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]));
   };
 
   return (
@@ -182,19 +238,19 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       <DialogContent className="max-w-2xl p-0 overflow-hidden bg-card border-border h-full md:h-[90vh] flex flex-col sm:rounded-3xl">
         <ScrollArea className="flex-1">
           <div className="relative aspect-square sm:aspect-video max-h-[300px] mx-auto overflow-hidden">
-            <img 
-              src={item.img} 
-              alt={item.name} 
-              className="w-full h-full object-cover brightness-[1.05] contrast-[1.1] saturate-[1.1]" 
+            <img
+              src={item.img}
+              alt={item.name}
+              className="w-full h-full object-cover brightness-[1.05] contrast-[1.1] saturate-[1.1]"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                if (target.src.includes('/src/assets/')) {
-                  target.src = target.src.replace('/src/assets/', '/assets/');
+                if (target.src.includes("/src/assets/")) {
+                  target.src = target.src.replace("/src/assets/", "/assets/");
                 }
               }}
             />
           </div>
-          
+
           <div className="p-6 space-y-8 pb-32">
             <DialogHeader className="text-left">
               <DialogTitle className="font-display text-4xl uppercase leading-tight text-primary">
@@ -212,9 +268,13 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
                 <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                   <div>
                     <h4 className="font-bold text-sm uppercase tracking-tight">Escolha 1 opção</h4>
-                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">Obrigatório</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                      Obrigatório
+                    </p>
                   </div>
-                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">1/1</span>
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">
+                    1/1
+                  </span>
                 </div>
                 <RadioGroup value={size} onValueChange={setSize} className="gap-0">
                   {allSizes.map((s) => (
@@ -226,7 +286,9 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
                         <RadioGroupItem value={s.id} />
                         <span className="text-sm font-medium">{s.label}</span>
                       </div>
-                      <span className="text-sm font-bold text-primary">{formatBRL(basePrice + s.price)}</span>
+                      <span className="text-sm font-bold text-primary">
+                        {formatBRL(basePrice + s.price)}
+                      </span>
                     </Label>
                   ))}
                 </RadioGroup>
@@ -236,8 +298,12 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
             <div className="space-y-4">
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
-                  <h4 className="font-bold text-sm uppercase tracking-tight">CONTI 1,99 CENTAVOS</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">Escolha até 1 opção</p>
+                  <h4 className="font-bold text-sm uppercase tracking-tight">
+                    CONTI 1,99 CENTAVOS
+                  </h4>
+                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                    Escolha até 1 opção
+                  </p>
                 </div>
               </div>
               <RadioGroup value={beverage} onValueChange={setBeverage} className="gap-0">
@@ -264,7 +330,9 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
                   <h4 className="font-bold text-sm uppercase tracking-tight">Adicionais</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">Escolha até 20 opções</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                    Escolha até 20 opções
+                  </p>
                 </div>
               </div>
               <div className="grid gap-0">
@@ -283,7 +351,9 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
                         {extra.label}
                       </Label>
                     </div>
-                    <span className="text-sm font-bold text-primary">+{formatBRL(extra.price)}</span>
+                    <span className="text-sm font-bold text-primary">
+                      +{formatBRL(extra.price)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -293,9 +363,13 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                 <div>
                   <h4 className="font-bold text-sm uppercase tracking-tight">Ponto do Hambúrger</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">Escolha 1 opção</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                    Escolha 1 opção
+                  </p>
                 </div>
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">Obrigatório</span>
+                <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">
+                  Obrigatório
+                </span>
               </div>
               <RadioGroup value={doneness} onValueChange={setDoneness} className="gap-0">
                 {DONENESS.map((d) => (
