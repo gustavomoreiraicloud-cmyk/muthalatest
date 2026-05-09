@@ -162,8 +162,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
   useEffect(() => {
     if (open && item) {
-      const initialSizes = [...getBurgerSizes(item.name), ...getPortionSizes(item.name)];
-      setSize(initialSizes.length > 0 ? initialSizes[0].id : "");
+      setSize("");
       setBeverage("");
       setSelectedExtras([]);
       setDoneness("ao_ponto");
