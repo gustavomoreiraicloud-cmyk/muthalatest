@@ -163,11 +163,20 @@ const Index = () => {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "FoodEstablishment",
+    "@type": "Restaurant",
     "name": "Muthala Burger",
-    "image": [ASSET_MAP["/src/assets/hero-burger.jpg"]],
+    "image": [
+      ASSET_MAP["/src/assets/hero-burger.jpg"],
+      ASSET_MAP["/src/assets/burger-muthala.jpg"],
+      ASSET_MAP["/src/assets/burger-bacon.jpg"]
+    ],
+    "@id": "https://oi-hug-happy.lovable.app/",
+    "url": "https://oi-hug-happy.lovable.app/",
+    "telephone": "+5518997962510",
     "priceRange": "$$",
-    "servesCuisine": "Hambúrguer",
+    "menu": "https://oi-hug-happy.lovable.app/#menu",
+    "servesCuisine": ["American", "Hamburgers"],
+    "acceptsReservations": "false",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "R. Smith Vasconcelos, 312",
@@ -181,17 +190,23 @@ const Index = () => {
       "latitude": -22.6617,
       "longitude": -50.4132
     },
-    "url": "https://oi-hug-happy.lovable.app/",
-    "telephone": "+5518997962510",
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        "opens": "18:00",
+        "opens": "19:00",
         "closes": "23:00"
       }
     ],
-    "menu": "https://oi-hug-happy.lovable.app/#menu"
+    "sameAs": [
+      "https://instagram.com/muthalaburguer",
+      "https://wa.me/5518997962510"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "reviewCount": "98"
+    }
   };
 
   return (

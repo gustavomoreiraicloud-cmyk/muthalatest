@@ -11,6 +11,8 @@ import { RouteError } from "@/components/RouteError";
 
 import appCss from "../styles.css?url";
 
+const SITE_URL = "https://oi-hug-happy.lovable.app/";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -22,10 +24,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Descubra o sabor lendário do Muthala Burger em Assis/SP. Hambúrgueres artesanais, smash burgers suculentos e ingredientes de alta qualidade. Peça online agora!",
       },
-      { name: "keywords", content: "hambúrguer artesanal, burger assis sp, delivery hambúrguer, smash burger, muthala burger, melhor lanche assis" },
+      { name: "keywords", content: "hambúrguer artesanal, burger assis sp, delivery hambúrguer, smash burger, muthala burger, melhor lanche assis, hamburgueria assis centro" },
       { property: "og:title", content: "Muthala Burger | O Sabor dos Deuses em Assis/SP" },
-      { property: "og:description", content: "Hambúrgueres artesanais feitos com paixão. Peça o seu Muthala agora!" },
+      { property: "og:description", content: "Hambúrgueres artesanais feitos com paixão em Assis/SP. Peça o seu Muthala agora!" },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:site_name", content: "Muthala Burger" },
       {
@@ -34,13 +37,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png",
       },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Muthala Burger | O Sabor dos Deuses" },
+      { name: "twitter:title", content: "Muthala Burger | O Sabor dos Deuses em Assis" },
       { name: "twitter:description", content: "O melhor hambúrguer artesanal de Assis/SP. Peça online!" },
       {
         name: "twitter:image",
         content:
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png",
       },
+      { name: "geo.region", content: "BR-SP" },
+      { name: "geo.placename", content: "Assis" },
+      { name: "geo.position", content: "-22.6617;-50.4132" },
+      { name: "ICBM", content: "-22.6617, -50.4132" },
+      { name: "robots", content: "index, follow" },
     ],
     links: [
       {
