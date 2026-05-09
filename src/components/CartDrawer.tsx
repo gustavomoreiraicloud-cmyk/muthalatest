@@ -219,12 +219,13 @@ export default function CartDrawer() {
   const freeShipping =
     coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
 
-  // Regras de frete: até 1.5km = R$5, até 3.5km = R$8, acima de 3.5km = R$12
+  // Regras de frete solicitadas: até 3km = R$5, até 5km = R$8, acima de 5km = R$12
   const calculatedFee = useMemo(() => {
     if (deliveryMethod === "retirada") return 0;
     if (detectedDistance === null) return DEFAULT_DELIVERY_FEE;
-    if (detectedDistance <= 1.5) return 5;
-    if (detectedDistance <= 3.5) return 8;
+    // Usando as regras originais do usuário para ser mais justo
+    if (detectedDistance <= 3.1) return 5;
+    if (detectedDistance <= 5.1) return 8;
     return 12;
   }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
 
@@ -268,9 +269,13 @@ export default function CartDrawer() {
     setCalculatingDistance(true);
     setEstimatedTime(null);
     try {
-      const address = `${street}, ${number}, Assis, SP, Brasil`;
+      // Se tiver bairro, ajuda muito na precisão do Nominatim
+      const query = neighborhood 
+        ? `${street}, ${number}, ${neighborhood}, Assis, SP, Brasil`
+        : `${street}, ${number}, Assis, SP, Brasil`;
+
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
       );
       const data = await response.json();
 
@@ -287,17 +292,19 @@ export default function CartDrawer() {
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Reduzir a margem de trajeto (estava em 30%, vamos para 15% para ser mais fiel ao centro)
-      const estimatedRoadDist = dist * 1.15;
+      // Margem de trajeto reduzida para 10% (mais justo para cidades do interior)
+      const estimatedRoadDist = dist * 1.1;
       setDetectedDistance(estimatedRoadDist);
       
-      // Estimativa de tempo: 20 min base + 3 min por km
-      const time = Math.round(20 + estimatedRoadDist * 3);
-      setEstimatedTime(`${time}-${time + 15} min`);
+      // Estimativa de tempo mais realista
+      const time = Math.round(15 + estimatedRoadDist * 2.5);
+      setEstimatedTime(`${time}-${time + 10} min`);
 
-      toast.success(
-        `Distância: ${estimatedRoadDist.toFixed(1)}km. Frete calculado!`,
-      );
+      // Feedback visual do endereço encontrado para o usuário conferir
+      const foundAddr = data[0].display_name.split(',')[0] + ', ' + data[0].display_name.split(',')[1];
+      toast.info(`Localizado: ${foundAddr}`, {
+        description: `Distância estimada: ${estimatedRoadDist.toFixed(1)}km`,
+      });
     } catch (err) {
       console.error(err);
       toast.error("Erro ao calcular distância");
@@ -841,6 +848,11 @@ export default function CartDrawer() {
                         </span>
                         <span className="text-xs font-black">{formatBRL(fee)}</span>
                       </div>
+                      {detectedDistance > 12 && (
+                        <p className="text-[10px] text-orange-400 font-bold animate-pulse mt-1">
+                          ⚠️ Distância alta detectada. Verifique se o endereço está correto.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
