@@ -1,79 +1,74 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Session, User } from "@supabase/supabase-js";
 
 type AuthContextType = {
-  user: { username: string } | null;
-  session: any;
+  user: User | null;
+  session: Session | null;
   isAdmin: boolean;
   loading: boolean;
-  signIn: (user: string, pass: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
-  updateCredentials: (
-    oldUser: string,
-    newUser: string,
-    oldPass: string,
-    newPass: string,
-  ) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("muthala_admin_user") || "admin";
-    const session = localStorage.getItem("muthala_admin_session");
-    if (session) {
-      setUser({ username: savedUser });
-      setIsAdmin(true);
-    }
-    setLoading(false);
+    const checkAdmin = async (uid: string | undefined) => {
+      if (!uid) {
+        setIsAdmin(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", uid)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!data);
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      // defer to avoid deadlock
+      setTimeout(() => checkAdmin(newSession?.user?.id), 0);
+    });
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      setUser(s?.user ?? null);
+      checkAdmin(s?.user?.id).finally(() => setLoading(false));
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (username: string, pass: string) => {
-    const currentAdminUser = localStorage.getItem("muthala_admin_user") || "admin";
-    const currentAdminPass = localStorage.getItem("muthala_admin_pass") || "admin";
-
-    if (username === currentAdminUser && pass === currentAdminPass) {
-      setUser({ username });
-      setIsAdmin(true);
-      localStorage.setItem("muthala_admin_session", "true");
-      return { error: null };
-    }
-    return { error: "Credenciais inválidas" };
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error?.message ?? null };
   };
 
   const signOut = async () => {
-    setUser(null);
+    await supabase.auth.signOut();
     setIsAdmin(false);
-    localStorage.removeItem("muthala_admin_session");
   };
 
-  const updateCredentials = async (
-    oldUser: string,
-    newUser: string,
-    oldPass: string,
-    newPass: string,
-  ) => {
-    const currentAdminUser = localStorage.getItem("muthala_admin_user") || "admin";
-    const currentAdminPass = localStorage.getItem("muthala_admin_pass") || "admin";
-
-    if (oldUser !== currentAdminUser || oldPass !== currentAdminPass) {
-      return { error: "Usuário ou senha atual incorretos" };
-    }
-
-    localStorage.setItem("muthala_admin_user", newUser);
-    localStorage.setItem("muthala_admin_pass", newPass);
-    setUser({ username: newUser });
-
-    return { error: null };
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error?.message ?? null };
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, session: null, isAdmin, loading, signIn, signOut, updateCredentials }}
+      value={{ user, session, isAdmin, loading, signIn, signOut, updatePassword }}
     >
       {children}
     </AuthContext.Provider>
