@@ -16,6 +16,7 @@ import {
   Loader2,
   ClipboardList,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Import all assets to ensure they are bundled and have stable URLs
 import heroBurger from "@/assets/hero-burger.jpg";
