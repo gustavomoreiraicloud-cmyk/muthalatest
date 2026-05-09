@@ -280,11 +280,16 @@ export default function AdminDashboard() {
           </div>
         </Card>
 
-        {/* Top Itens - Ranking Simplificado */}
+        {/* Top Itens - Ranking Simplificado (Curva ABC) */}
         <Card className="p-6 bg-card border-border">
-          <h3 className="font-bold mb-8 uppercase text-xs tracking-widest flex items-center gap-2">
-            <ShoppingBag className="w-4 h-4 text-primary" /> Campeões de Venda
-          </h3>
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="font-bold uppercase text-xs tracking-widest flex items-center gap-2 text-white">
+              <ShoppingBag className="w-4 h-4 text-primary" /> Curva ABC (Mais Vendidos)
+            </h3>
+            <div className="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded uppercase">
+              Ranking {stats.top.length}
+            </div>
+          </div>
           {stats.top.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-2">
               <ShoppingBag className="w-8 h-8 opacity-20" />
@@ -293,26 +298,40 @@ export default function AdminDashboard() {
           ) : (
             <div className="space-y-6">
               {stats.top.map((it, idx) => (
-                <div key={it.name} className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-display text-lg text-primary/60 shrink-0">
+                <div key={it.name} className="flex items-center gap-4 group">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-display text-lg shrink-0 ${
+                    idx === 0 ? 'bg-gradient-gold text-primary-foreground' : 'bg-muted text-primary/60'
+                  }`}>
                     {idx + 1}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-end mb-1.5">
-                      <p className="font-bold text-sm truncate uppercase tracking-tight">{it.name}</p>
-                      <span className="font-black text-xs text-primary">{it.qty} unid.</span>
+                      <p className="font-bold text-sm truncate uppercase tracking-tight group-hover:text-primary transition-colors">
+                        {it.name}
+                      </p>
+                      <div className="text-right">
+                        <span className="font-black text-xs text-white block">{it.qty} unidades</span>
+                        <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">
+                          {((it.qty / stats.top.reduce((a, b) => a + b.qty, 0)) * 100).toFixed(1)}% do volume
+                        </span>
+                      </div>
                     </div>
                     <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${(it.qty / stats.top[0].qty) * 100}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
-                        className="h-full bg-gradient-gold"
+                        className={`h-full ${idx === 0 ? 'bg-gradient-fire shadow-[0_0_10px_rgba(233,69,96,0.5)]' : 'bg-gradient-gold'}`}
                       />
                     </div>
                   </div>
                 </div>
               ))}
+              <div className="mt-8 pt-6 border-t border-border/40">
+                <p className="text-[10px] text-muted-foreground uppercase font-black text-center tracking-widest">
+                  Analise o volume para otimizar seu estoque de insumos
+                </p>
+              </div>
             </div>
           )}
         </Card>

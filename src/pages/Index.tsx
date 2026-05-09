@@ -402,7 +402,7 @@ const Index = () => {
               Cada smash é prensado na hora, cada pão é selecionado a dedo, cada molho é receita
               exclusiva da casa. Em Assis, somos referência em sabor autêntico.
             </p>
-            <div className="grid grid-cols-3 gap-3 md:gap-4">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
               {[
                 { icon: Flame, label: "Feito na hora" },
                 { icon: Leaf, label: "Artesanal" },
@@ -410,25 +410,25 @@ const Index = () => {
               ].map((f) => (
                 <div
                   key={f.label}
-                  className="text-center p-3 md:p-4 rounded-2xl bg-card/50 border border-border backdrop-blur-sm"
+                  className="text-center p-2 md:p-4 rounded-xl md:rounded-2xl bg-card/50 border border-border backdrop-blur-sm"
                 >
-                  <f.icon className="w-5 h-5 md:w-7 md:h-7 text-primary mx-auto mb-2" />
-                  <p className="text-[10px] md:text-xs font-bold uppercase tracking-tighter md:tracking-normal">
+                  <f.icon className="w-4 h-4 md:w-7 md:h-7 text-primary mx-auto mb-1 md:mb-2" />
+                  <p className="text-[9px] md:text-xs font-bold uppercase tracking-tighter md:tracking-normal leading-tight">
                     {f.label}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="relative order-1 md:order-2 px-8 md:px-0">
+          <div className="relative order-1 md:order-2 px-4 md:px-0 mb-8 md:mb-0">
             <div className="absolute -inset-4 bg-primary/20 rounded-full opacity-30 blur-3xl animate-pulse" />
             <img
               src={burgerBacon}
               alt="Hambúrguer artesanal Muthala"
-              className="relative rounded-3xl shadow-2xl w-full max-w-sm mx-auto md:max-w-none"
+              className="relative rounded-2xl md:rounded-3xl shadow-2xl w-full max-w-[280px] md:max-w-none mx-auto aspect-square object-cover"
               loading="lazy"
-              width={768}
-              height={768}
+              width={600}
+              height={600}
             />
           </div>
         </div>
@@ -527,7 +527,7 @@ const Index = () => {
                           ⭐ Destaque
                         </div>
                       )}
-                      <div className="aspect-square overflow-hidden bg-muted">
+                      <div className="aspect-[4/3] overflow-hidden bg-muted">
                         <img
                           src={detail.img}
                           alt={item.name}
@@ -541,8 +541,8 @@ const Index = () => {
                             }
                           }}
                           loading="lazy"
-                          width={400}
-                          height={300}
+                          width={300}
+                          height={225}
                         />
                       </div>
                       <div className="p-4 md:p-6 flex-1 flex flex-col">
