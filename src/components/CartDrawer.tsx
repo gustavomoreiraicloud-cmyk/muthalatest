@@ -194,8 +194,7 @@ export default function CartDrawer() {
       : selectedRange
         ? Number(selectedRange.fee)
         : DEFAULT_DELIVERY_FEE;
-  const pointsDiscount = usePoints ? Math.min(userPoints, subtotal - discount) : 0;
-  const total = Math.max(0, subtotal - discount - pointsDiscount + fee);
+  const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
     const code = couponCode.trim().toUpperCase();
