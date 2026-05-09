@@ -180,7 +180,7 @@ export default function AdminDashboard() {
               <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">
                 {c.label}
               </p>
-              <p className="font-display text-3xl leading-none">{c.value}</p>
+              <p className="font-display text-3xl leading-none text-white">{c.value}</p>
             </div>
           </Card>
         ))}
