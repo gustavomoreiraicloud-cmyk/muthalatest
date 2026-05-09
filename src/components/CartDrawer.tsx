@@ -859,12 +859,9 @@ export default function CartDrawer() {
                 <span>-{formatBRL(discount)}</span>
               </div>
             )}
-            {pointsDiscount > 0 && (
-              <div className="flex justify-between text-sm text-[hsl(142_76%_55%)]">
-                <span>Cashback (Pontos)</span>
-                <span>-{formatBRL(pointsDiscount)}</span>
-              </div>
-            )}
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Taxa de entrega</span>
+              <span>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Taxa de entrega</span>
               <span>
