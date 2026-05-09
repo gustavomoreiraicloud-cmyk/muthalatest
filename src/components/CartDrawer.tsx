@@ -564,9 +564,8 @@ export default function CartDrawer() {
               <ul className="space-y-4 mb-8">
                 <LayoutGroup>
                   <AnimatePresence initial={false}>
-                    {items.map((i, idx) => {
+                    {items.map((i) => {
                     const lineTotal = parsePrice(i.price) * i.qty;
-                    const itemKey = `${i.name}-${idx}`;
                     const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
                     return (
                       <motion.li
