@@ -180,7 +180,7 @@ export default function AdminDashboard() {
               <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">
                 {c.label}
               </p>
-              <p className="font-display text-3xl leading-none">{c.value}</p>
+              <p className="font-display text-3xl leading-none text-white">{c.value}</p>
             </div>
           </Card>
         ))}
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
         {/* Gráfico de Faturamento - Estilo Moderno */}
         <Card className="p-6 bg-card border-border">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest">
+            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-white">
               <TrendingUp className="w-4 h-4 text-primary" /> Faturamento Semanal
             </h3>
           </div>
@@ -206,20 +206,21 @@ export default function AdminDashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" vertical={false} opacity={0.1} />
                 <XAxis
                   dataKey="day"
-                  stroke="hsl(var(--foreground))"
+                  stroke="#ffffff"
                   fontSize={12}
                   fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ dy: 10 }}
+                  tick={{ dy: 10, fill: "#ffffff" }}
                 />
                 <YAxis
-                  stroke="hsl(var(--foreground))"
+                  stroke="#ffffff"
                   fontSize={11}
                   fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) => `R$${v}`}
+                  tick={{ fill: "#ffffff" }}
                 />
                 <Tooltip
                   cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
@@ -293,7 +294,7 @@ export default function AdminDashboard() {
             {stats.deliveryData.map((d, i) => (
               <div key={d.name} className="text-center">
                 <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{d.name}</p>
-                <p className="font-display text-4xl text-foreground leading-none">{d.value}</p>
+                <p className="font-display text-4xl text-white leading-none">{d.value}</p>
                 <div className={`h-1 w-12 mx-auto mt-3 rounded-full ${i === 0 ? 'bg-primary' : 'bg-orange-500'}`} />
               </div>
             ))}
@@ -308,7 +309,7 @@ export default function AdminDashboard() {
             {stats.paymentData.map((p, i) => (
               <div key={p.name} className="bg-muted/30 border border-border/50 px-4 py-3 rounded-xl min-w-[120px] text-center">
                 <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{p.name}</p>
-                <p className="font-display text-2xl text-primary leading-none">{p.value}</p>
+                <p className="font-display text-2xl text-white leading-none">{p.value}</p>
               </div>
             ))}
           </div>
