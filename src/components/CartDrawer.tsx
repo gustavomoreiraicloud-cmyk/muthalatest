@@ -356,6 +356,15 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
+    // Validação de troco
+    if (payment === "dinheiro" && needsChange === true) {
+      const changeVal = Number(parsePrice(changeFor));
+      if (!changeFor || isNaN(changeVal) || changeVal <= total) {
+        toast.error(`O valor para troco deve ser maior que o total do pedido (${formatBRL(total)})`);
+        return;
+      }
+    }
+
     // Se for retirada, não validamos rua/número/bairro
     const checkoutData = {
       name,
@@ -363,7 +372,7 @@ export default function CartDrawer() {
       deliveryMethod,
       street: deliveryMethod === "entrega" ? street : "Retirada",
       number: deliveryMethod === "entrega" ? number : "0",
-      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : "retirada",
+      deliveryRangeId: deliveryMethod === "entrega" ? (detectedDistance !== null ? "auto" : undefined) : "retirada",
     };
 
     const parsed = checkoutSchema.safeParse(checkoutData);
