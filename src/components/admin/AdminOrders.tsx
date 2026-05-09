@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag } from "lucide-react";
+import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
@@ -185,10 +185,12 @@ const printOrder = (o: Order) => {
       <p style="text-align:center">Obrigado! 🍔</p>
       <script>
         window.onload = () => {
-          window.print();
-          window.onafterprint = () => window.close();
-          // Fallback para navegadores que não suportam onafterprint ou se o usuário cancelar
-          setTimeout(() => window.close(), 10000);
+          setTimeout(() => {
+            window.print();
+            window.onafterprint = () => window.close();
+          }, 800);
+          // Fallback
+          setTimeout(() => window.close(), 15000);
         };
       </script>
     </body></html>
@@ -261,12 +263,16 @@ const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
       <p class="footer">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <script>
         window.onload = () => {
-          if (${autoPrint}) {
-            window.print();
-            window.onafterprint = () => window.close();
-            // Fallback
-            setTimeout(() => window.close(), 10000);
-          }
+          setTimeout(() => {
+            if (${autoPrint}) {
+              window.print();
+              window.onafterprint = () => window.close();
+            }
+          }, 800);
+          // Fallback
+          setTimeout(() => {
+            if (${autoPrint}) window.close();
+          }, 15000);
         };
       </script>
     </body></html>
@@ -487,22 +493,24 @@ export default function AdminOrders() {
                         #{o.order_number ?? o.id.slice(0, 6)}
                       </span>
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-black text-2xl leading-none mb-1 tracking-tight text-foreground uppercase">
                         {o.customer_name || "Cliente"}
                       </h3>
-                      <p className="text-xs font-bold text-primary flex items-center gap-1">
-                        {new Date(o.created_at).toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}{" "}
-                        • {o.customer_phone || "—"}
-                      </p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-xs font-bold text-primary flex items-center gap-1 uppercase tracking-wider">
+                          <MessageCircle className="w-3 h-3" /> {o.customer_phone}
+                        </p>
+                        <span className="text-muted-foreground opacity-20">|</span>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase">
+                          {new Date(o.created_at).toLocaleTimeString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge
-                      className={`${STATUS_CONFIG[o.status]?.color ?? ""} px-3 py-1 text-xs uppercase font-black`}
+                      className={`${STATUS_CONFIG[o.status]?.color ?? ""} px-3 py-1.5 text-[10px] uppercase font-black tracking-widest`}
                       variant="outline"
                     >
                       {STATUS_CONFIG[o.status]?.label ?? o.status}

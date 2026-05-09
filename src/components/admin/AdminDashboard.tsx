@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import {
@@ -154,189 +155,150 @@ export default function AdminDashboard() {
   const COLORS = ["#e94560", "#f97316", "#fbbf24", "#4ade80", "#60a5fa"];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-2xl uppercase">Dashboard</h2>
-        <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">
-          Atualizado em {new Date().toLocaleTimeString()}
-        </p>
+    <div className="space-y-8 animate-fade-in">
+      <div className="flex items-center justify-between border-b border-border pb-4">
+        <div>
+          <h2 className="font-display text-3xl uppercase text-primary">Resumo Geral</h2>
+          <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">
+            Métricas dos últimos 30 dias
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Última atualização</p>
+          <p className="text-sm font-bold text-foreground">{new Date().toLocaleTimeString()}</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Cards de Métricas Principais - Mais limpos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((c) => (
-          <Card key={c.label} className="p-4 bg-card border-border shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[10px] md:text-xs text-muted-foreground uppercase font-bold tracking-wider">
+          <Card key={c.label} className="p-6 bg-card border-border shadow-sm flex items-center gap-4 group hover:border-primary/50 transition-colors">
+            <div className={`p-3 rounded-2xl bg-muted/50 ${c.color.replace('text-', 'bg-').split(' ')[0]}/10 group-hover:scale-110 transition-transform`}>
+              <c.icon className={`w-6 h-6 ${c.color}`} />
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">
                 {c.label}
               </p>
-              <c.icon className={`w-4 h-4 ${c.color}`} />
+              <p className="font-display text-3xl leading-none">{c.value}</p>
             </div>
-            <p className="font-display text-2xl md:text-3xl truncate">{c.value}</p>
           </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
-        {/* Gráfico de Faturamento */}
-        <Card className="p-4 lg:col-span-2 bg-card border-border">
-          <h3 className="font-bold mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-primary" /> Faturamento — últimos 7 dias
-          </h3>
-          <div style={{ width: "100%", height: 260 }}>
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Gráfico de Faturamento - Estilo Moderno */}
+        <Card className="p-6 bg-card border-border">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest">
+              <TrendingUp className="w-4 h-4 text-primary" /> Faturamento Semanal
+            </h3>
+          </div>
+          <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={stats.chart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} opacity={0.2} />
                 <XAxis
                   dataKey="day"
                   stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
+                  fontSize={11}
                   axisLine={false}
                   tickLine={false}
+                  tick={{ dy: 10 }}
                 />
                 <YAxis
                   stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
+                  fontSize={11}
                   axisLine={false}
                   tickLine={false}
+                  tickFormatter={(v) => `R$${v}`}
                 />
                 <Tooltip
-                  cursor={{ fill: "hsl(var(--muted)/0.3)" }}
+                  cursor={{ fill: "hsl(var(--primary)/0.05)" }}
                   contentStyle={{
                     background: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
-                    borderRadius: 8,
-                    fontWeight: "bold",
+                    borderRadius: 12,
+                    boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)",
+                    padding: "12px",
                   }}
-                  formatter={(v: number) => formatBRL(v)}
+                  formatter={(v: number) => [formatBRL(v), "Faturamento"]}
                 />
                 <Bar
                   dataKey="total"
                   fill="hsl(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                  barSize={40}
+                  radius={[6, 6, 0, 0]}
+                  barSize={32}
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
-        {/* Top Itens */}
-        <Card className="p-4 bg-card border-border">
-          <h3 className="font-bold mb-6">Top 5 itens vendidos</h3>
+        {/* Top Itens - Ranking Simplificado */}
+        <Card className="p-6 bg-card border-border">
+          <h3 className="font-bold mb-8 uppercase text-xs tracking-widest flex items-center gap-2">
+            <ShoppingBag className="w-4 h-4 text-primary" /> Campeões de Venda
+          </h3>
           {stats.top.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-10 text-center">
-              Sem dados suficientes.
-            </p>
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-2">
+              <ShoppingBag className="w-8 h-8 opacity-20" />
+              <p className="text-sm italic">Nenhum dado registrado.</p>
+            </div>
           ) : (
-            <ul className="space-y-5">
+            <div className="space-y-6">
               {stats.top.map((it, idx) => (
-                <li key={it.name} className="flex items-center gap-3">
-                  <span className="font-display text-xl text-primary/40 w-6">{idx + 1}</span>
+                <div key={it.name} className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-display text-lg text-primary/60 shrink-0">
+                    {idx + 1}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm truncate">{it.name}</p>
-                    <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-1.5">
-                      <div
+                    <div className="flex justify-between items-end mb-1.5">
+                      <p className="font-bold text-sm truncate uppercase tracking-tight">{it.name}</p>
+                      <span className="font-black text-xs text-primary">{it.qty} unid.</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(it.qty / stats.top[0].qty) * 100}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
                         className="h-full bg-gradient-gold"
-                        style={{ width: `${(it.qty / stats.top[0].qty) * 100}%` }}
                       />
                     </div>
                   </div>
-                  <span className="font-bold text-sm text-muted-foreground">{it.qty}x</span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4">
-        {/* Pagamentos */}
-        <Card className="p-4 bg-card border-border">
-          <h3 className="font-bold mb-4 flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-primary" /> Distribuição de Pagamentos
+      {/* Métodos de Entrega e Pagamento - Lado a Lado Simplificado */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <Card className="p-6 bg-card border-border">
+          <h3 className="font-bold mb-6 uppercase text-xs tracking-widest flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" /> Preferência de Entrega
           </h3>
-          <div style={{ width: "100%", height: 200 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={stats.paymentData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={70}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stats.paymentData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: 8,
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {stats.paymentData.map((p, i) => (
-              <div key={p.name} className="flex items-center gap-2 text-xs">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: COLORS[i % COLORS.length] }}
-                />
-                <span className="text-muted-foreground font-medium">
-                  {p.name}: <span className="text-foreground font-bold">{p.value}</span>
-                </span>
+          <div className="flex items-center justify-around py-4">
+            {stats.deliveryData.map((d, i) => (
+              <div key={d.name} className="text-center">
+                <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{d.name}</p>
+                <p className="font-display text-4xl text-foreground leading-none">{d.value}</p>
+                <div className={`h-1 w-12 mx-auto mt-3 rounded-full ${i === 0 ? 'bg-primary' : 'bg-orange-500'}`} />
               </div>
             ))}
           </div>
         </Card>
 
-        {/* Delivery vs Retirada */}
-        <Card className="p-4 bg-card border-border">
-          <h3 className="font-bold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" /> Delivery vs Retirada
+        <Card className="p-6 bg-card border-border">
+          <h3 className="font-bold mb-6 uppercase text-xs tracking-widest flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-primary" /> Métodos de Pagamento
           </h3>
-          <div style={{ width: "100%", height: 200 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={stats.deliveryData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={70}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stats.deliveryData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: 8,
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {stats.deliveryData.map((p, i) => (
-              <div key={p.name} className="flex items-center gap-2 text-xs">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: COLORS[(i + 2) % COLORS.length] }}
-                />
-                <span className="text-muted-foreground font-medium">
-                  {p.name}: <span className="text-foreground font-bold">{p.value}</span>
-                </span>
+          <div className="flex flex-wrap gap-4 justify-center py-2">
+            {stats.paymentData.map((p, i) => (
+              <div key={p.name} className="bg-muted/30 border border-border/50 px-4 py-3 rounded-xl min-w-[120px] text-center">
+                <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{p.name}</p>
+                <p className="font-display text-2xl text-primary leading-none">{p.value}</p>
               </div>
             ))}
           </div>
