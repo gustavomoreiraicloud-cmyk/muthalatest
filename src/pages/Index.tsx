@@ -468,16 +468,18 @@ const Index = () => {
                           <p className="font-bold text-primary text-xl md:text-2xl whitespace-nowrap font-display">
                             {formatBRL(Number(item.price))}
                           </p>
-                          <Button
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDetailItem(detail);
-                            }}
-                            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-8 md:h-10 text-xs md:text-sm"
-                          >
-                            <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Pedir
-                          </Button>
+                          <motion.div whileTap={{ scale: 0.9 }}>
+                            <Button
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDetailItem(detail);
+                              }}
+                              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-8 md:h-10 text-xs md:text-sm"
+                            >
+                              <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Pedir
+                            </Button>
+                          </motion.div>
                         </div>
                       </div>
                     </Card>
