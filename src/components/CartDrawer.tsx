@@ -426,7 +426,7 @@ export default function CartDrawer() {
         _address_street: deliveryMethod === "entrega" ? street : "Retirada",
         _address_number: deliveryMethod === "entrega" ? number : "0",
         _address_neighborhood:
-          deliveryMethod === "entrega" ? (detectedDistance ? `${detectedDistance.toFixed(1)}km` : "Calculado") : "Retirada no Local",
+          deliveryMethod === "entrega" ? (neighborhood ? `${neighborhood} (${detectedDistance?.toFixed(1)}km)` : (detectedDistance ? `${detectedDistance.toFixed(1)}km` : "Calculado")) : "Retirada no Local",
         _address_complement: complement || undefined,
         _address_reference: reference || undefined,
         _notes: notes || undefined,
