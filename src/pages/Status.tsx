@@ -138,6 +138,25 @@ export default function OrderStatus() {
               O Sabor dos Deuses
             </p>
           </div>
+
+          {userProfile && (
+            <Card className="w-full p-4 bg-primary/5 border-primary/20 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center text-primary-foreground font-black">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase text-primary leading-none">Seu Saldo</p>
+                  <p className="text-lg font-display">{userProfile.points || 0} Pontos</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase">Fidelidade</p>
+                <p className="text-[10px] text-muted-foreground italic">1 ponto = R$ 1,00</p>
+              </div>
+            </Card>
+          )}
+
           <Button
             variant="ghost"
             size="sm"
