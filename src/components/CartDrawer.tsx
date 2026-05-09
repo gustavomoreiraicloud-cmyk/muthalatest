@@ -418,6 +418,11 @@ export default function CartDrawer() {
       if (!order) throw new Error("Order not returned");
 
       setConfirmation({ orderNumber: order.order_number, orderId: order.id });
+      
+      // Salvar no localStorage para facilitar o acompanhamento posterior
+      localStorage.setItem("last_order_number", String(order.order_number));
+      localStorage.setItem("last_order_phone", phone);
+
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
