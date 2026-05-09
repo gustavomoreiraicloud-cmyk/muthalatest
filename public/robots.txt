@@ -1,14 +1,12 @@
+Sitemap: https://oi-hug-happy.lovable.app/sitemap.xml
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /conta/
+
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /
