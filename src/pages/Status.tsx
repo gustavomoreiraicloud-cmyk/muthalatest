@@ -56,6 +56,11 @@ export default function OrderStatus() {
       setPhone(savedPh);
       fetchOrder(savedId, savedPh);
     }
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+      audioRef.current.load();
+    }
   }, []);
 
   const fetchOrder = async (id: string, ph: string) => {
