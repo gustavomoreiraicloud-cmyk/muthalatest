@@ -1053,7 +1053,7 @@ export default function CartDrawer() {
             )}
 
             <div className="space-y-4 pt-2">
-              {payment === "pix" && settings?.pix_key && (
+              {payment === "pix" && PIX_KEY && (
                 <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in slide-in-from-top-2">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black uppercase tracking-widest text-primary">Pague com PIX</p>
