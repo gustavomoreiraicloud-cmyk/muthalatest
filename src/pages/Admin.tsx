@@ -19,10 +19,89 @@ import { toast } from "sonner";
 export default function Admin() {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const knownIds = useRef<Set<string>>(new Set());
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", replace: true });
   }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (!isAdmin || !user) return;
+
+    // Inicializa o áudio se ainda não existir
+    if (!audioRef.current) {
+      audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+      audioRef.current.load();
+    }
+
+    const sendPushNotification = (title: string, body: string) => {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      new Notification(title, {
+        body,
+        icon: "/muthala-logo.png",
+        tag: "new-order",
+        requireInteraction: true,
+      });
+    };
+
+    const playBeep = () => {
+      const soundOn = localStorage.getItem("muthala_admin_sound") !== "0";
+      if (!soundOn || !audioRef.current) return;
+      
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(e => console.warn("Erro ao tocar áudio:", e));
+    };
+
+    // Carregar IDs iniciais para evitar notificações duplicadas de pedidos antigos
+    supabase
+      .from("orders")
+      .select("id")
+      .order("created_at", { ascending: false })
+      .limit(100)
+      .then(({ data }) => {
+        data?.forEach(o => knownIds.current.add(o.id));
+      });
+
+    const channel = supabase
+      .channel("admin-global-notifications")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, (payload) => {
+        const o = payload.new as { id: string, customer_name: string | null };
+        if (!knownIds.current.has(o.id)) {
+          knownIds.current.add(o.id);
+          
+          // Só toca o som e mostra toast se NÃO estiver na aba de pedidos
+          // Se estiver na aba de pedidos, o componente AdminOrders já lida com isso
+          const isOrdersPage = location.pathname === "/admin/pedidos";
+          
+          if (!isOrdersPage) {
+            playBeep();
+            
+            const notifyOn = localStorage.getItem("muthala_admin_notify") === "1";
+            if (notifyOn) {
+              sendPushNotification(
+                "🍔 NOVO PEDIDO!",
+                `Novo pedido de ${o.customer_name || "cliente"} recebido agora.`
+              );
+            }
+
+            toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
+              duration: 15000,
+              action: {
+                label: "Ver pedidos",
+                onClick: () => navigate({ to: "/admin/pedidos" })
+              }
+            });
+          }
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, user, location.pathname, navigate]);
 
   if (loading) {
     return (
