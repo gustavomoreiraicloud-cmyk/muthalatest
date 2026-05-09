@@ -40,9 +40,11 @@ export function useStoreSettings() {
       .channel(`store-settings-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "store_settings_public" },
+        { event: "*", schema: "public", table: "store_settings" },
         (payload) => {
-          if (payload.new) setSettings(payload.new as unknown as StoreSettings);
+          if (mounted) {
+            load(); // Refetch via RPC on change to ensure we get the safe data
+          }
         },
       )
       .subscribe();
