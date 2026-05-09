@@ -259,8 +259,8 @@ export default function CartDrawer() {
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Adicionar margem de trajeto (aprox 30% a mais que linha reta)
-      const estimatedRoadDist = dist * 1.3;
+      // Reduzir a margem de trajeto (estava em 30%, vamos para 15% para ser mais fiel ao centro)
+      const estimatedRoadDist = dist * 1.15;
       setDetectedDistance(estimatedRoadDist);
       
       // Estimativa de tempo: 20 min base + 3 min por km
