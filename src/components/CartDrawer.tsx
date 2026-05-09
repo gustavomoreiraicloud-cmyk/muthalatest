@@ -410,7 +410,7 @@ export default function CartDrawer() {
           price: Number(parsePrice(i.price)),
           options: i.options,
         })),
-        _user_id: user?.id || undefined,
+        _user_id: (user as any)?.id || undefined,
         _points_used: pointsDiscount,
       });
 
