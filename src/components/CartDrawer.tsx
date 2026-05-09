@@ -494,10 +494,6 @@ export default function CartDrawer() {
       localStorage.setItem("last_order_number", String(order.order_number));
       localStorage.setItem("last_order_phone", phone);
 
-      // Abrir o WhatsApp após salvar no banco de dados para garantir o envio do comprovante/detalhes
-      const message = buildOrderMessage(order.order_number, order.id);
-      window.open(buildWhatsAppLink(message), "_blank");
-
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -1083,7 +1079,7 @@ export default function CartDrawer() {
                     </div>
                   )}
                   <p className="text-[9px] text-muted-foreground leading-tight italic">
-                    * Após o pagamento, clique em "Finalizar via WhatsApp" e envie o comprovante.
+                    * Após o pagamento, clique em "Finalizar Pedido" e aguarde a confirmação.
                   </p>
                 </div>
               )}
