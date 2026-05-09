@@ -45,6 +45,11 @@ export default function OrderStatus() {
     if (id) setOrderId(id);
     if (ph) setPhone(ph);
     if (id && ph) fetchOrder(id, ph);
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+      audioRef.current.load();
+    }
   }, []);
 
   const fetchOrder = async (id: string, ph: string) => {
@@ -54,7 +59,6 @@ export default function OrderStatus() {
 
     const orderNum = id ? parseInt(id) : null;
     
-    // Se ID for fornecido, deve ser numérico de 4 dígitos (opcional se ph estiver presente)
     if (id && !(/^\d+$/.test(id))) {
       setLoading(false);
       setOrder(null);
@@ -70,6 +74,8 @@ export default function OrderStatus() {
 
     if (found) {
       setOrder(found);
+      setLoading(false);
+      
       const channel = supabase
         .channel(`order-status-${found.id}`)
         .on(
@@ -84,14 +90,22 @@ export default function OrderStatus() {
             const updatedOrder = payload.new as any;
             setOrder((prev: any) => ({ ...prev, ...updatedOrder }));
 
-            if (updatedOrder.status !== found.status) {
-              const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
-              if (Notification.permission === "granted") {
-                new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
-                  body: `Seu pedido #${updatedOrder.order_number} mudou de status!`,
-                  icon: "/muthala-logo.png",
-                });
-              }
+            const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
+            
+            // Tocar som e notificar
+            if (audioRef.current) {
+              audioRef.current.play().catch(() => {});
+            }
+            
+            toast.info(`Pedido #${updatedOrder.order_number}: ${statusInfo?.label || updatedOrder.status}`, {
+              description: "O status do seu pedido foi atualizado!"
+            });
+
+            if (Notification.permission === "granted") {
+              new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
+                body: `Seu pedido #${updatedOrder.order_number} mudou de status!`,
+                icon: "/muthala-logo.png",
+              });
             }
           },
         )
@@ -107,8 +121,6 @@ export default function OrderStatus() {
     }
 
     setLoading(false);
-    // Silently handle error for production
-    // if (error) console.error(error);
   };
 
   const handleSearch = (e: React.FormEvent) => {
