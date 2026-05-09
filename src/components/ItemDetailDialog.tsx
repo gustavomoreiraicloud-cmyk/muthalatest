@@ -113,8 +113,8 @@ const getPortionSizes = (itemName: string) => {
 };
 
 const BEVERAGES = [
-  { id: "conti_cola", label: "CONTI COLA LATA", price: 3.99 },
-  { id: "conti_guarana", label: "CONTI GUARANÁ LATA", price: 3.99 },
+  { id: "conti_cola", label: "CONTI COLA LATA", price: 1.99 },
+  { id: "conti_guarana", label: "CONTI GUARANÁ LATA", price: 1.99 },
 ];
 
 const ADDITIONALS = [
@@ -311,7 +311,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
                 <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
                   <div>
                     <h4 className="font-bold text-sm uppercase tracking-tight">
-                      CONTI 1,99 CENTAVOS
+                      PROMOÇÃO: BEBIDA POR 1,99
                     </h4>
                     <p className="text-[10px] text-muted-foreground uppercase font-semibold">
                       Escolha até 1 opção

@@ -15,6 +15,8 @@ export type StoreSettings = {
   latitude: number | null;
   longitude: number | null;
   estimated_delivery_time: number | null;
+  pix_key: string | null;
+  pix_qr_code_url: string | null;
 };
 
 export function useStoreSettings() {

@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371; // Raio da Terra em km
@@ -1010,7 +1011,7 @@ export default function CartDrawer() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-border px-6 py-4 space-y-2 bg-background/40">
+          <div className="border-t border-border px-6 py-4 space-y-3 bg-background/40">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
               <span>{formatBRL(subtotal)}</span>
@@ -1049,18 +1050,61 @@ export default function CartDrawer() {
                 Pedido mínimo {formatBRL(MIN_ORDER)}. Faltam {formatBRL(MIN_ORDER - subtotal)}.
               </p>
             )}
-            <Button
-              onClick={handleCheckout}
-              disabled={!canCheckout}
-              size="lg"
-              className="w-full bg-[hsl(142_76%_45%)] hover:bg-[hsl(142_76%_40%)] text-white font-bold"
-            >
-              <MessageCircle className="w-5 h-5 mr-2" />
-              {submitting ? "Enviando..." : "Confirmar pedido"}
-            </Button>
+
+            <div className="space-y-4 pt-2">
+              {payment === "pix" && settings?.pix_key && (
+                <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primary">Pague com PIX</p>
+                    <Badge variant="outline" className="text-[10px] uppercase font-bold">Copia e Cola</Badge>
+                  </div>
+                  <div className="bg-background/50 p-3 rounded-lg border border-primary/10 flex items-center justify-between gap-3">
+                    <code className="text-[11px] font-mono break-all line-clamp-1">{settings.pix_key}</code>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-8 px-2 text-primary hover:text-primary hover:bg-primary/20"
+                      onClick={() => {
+                        navigator.clipboard.writeText(settings.pix_key!);
+                        toast.success("Chave PIX copiada!");
+                      }}
+                    >
+                      Copiar
+                    </Button>
+                  </div>
+                  {settings.pix_qr_code_url && (
+                    <div className="flex flex-col items-center gap-2 pt-2">
+                      <img src={settings.pix_qr_code_url} alt="QR Code PIX" className="w-32 h-32 rounded-lg bg-white p-2" />
+                      <p className="text-[9px] text-muted-foreground uppercase font-bold">Ou escaneie o QR Code acima</p>
+                    </div>
+                  )}
+                  <p className="text-[9px] text-muted-foreground leading-tight italic">
+                    * Após o pagamento, clique em "Finalizar via WhatsApp" e envie o comprovante.
+                  </p>
+                </div>
+              )}
+
+              <Button
+                onClick={handleCheckout}
+                disabled={!canCheckout}
+                size="lg"
+                className="w-full h-16 bg-gradient-fire text-white font-black uppercase tracking-[0.1em] text-sm md:text-base rounded-2xl shadow-glow animate-pulse-cta disabled:opacity-50 disabled:animate-none group relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <div className="flex items-center justify-center gap-3">
+                  {submitting ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : (
+                    <MessageCircle className="w-6 h-6 fill-current" />
+                  )}
+                  <span>Finalizar via WhatsApp</span>
+                </div>
+              </Button>
+            </div>
+
             <button
               onClick={clear}
-              className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth"
+              className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth pt-2"
             >
               Limpar carrinho
             </button>

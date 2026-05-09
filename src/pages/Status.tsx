@@ -104,9 +104,16 @@ export default function OrderStatus() {
             const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
             
             // Tocar som e notificar
-            if (audioRef.current) {
-              audioRef.current.play().catch(() => {});
-            }
+            const playSound = () => {
+              if (audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play().catch(() => {});
+              }
+            };
+            
+            playSound();
+            // Toca novamente após 1s para garantir que o cliente ouça
+            setTimeout(playSound, 1500);
             
             toast.info(`Pedido #${updatedOrder.order_number}: ${statusInfo?.label || updatedOrder.status}`, {
               description: "O status do seu pedido foi atualizado!"
