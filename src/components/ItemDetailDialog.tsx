@@ -162,8 +162,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
   useEffect(() => {
     if (open && item) {
-      const initialSizes = [...getBurgerSizes(item.name), ...getPortionSizes(item.name)];
-      setSize(initialSizes.length > 0 ? initialSizes[0].id : "");
+      setSize("");
       setBeverage("");
       setSelectedExtras([]);
       setDoneness("ao_ponto");
@@ -265,15 +264,17 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
             {allSizes.length > 0 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
+                <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!size ? "bg-destructive/10 border-destructive/50" : "bg-muted/30 border-border/50"}`}>
                   <div>
-                    <h4 className="font-bold text-sm uppercase tracking-tight">Escolha 1 opção</h4>
+                    <h4 className={`font-bold text-sm uppercase tracking-tight ${!size ? "text-destructive" : ""}`}>
+                      Escolha 1 opção
+                    </h4>
                     <p className="text-[10px] text-muted-foreground uppercase font-semibold">
                       Obrigatório
                     </p>
                   </div>
-                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">
-                    1/1
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${!size ? "bg-destructive text-destructive-foreground" : "bg-primary/10 text-primary"}`}>
+                    {size ? "1/1" : "0/1"}
                   </span>
                 </div>
                 <RadioGroup value={size} onValueChange={setSize} className="gap-0">
@@ -420,9 +421,10 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
           <Button
             onClick={handleAdd}
-            className="flex-1 h-12 md:h-14 bg-gradient-gold text-primary-foreground hover:opacity-95 font-black uppercase tracking-widest text-xs md:text-sm rounded-xl shadow-glow"
+            disabled={allSizes.length > 0 && !size}
+            className="flex-1 h-12 md:h-14 bg-gradient-gold text-primary-foreground hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase tracking-widest text-xs md:text-sm rounded-xl shadow-glow"
           >
-            Adicionar <span className="mx-2 opacity-50 font-normal">|</span> {formatBRL(totalPrice)}
+            {allSizes.length > 0 && !size ? "Selecione o tamanho" : "Adicionar"} <span className="mx-2 opacity-50 font-normal">|</span> {formatBRL(totalPrice)}
           </Button>
         </div>
       </DialogContent>
