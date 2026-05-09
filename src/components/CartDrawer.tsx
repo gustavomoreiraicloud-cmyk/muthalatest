@@ -366,11 +366,10 @@ export default function CartDrawer() {
         _delivery_fee: Number(fee),
         _total: Number(total),
         _payment_method: payment,
-        _address_street: (deliveryMethod === "entrega" ? street : undefined) || undefined,
-        _address_number: (deliveryMethod === "entrega" ? number : undefined) || undefined,
+        _address_street: deliveryMethod === "entrega" ? street : "Retirada",
+        _address_number: deliveryMethod === "entrega" ? number : "0",
         _address_neighborhood:
-          (deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local") ||
-          undefined,
+          deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local",
         _address_complement: complement || undefined,
         _address_reference: reference || undefined,
         _notes: notes || undefined,
