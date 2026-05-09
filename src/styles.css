@@ -121,6 +121,9 @@
   .shadow-glow {
     box-shadow: 0 10px 40px -10px oklch(0.8 0.15 60 / 0.4);
   }
+  .shadow-glow-sm {
+    box-shadow: 0 5px 20px -5px oklch(0.8 0.15 60 / 0.3);
+  }
   .shadow-deep {
     box-shadow: 0 25px 60px -15px oklch(0 0 0 / 0.7);
   }

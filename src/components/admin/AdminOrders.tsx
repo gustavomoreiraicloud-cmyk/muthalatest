@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff } from "lucide-react";
+import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
@@ -480,18 +480,18 @@ export default function AdminOrders() {
             return (
               <Card key={o.id} className="overflow-hidden bg-card border-border shadow-md">
                 {/* Header do Card - Informações Principais */}
-                <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-muted/20">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 px-3 py-1 rounded-lg border border-primary/20">
-                      <span className="font-display text-xl text-primary leading-none">
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-muted/40">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-primary px-3 py-1.5 rounded-lg shadow-glow">
+                      <span className="font-display text-2xl text-primary-foreground leading-none">
                         #{o.order_number ?? o.id.slice(0, 6)}
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg leading-none mb-1">
+                      <h3 className="font-black text-2xl leading-none mb-1 tracking-tight text-foreground uppercase">
                         {o.customer_name || "Cliente"}
                       </h3>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs font-bold text-primary flex items-center gap-1">
                         {new Date(o.created_at).toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -512,35 +512,35 @@ export default function AdminOrders() {
 
                 <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-border">
                   {/* Coluna 1: Itens e Observações */}
-                  <div className="p-4 space-y-4">
+                  <div className="p-6 space-y-6">
                     <div>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
-                        Itens do Pedido
+                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+                        <ShoppingBag className="w-4 h-4" /> Itens do Pedido
                       </h4>
                       <ul className="space-y-3">
                         {o.items?.map((it, idx) => (
                           <li
                             key={idx}
-                            className="bg-background/40 rounded-lg p-2 border border-border/50"
+                            className="bg-background border border-border/60 rounded-xl p-3 shadow-sm"
                           >
-                            <div className="flex justify-between items-start">
-                              <span className="font-bold text-sm leading-tight">
-                                <span className="text-primary mr-1">{it.qty}×</span> {it.name}
+                            <div className="flex justify-between items-start gap-4">
+                              <span className="font-black text-lg text-foreground leading-tight">
+                                <span className="text-primary mr-1.5">{it.qty}×</span> {it.name}
                               </span>
-                              <span className="text-xs font-medium text-muted-foreground">
+                              <span className="font-bold text-sm text-muted-foreground whitespace-nowrap">
                                 {it.price}
                               </span>
                             </div>
                             {it.options && Object.keys(it.options).length > 0 && (
-                              <div className="mt-1.5 pt-1.5 border-t border-border/30 grid grid-cols-1 gap-0.5 text-[10px] text-muted-foreground">
-                                {it.options.burgerSize && <span>📏 {it.options.burgerSize}</span>}
-                                {it.options.doneness && <span>🔥 {it.options.doneness}</span>}
-                                {it.options.beverage && <span>🥤 {it.options.beverage}</span>}
+                              <div className="mt-2.5 pt-2.5 border-t border-border/30 grid grid-cols-1 gap-1 text-[11px] font-medium text-muted-foreground">
+                                {it.options.burgerSize && <span className="flex items-center gap-1.5"><span className="text-primary/70">📏</span> {it.options.burgerSize}</span>}
+                                {it.options.doneness && <span className="flex items-center gap-1.5"><span className="text-primary/70">🔥</span> {it.options.doneness}</span>}
+                                {it.options.beverage && <span className="flex items-center gap-1.5"><span className="text-primary/70">🥤</span> {it.options.beverage}</span>}
                                 {it.options.extras && it.options.extras.length > 0 && (
-                                  <span>➕ {it.options.extras.join(", ")}</span>
+                                  <span className="flex items-center gap-1.5"><span className="text-primary/70">➕</span> {it.options.extras.join(", ")}</span>
                                 )}
                                 {it.options.notes && (
-                                  <span className="italic text-primary/80">
+                                  <span className="mt-1 p-2 bg-primary/5 rounded border border-primary/10 italic text-primary font-bold">
                                     📝 {it.options.notes}
                                   </span>
                                 )}
@@ -552,45 +552,45 @@ export default function AdminOrders() {
                     </div>
 
                     {o.notes && (
-                      <div className="p-3 bg-primary/5 border border-primary/10 rounded-lg">
-                        <p className="text-[10px] font-black uppercase text-primary mb-1">
-                          Observação Geral
+                      <div className="p-4 bg-orange-500/10 border-2 border-orange-500/20 rounded-xl">
+                        <p className="text-xs font-black uppercase text-orange-400 mb-2 flex items-center gap-2">
+                          📢 Observação do Cliente
                         </p>
-                        <p className="text-xs italic leading-relaxed">{o.notes}</p>
+                        <p className="text-sm font-bold italic leading-relaxed text-foreground">{o.notes}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Coluna 2: Entrega e Pagamento */}
-                  <div className="p-4 space-y-4 bg-muted/5">
+                  <div className="p-6 space-y-6 bg-muted/5">
                     <div>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                         Entrega e Contato
                       </h4>
                       {fullAddr ? (
-                        <div className="space-y-2">
-                          <div className="text-xs leading-relaxed">
-                            <p className="font-bold">📍 {fullAddr}</p>
-                            <p className="text-muted-foreground">
+                        <div className="space-y-4">
+                          <div className="text-sm leading-relaxed">
+                            <p className="font-black text-lg text-foreground mb-1">📍 {fullAddr}</p>
+                            <p className="font-bold text-muted-foreground uppercase text-xs tracking-wider">
                               {o.address_neighborhood || "Bairro não informado"}
                             </p>
                             {(o.address_complement || o.address_reference) && (
-                              <p className="text-[10px] mt-1 text-muted-foreground italic border-l-2 border-border pl-2">
-                                {o.address_complement && `Compl: ${o.address_complement} `}
-                                {o.address_reference && `Ref: ${o.address_reference}`}
-                              </p>
+                              <div className="mt-3 p-3 bg-card border-l-4 border-primary rounded shadow-sm text-xs space-y-1">
+                                {o.address_complement && <p className="font-bold text-foreground">🏠 Complemento: <span className="font-medium text-muted-foreground">{o.address_complement}</span></p>}
+                                {o.address_reference && <p className="font-bold text-foreground">🚩 Referência: <span className="font-medium text-muted-foreground">{o.address_reference}</span></p>}
+                              </div>
                             )}
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-3">
                             {mapsUrl && (
                               <Button
                                 asChild
                                 size="sm"
-                                variant="secondary"
-                                className="h-8 text-[10px] font-bold"
+                                variant="outline"
+                                className="flex-1 h-10 text-xs font-black uppercase tracking-tighter"
                               >
                                 <a href={mapsUrl} target="_blank" rel="noreferrer">
-                                  📍 Ver no Mapa
+                                  Ver no Mapa
                                 </a>
                               </Button>
                             )}
@@ -598,11 +598,11 @@ export default function AdminOrders() {
                               <Button
                                 asChild
                                 size="sm"
-                                variant="secondary"
-                                className="h-8 text-[10px] font-bold text-green-500 hover:text-green-600"
+                                variant="outline"
+                                className="flex-1 h-10 text-xs font-black uppercase tracking-tighter border-green-500/50 text-green-500 hover:bg-green-500 hover:text-white"
                               >
                                 <a href={waUrl} target="_blank" rel="noreferrer">
-                                  💬 WhatsApp
+                                  Chamar Whats
                                 </a>
                               </Button>
                             )}
@@ -618,27 +618,30 @@ export default function AdminOrders() {
                       )}
                     </div>
 
-                    <div className="pt-4 border-t border-border">
-                      <div className="flex justify-between items-center mb-3">
+                    <div className="pt-6 border-t border-border/50">
+                      <div className="flex justify-between items-end mb-2">
                         <div>
-                          <p className="text-[10px] font-black uppercase text-muted-foreground">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">
                             Pagamento
                           </p>
-                          <p className="text-xs font-bold">
-                            💳 {PAY_LABEL[o.payment_method ?? ""] ?? "—"}
-                          </p>
-                          {o.payment_method === "dinheiro" && o.change_for && (
-                            <p className="text-[10px] text-orange-400 font-bold mt-0.5">
-                              Troco p/ {formatBRL(Number(o.change_for))} (Levar{" "}
-                              {formatBRL(Number(o.change_for) - Number(o.total))})
-                            </p>
-                          )}
+                          <div className="flex flex-col gap-1">
+                            <Badge variant="outline" className="w-fit border-primary/30 text-primary font-black uppercase text-[10px] px-2 py-0.5">
+                              {PAY_LABEL[o.payment_method ?? ""] ?? "—"}
+                            </Badge>
+                            {o.payment_method === "dinheiro" && o.change_for && (
+                              <div className="p-2 bg-orange-500/10 border border-orange-500/20 rounded text-[10px] text-orange-400 font-black uppercase mt-1">
+                                Troco p/ {formatBRL(Number(o.change_for))}
+                                <br />
+                                <span className="text-foreground">Levar {formatBRL(Number(o.change_for) - Number(o.total))}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] font-black uppercase text-muted-foreground">
-                            Total
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
+                            Total Geral
                           </p>
-                          <p className="font-display text-2xl text-primary leading-none">
+                          <p className="font-display text-4xl text-primary leading-none shadow-glow-sm">
                             {formatBRL(Number(o.total))}
                           </p>
                         </div>
@@ -648,27 +651,26 @@ export default function AdminOrders() {
                 </div>
 
                 {/* Footer do Card - Ações */}
-                <div className="p-3 bg-muted/20 border-t border-border flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => printOrder(o)}
-                      className="h-9 px-3"
-                    >
-                      <Printer className="w-4 h-4 mr-2" />{" "}
-                      <span className="text-xs font-bold">Imprimir</span>
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="p-4 bg-muted/30 border-t border-border/50 flex flex-wrap items-center justify-between gap-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => printOrder(o)}
+                    className="h-12 px-6 border-2 border-primary/20 hover:border-primary/60 font-black uppercase text-xs tracking-widest shadow-sm"
+                  >
+                    <Printer className="w-5 h-5 mr-2 text-primary" /> Imprimir
+                  </Button>
+                  <div className="flex flex-wrap gap-2">
                     {STATUSES.map((s) => (
                       <Button
                         key={s}
                         size="sm"
                         variant={o.status === s ? "default" : "outline"}
                         onClick={() => updateStatus(o.id, s)}
-                        className={`h-9 px-3 text-[10px] uppercase font-black transition-all ${
-                          o.status === s ? "bg-primary shadow-glow" : "opacity-60 hover:opacity-100"
+                        className={`h-10 px-4 text-[10px] uppercase font-black tracking-widest transition-all duration-300 ${
+                          o.status === s 
+                            ? "bg-primary text-primary-foreground shadow-glow scale-105" 
+                            : "opacity-40 hover:opacity-100 hover:border-primary/50"
                         }`}
                       >
                         {STATUS_CONFIG[s].label}
