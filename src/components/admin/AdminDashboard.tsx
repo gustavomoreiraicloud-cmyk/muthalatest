@@ -190,7 +190,7 @@ export default function AdminDashboard() {
         {/* Gráfico de Faturamento - Estilo Moderno */}
         <Card className="p-6 bg-card border-border">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest">
+            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-white">
               <TrendingUp className="w-4 h-4 text-primary" /> Faturamento Semanal
             </h3>
           </div>
