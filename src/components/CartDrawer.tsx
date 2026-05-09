@@ -578,6 +578,48 @@ export default function CartDrawer() {
                 </AnimatePresence>
               </ul>
 
+              {/* User Login/Account Header */}
+              <div className="mb-6">
+                {!user ? (
+                  <Card className="p-4 bg-primary/5 border-dashed border-primary/30 text-center">
+                    <p className="text-xs font-bold uppercase text-primary mb-2">Fidelidade Muthala</p>
+                    <p className="text-[10px] text-muted-foreground mb-3">
+                      Crie sua conta para ganhar pontos e salvar seus endereços.
+                    </p>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full text-xs font-bold uppercase border-primary/50 text-primary hover:bg-primary/10"
+                      onClick={() => {
+                        close();
+                        window.location.href = "/auth?mode=signup&redirect=/";
+                      }}
+                    >
+                      <User className="w-3 h-3 mr-2" /> Criar conta / Entrar
+                    </Button>
+                  </Card>
+                ) : (
+                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl border border-border/50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-primary-foreground font-black text-xs">
+                        {user.user_metadata?.full_name?.charAt(0).toUpperCase() || "U"}
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase text-muted-foreground leading-none">Bem-vindo,</p>
+                        <p className="text-xs font-bold">{user.user_metadata?.full_name?.split(" ")[0] || "Guerreiro"}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => signOut()}
+                      className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                      title="Sair"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* Cliente */}
               <div className="space-y-3 mb-5">
                 <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">
