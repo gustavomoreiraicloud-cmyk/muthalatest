@@ -356,7 +356,8 @@ export default function AdminOrders() {
     setSoundOn(v);
     localStorage.setItem(SOUND_KEY, v ? "1" : "0");
     if (v) {
-      toast.info("Som de alerta ativado (teste tocando agora)");
+      toast.info("Som de alerta ativado! (Tocando teste...)");
+      // Importante: a interação de clicar no switch permite que o áudio seja tocado
       playBeep();
     }
   };
