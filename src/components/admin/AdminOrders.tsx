@@ -185,10 +185,12 @@ const printOrder = (o: Order) => {
       <p style="text-align:center">Obrigado! 🍔</p>
       <script>
         window.onload = () => {
-          window.print();
-          window.onafterprint = () => window.close();
-          // Fallback para navegadores que não suportam onafterprint ou se o usuário cancelar
-          setTimeout(() => window.close(), 10000);
+          setTimeout(() => {
+            window.print();
+            window.onafterprint = () => window.close();
+          }, 500);
+          // Fallback
+          setTimeout(() => window.close(), 15000);
         };
       </script>
     </body></html>
@@ -261,12 +263,16 @@ const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
       <p class="footer">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <script>
         window.onload = () => {
-          if (${autoPrint}) {
-            window.print();
-            window.onafterprint = () => window.close();
-            // Fallback
-            setTimeout(() => window.close(), 10000);
-          }
+          setTimeout(() => {
+            if (${autoPrint}) {
+              window.print();
+              window.onafterprint = () => window.close();
+            }
+          }, 500);
+          // Fallback
+          setTimeout(() => {
+            if (${autoPrint}) window.close();
+          }, 15000);
         };
       </script>
     </body></html>
