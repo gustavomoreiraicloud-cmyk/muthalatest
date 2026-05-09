@@ -201,6 +201,8 @@ const printOrder = (o: Order) => {
   `);
   w.document.close();
 };
+
+const printDailyReport = (orders: Order[]) => {
   const today = new Date().toLocaleDateString("pt-BR");
   const finishedOrders = orders.filter(
     (o) =>
