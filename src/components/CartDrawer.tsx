@@ -319,8 +319,27 @@ export default function CartDrawer() {
         description: `Distância: ${estimatedRoadDist.toFixed(1)}km`,
       });
     } catch (err) {
-      console.error(err);
-      toast.error("Erro ao calcular distância");
+      console.error("Erro Nominatim:", err);
+      // Fallback final: se a API falhar ou der erro, tentamos usar o CEP se disponível para geolocalizar
+      if (cep.length === 8) {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&postalcode=${cep}&country=Brazil&limit=1`);
+          const cepData = await res.json();
+          if (cepData && cepData.length > 0) {
+            const { lat, lon } = cepData[0];
+            const dist = calculateDistance(settings?.latitude || -22.6612, settings?.longitude || -50.4132, parseFloat(lat), parseFloat(lon));
+            const estimatedRoadDist = dist * 1.15;
+            setDetectedDistance(estimatedRoadDist);
+            const time = Math.round(15 + estimatedRoadDist * 2.5);
+            setEstimatedTime(`${time}-${time + 10} min`);
+            toast.success("Localizado via CEP");
+            return;
+          }
+        } catch (cepErr) {
+          console.error("Erro fallback CEP:", cepErr);
+        }
+      }
+      toast.error("Erro ao calcular distância. Tente digitar o nome da rua novamente.");
     } finally {
       setCalculatingDistance(false);
     }
