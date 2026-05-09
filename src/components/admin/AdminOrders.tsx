@@ -87,7 +87,7 @@ const sendPushNotification = (title: string, body: string) => {
 // Referência global para o áudio para evitar recriação constante e facilitar o controle
 let audioInstance: HTMLAudioElement | null = null;
 
-const playBeep = (loop = false) => {
+const playBeep = () => {
   try {
     if (!audioInstance) {
       audioInstance = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
@@ -95,20 +95,13 @@ const playBeep = (loop = false) => {
     }
     
     audioInstance.currentTime = 0;
-    audioInstance.loop = loop;
+    audioInstance.loop = false;
     const playPromise = audioInstance.play();
     
     if (playPromise !== undefined) {
       playPromise.catch(error => {
         console.warn("Autoplay bloqueado. Interaja com a página primeiro.", error);
       });
-    }
-
-    // Se estiver em loop (novo pedido), para após 30 segundos se ninguém atender
-    if (loop) {
-      setTimeout(() => {
-        if (audioInstance) audioInstance.loop = false;
-      }, 30000);
     }
   } catch (err) {
     console.error("Erro ao tocar som:", err);
@@ -119,7 +112,6 @@ const stopBeep = () => {
   if (audioInstance) {
     audioInstance.pause();
     audioInstance.currentTime = 0;
-    audioInstance.loop = false;
   }
 };
 
@@ -330,7 +322,7 @@ export default function AdminOrders() {
           knownIds.current.add(o.id);
           // O som e notificação global agora são tratados no Admin.tsx
           // Aqui tocamos o som apenas se estiver na página de pedidos para garantir feedback
-          if (soundOn) playBeep(true); // Loop para novo pedido
+          if (soundOn) playBeep();
           if (notifyOn) {
             sendPushNotification(
               "🍔 NOVO PEDIDO!",
@@ -338,12 +330,10 @@ export default function AdminOrders() {
             );
           }
           toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
-            duration: 30000,
-            onAutoClose: () => stopBeep(),
+            duration: 15000,
             action: {
-              label: "ATENDER",
+              label: "Ver pedido",
               onClick: () => {
-                stopBeep();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }
