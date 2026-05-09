@@ -40,19 +40,53 @@ type Order = {
 export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
 
   useEffect(() => {
     const since = new Date();
     since.setDate(since.getDate() - 30); // Aumentar para 30 dias para métricas mensais
-    supabase
-      .from("orders")
-      .select("id,total,items,status,created_at,payment_method,delivery_method")
-      .gte("created_at", since.toISOString())
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
-        setOrders((data as unknown as Order[]) ?? []);
-        setLoading(false);
-      });
+    const fetchOrders = async () => {
+      const { data } = await supabase
+        .from("orders")
+        .select("id,total,items,status,created_at,payment_method,delivery_method")
+        .gte("created_at", since.toISOString())
+        .order("created_at", { ascending: true });
+      
+      setOrders((data as unknown as Order[]) ?? []);
+      setLastUpdate(new Date());
+      setLoading(false);
+    };
+
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    // Canal em tempo real para atualizar o dashboard quando houver novos pedidos ou mudanças
+    const channel = supabase
+      .channel("dashboard-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders" },
+        () => {
+          // Recarrega os dados quando algo muda
+          const since = new Date();
+          since.setDate(since.getDate() - 30);
+          supabase
+            .from("orders")
+            .select("id,total,items,status,created_at,payment_method,delivery_method")
+            .gte("created_at", since.toISOString())
+            .order("created_at", { ascending: true })
+            .then(({ data }) => {
+              setOrders((data as unknown as Order[]) ?? []);
+              setLastUpdate(new Date());
+            });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const stats = useMemo(() => {
@@ -165,7 +199,7 @@ export default function AdminDashboard() {
         </div>
         <div className="text-right">
           <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Última atualização</p>
-          <p className="text-sm font-bold text-foreground">{new Date().toLocaleTimeString()}</p>
+          <p className="text-sm font-bold text-foreground">{lastUpdate.toLocaleTimeString()}</p>
         </div>
       </div>
 
