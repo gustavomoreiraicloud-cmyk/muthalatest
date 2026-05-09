@@ -17,25 +17,21 @@ export default function Auth() {
 
   useEffect(() => {
     if (!loading && user && isAdmin) {
-      console.log("Usuário já logado, redirecionando para /admin");
       navigate({ to: "/admin", replace: true });
     }
   }, [loading, user, isAdmin, navigate]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Tentando login com:", username);
     setSubmitting(true);
     const { error } = await signIn(username, password);
     setSubmitting(false);
     
     if (error) {
-      console.error("Erro no login:", error);
       toast.error(error);
       return;
     }
     
-    console.log("Login bem-sucedido!");
     toast.success("Bem-vindo!");
     navigate({ to: "/admin", replace: true });
   };
