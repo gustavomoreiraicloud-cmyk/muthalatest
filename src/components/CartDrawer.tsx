@@ -862,14 +862,36 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="border-t border-border px-6 py-4 space-y-2 bg-background/40">
+            {userPoints > 0 && (
+              <div className="flex items-center justify-between p-3 bg-primary/10 border border-primary/30 rounded-xl mb-2">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-primary" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-primary leading-none">Fidelidade</p>
+                    <p className="text-xs font-bold">{userPoints} pontos disponíveis</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-muted-foreground">USAR?</span>
+                  <Switch checked={usePoints} onCheckedChange={setUsePoints} />
+                </div>
+              </div>
+            )}
+
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
               <span>{formatBRL(subtotal)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-sm text-[hsl(142_76%_55%)]">
-                <span>Desconto</span>
+                <span>Desconto Cupom</span>
                 <span>-{formatBRL(discount)}</span>
+              </div>
+            )}
+            {pointsDiscount > 0 && (
+              <div className="flex justify-between text-sm text-[hsl(142_76%_55%)]">
+                <span>Cashback (Pontos)</span>
+                <span>-{formatBRL(pointsDiscount)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
