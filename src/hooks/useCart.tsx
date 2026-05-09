@@ -16,7 +16,7 @@ export type CartItem = {
 
 type CartContextType = {
   items: CartItem[];
-  add: (item: Omit<CartItem, "qty">) => void;
+  add: (item: Omit<CartItem, "qty">, qty?: number) => void;
   remove: (id: string) => void;
   inc: (id: string) => void;
   dec: (id: string) => void;
@@ -68,16 +68,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items]);
 
-  const add: CartContextType["add"] = (item) => {
+  const add: CartContextType["add"] = (item, qty = 1) => {
     const id = getItemId(item);
     setItems((prev) => {
       const idx = prev.findIndex((i) => getItemId(i) === id);
       if (idx >= 0) {
         const next = [...prev];
-        next[idx] = { ...next[idx], qty: next[idx].qty + 1 };
+        next[idx] = { ...next[idx], qty: next[idx].qty + qty };
         return next;
       }
-      return [...prev, { ...item, qty: 1 }];
+      return [...prev, { ...item, qty }];
     });
   };
 

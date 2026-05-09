@@ -226,13 +226,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
       },
     };
 
-    add(cartItem);
-    // Corrigido: Se qty > 1, o 'add' deve ser chamado apenas uma vez com o qty correto 
-    // ou o loop deve adicionar sem resetar o qty interno do useCart.
-    // Atualmente o hook 'add' assume qty: 1 por padrão.
-    for (let i = 1; i < qty; i++) {
-      add(cartItem);
-    }
+    add(cartItem, qty);
 
     // Success feedback with more "premium" toast
     toast.success(`${qty}x ${item.name} no carrinho!`, {
