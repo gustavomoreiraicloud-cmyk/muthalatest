@@ -69,17 +69,18 @@ const checkoutSchema = z
     deliveryMethod: z.enum(["entrega", "retirada"]),
     street: z.string().trim().max(120).optional(),
     number: z.string().trim().max(10).optional(),
+    neighborhood: z.string().trim().max(120).optional(),
     deliveryRangeId: z.string().optional(),
   })
   .refine(
     (data) => {
       if (data.deliveryMethod === "entrega") {
-        return !!data.street && !!data.number && !!data.deliveryRangeId;
+        return !!data.street && !!data.number && !!data.neighborhood && !!data.deliveryRangeId;
       }
       return true;
     },
     {
-      message: "Preencha todos os campos do endereço para entrega",
+      message: "Preencha Rua, Número e Bairro para entrega",
       path: ["street"],
     },
   );
@@ -408,15 +409,16 @@ export default function CartDrawer() {
       }
     }
 
-    // Se for retirada, não validamos rua/número/bairro
-    const checkoutData = {
-      name,
-      phone,
-      deliveryMethod,
-      street: deliveryMethod === "entrega" ? street : "Retirada",
-      number: deliveryMethod === "entrega" ? number : "0",
-      deliveryRangeId: deliveryMethod === "entrega" ? (detectedDistance !== null ? "auto" : undefined) : "retirada",
-    };
+      // Se for retirada, não validamos rua/número/bairro
+      const checkoutData = {
+        name,
+        phone,
+        deliveryMethod,
+        street: deliveryMethod === "entrega" ? street : "Retirada",
+        number: deliveryMethod === "entrega" ? number : "0",
+        neighborhood: deliveryMethod === "entrega" ? neighborhood : "Retirada",
+        deliveryRangeId: deliveryMethod === "entrega" ? (detectedDistance !== null ? "auto" : undefined) : "retirada",
+      };
 
     const parsed = checkoutSchema.safeParse(checkoutData);
     if (!parsed.success) {
@@ -767,18 +769,17 @@ export default function CartDrawer() {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <Label className="text-xs">CEP *</Label>
+                        <Label className="text-xs">CEP (Opcional)</Label>
                         <Input
                           placeholder="00000-000"
                           maxLength={9}
                           value={cep}
                           onChange={(e) => handleCEPChange(e.target.value)}
                           inputMode="numeric"
-                          className="font-bold"
                         />
                       </div>
                       <div>
-                        <Label className="text-xs">Bairro</Label>
+                        <Label className="text-xs">Bairro *</Label>
                         <Input
                           value={neighborhood}
                           onChange={(e) => setNeighborhood(e.target.value)}
@@ -998,10 +999,16 @@ export default function CartDrawer() {
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Taxa de entrega</span>
               <span>
-                {freeShipping ? (
-                  <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
+                {deliveryMethod === "retirada" ? (
+                  formatBRL(0)
+                ) : detectedDistance !== null ? (
+                  freeShipping ? (
+                    <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
+                  ) : (
+                    formatBRL(fee)
+                  )
                 ) : (
-                  formatBRL(fee)
+                  <span className="text-[10px] text-muted-foreground italic">Calculará com endereço</span>
                 )}
               </span>
             </div>
