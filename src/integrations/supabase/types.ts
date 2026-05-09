@@ -304,6 +304,8 @@ export type Database = {
           min_order: number
           order_prep_time_multiplier: number | null
           phone: string
+          pix_key: string | null
+          pix_qr_code_url: string | null
           store_name: string
           updated_at: string | null
         }
@@ -320,6 +322,8 @@ export type Database = {
           min_order?: number
           order_prep_time_multiplier?: number | null
           phone?: string
+          pix_key?: string | null
+          pix_qr_code_url?: string | null
           store_name?: string
           updated_at?: string | null
         }
@@ -336,6 +340,8 @@ export type Database = {
           min_order?: number
           order_prep_time_multiplier?: number | null
           phone?: string
+          pix_key?: string | null
+          pix_qr_code_url?: string | null
           store_name?: string
           updated_at?: string | null
         }
