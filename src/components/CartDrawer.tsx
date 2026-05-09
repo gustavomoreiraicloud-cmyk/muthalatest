@@ -29,7 +29,7 @@ import {
   LogOut,
   Clock,
 } from "lucide-react";
-import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
+import { useCart, formatBRL, parsePrice, getItemId } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
