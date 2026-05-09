@@ -256,7 +256,6 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
                   target.src = "/placeholder.svg";
                 }
               }}
-              }}
             />
           </div>
 
