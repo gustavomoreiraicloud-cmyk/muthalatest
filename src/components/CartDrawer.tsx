@@ -149,12 +149,8 @@ export default function CartDrawer() {
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
     setValidatingCoupon(true);
-    const { data, error } = await supabase
-      .from("coupons")
-      .select("code,discount_type,discount_value,min_order,expires_at,active")
-      .eq("code", code)
-      .eq("active", true)
-      .maybeSingle();
+    const { data: rows, error } = await (supabase as any).rpc("validate_coupon", { _code: code });
+    const data = Array.isArray(rows) ? rows[0] : rows;
     setValidatingCoupon(false);
     if (error || !data) {
       toast.error("Cupom inválido");
