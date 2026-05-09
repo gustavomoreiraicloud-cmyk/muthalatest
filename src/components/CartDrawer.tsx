@@ -362,22 +362,22 @@ export default function CartDrawer() {
         _delivery_fee: Number(fee),
         _total: Number(total),
         _payment_method: payment,
-        _address_street: (deliveryMethod === "entrega" ? street : null) ?? undefined,
-        _address_number: (deliveryMethod === "entrega" ? number : null) ?? undefined,
+        _address_street: (deliveryMethod === "entrega" ? street : undefined) || undefined,
+        _address_number: (deliveryMethod === "entrega" ? number : undefined) || undefined,
         _address_neighborhood:
-          (deliveryMethod === "entrega" ? selectedRange?.label || null : "Retirada no Local") ??
+          (deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local") ||
           undefined,
-        _address_complement: (deliveryMethod === "entrega" ? complement || null : null) ?? undefined,
-        _address_reference: (deliveryMethod === "entrega" ? reference || null : null) ?? undefined,
-        _notes: (notes || null) ?? undefined,
-        _coupon_code: (coupon?.code ?? null) ?? undefined,
+        _address_complement: complement || undefined,
+        _address_reference: reference || undefined,
+        _notes: notes || undefined,
+        _coupon_code: coupon?.code || undefined,
         _items: items.map((i) => ({
           name: i.name,
           qty: i.qty,
           price: Number(parsePrice(i.price)),
           options: i.options,
         })),
-        _user_id: (user.user?.id || null) ?? undefined,
+        _user_id: user.user?.id || undefined,
       });
 
       if (orderError) throw orderError;
