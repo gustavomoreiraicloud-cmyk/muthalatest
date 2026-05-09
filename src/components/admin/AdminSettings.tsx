@@ -20,6 +20,8 @@ type Settings = {
   is_open: boolean;
   hours: string | null;
   business_hours: BusinessHours | null;
+  pix_key: string | null;
+  pix_qr_code_url: string | null;
 };
 
 export default function AdminSettings() {
@@ -59,6 +61,8 @@ export default function AdminSettings() {
         is_open: s.is_open,
         hours: s.hours,
         business_hours: (s.business_hours ?? DEFAULT_HOURS) as never,
+        pix_key: s.pix_key,
+        pix_qr_code_url: s.pix_qr_code_url,
       })
       .eq("id", s.id);
     setSaving(false);
@@ -111,6 +115,24 @@ export default function AdminSettings() {
           />
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border">
+          <div className="space-y-2">
+            <Label>Chave PIX (CPF, CNPJ, Celular, etc)</Label>
+            <Input 
+              value={s.pix_key ?? ""} 
+              onChange={(e) => setS({ ...s, pix_key: e.target.value })} 
+              placeholder="Ex: 123.456.789-00"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>URL do QR Code (opcional)</Label>
+            <Input 
+              value={s.pix_qr_code_url ?? ""} 
+              onChange={(e) => setS({ ...s, pix_qr_code_url: e.target.value })} 
+              placeholder="https://..."
+            />
+          </div>
+        </div>
         <div className="space-y-2 pt-2 border-t border-border">
           <Label>Horários por dia da semana</Label>
           <p className="text-xs text-muted-foreground">
