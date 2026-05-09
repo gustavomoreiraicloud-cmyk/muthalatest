@@ -272,7 +272,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               )}
             </DialogHeader>
 
-            {allSizes.length > 0 && (
+            {allSizes.length > 0 && item.category !== "bebidas" && item.category !== "porcoes" && (
               <div className="space-y-4">
                 <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!size ? "bg-destructive/10 border-destructive/50" : "bg-muted/30 border-border/50"}`}>
                   <div>
@@ -306,94 +306,100 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               </div>
             )}
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-tight">
-                    CONTI 1,99 CENTAVOS
-                  </h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
-                    Escolha até 1 opção
-                  </p>
-                </div>
-              </div>
-              <RadioGroup value={beverage} onValueChange={setBeverage} className="gap-0">
-                <Label className="flex items-center gap-3 p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10">
-                  <RadioGroupItem value="" />
-                  <span className="text-sm">Nenhuma opção</span>
-                </Label>
-                {BEVERAGES.map((b) => (
-                  <Label
-                    key={b.id}
-                    className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
-                  >
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value={b.id} />
-                      <span className="text-sm font-medium">{b.label}</span>
-                    </div>
-                    <span className="text-sm font-bold text-primary">+{formatBRL(b.price)}</span>
-                  </Label>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-tight">Adicionais</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
-                    Escolha até 20 opções
-                  </p>
-                </div>
-              </div>
-              <div className="grid gap-0">
-                {ADDITIONALS.map((extra) => (
-                  <div
-                    key={extra.id}
-                    className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/10 transition-colors last:border-0"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id={extra.id}
-                        checked={selectedExtras.includes(extra.id)}
-                        onCheckedChange={() => toggleExtra(extra.id)}
-                      />
-                      <Label htmlFor={extra.id} className="text-sm font-medium cursor-pointer">
-                        {extra.label}
-                      </Label>
-                    </div>
-                    <span className="text-sm font-bold text-primary">
-                      +{formatBRL(extra.price)}
-                    </span>
+            {(item.category === "hamburgueres" || item.category === "promocoes") && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
+                  <div>
+                    <h4 className="font-bold text-sm uppercase tracking-tight">
+                      CONTI 1,99 CENTAVOS
+                    </h4>
+                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                      Escolha até 1 opção
+                    </p>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-tight">Ponto do Hambúrger</h4>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold">
-                    Escolha 1 opção
-                  </p>
                 </div>
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">
-                  Obrigatório
-                </span>
-              </div>
-              <RadioGroup value={doneness} onValueChange={setDoneness} className="gap-0">
-                {DONENESS.map((d) => (
-                  <Label
-                    key={d.id}
-                    className="flex items-center gap-3 p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
-                  >
-                    <RadioGroupItem value={d.id} />
-                    <span className="text-sm font-medium">{d.label}</span>
+                <RadioGroup value={beverage} onValueChange={setBeverage} className="gap-0">
+                  <Label className="flex items-center gap-3 p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10">
+                    <RadioGroupItem value="" />
+                    <span className="text-sm">Nenhuma opção</span>
                   </Label>
-                ))}
-              </RadioGroup>
-            </div>
+                  {BEVERAGES.map((b) => (
+                    <Label
+                      key={b.id}
+                      className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
+                    >
+                      <div className="flex items-center gap-3">
+                        <RadioGroupItem value={b.id} />
+                        <span className="text-sm font-medium">{b.label}</span>
+                      </div>
+                      <span className="text-sm font-bold text-primary">+{formatBRL(b.price)}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
+
+            {(item.category === "hamburgueres" || item.category === "promocoes" || item.category === "porcoes") && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
+                  <div>
+                    <h4 className="font-bold text-sm uppercase tracking-tight">Adicionais</h4>
+                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                      Escolha até 20 opções
+                    </p>
+                  </div>
+                </div>
+                <div className="grid gap-0">
+                  {ADDITIONALS.map((extra) => (
+                    <div
+                      key={extra.id}
+                      className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-muted/10 transition-colors last:border-0"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          id={extra.id}
+                          checked={selectedExtras.includes(extra.id)}
+                          onCheckedChange={() => toggleExtra(extra.id)}
+                        />
+                        <Label htmlFor={extra.id} className="text-sm font-medium cursor-pointer">
+                          {extra.label}
+                        </Label>
+                      </div>
+                      <span className="text-sm font-bold text-primary">
+                        +{formatBRL(extra.price)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(item.category === "hamburgueres" || item.category === "promocoes") && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg border border-border/50">
+                  <div>
+                    <h4 className="font-bold text-sm uppercase tracking-tight">Ponto do Hambúrger</h4>
+                    <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+                      Escolha 1 opção
+                    </p>
+                  </div>
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">
+                    Obrigatório
+                  </span>
+                </div>
+                <RadioGroup value={doneness} onValueChange={setDoneness} className="gap-0">
+                  {DONENESS.map((d) => (
+                    <Label
+                      key={d.id}
+                      className="flex items-center gap-3 p-4 border-b border-border/50 cursor-pointer hover:bg-muted/10 transition-colors last:border-0"
+                    >
+                      <RadioGroupItem value={d.id} />
+                      <span className="text-sm font-medium">{d.label}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
 
             <div className="space-y-3">
               <h4 className="font-bold text-sm uppercase tracking-tight">Observações</h4>
