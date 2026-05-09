@@ -336,14 +336,17 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({
+    // Se for retirada, não validamos rua/número/bairro
+    const checkoutData = {
       name,
       phone,
       deliveryMethod,
-      street: deliveryMethod === "entrega" ? street : undefined,
-      number: deliveryMethod === "entrega" ? number : undefined,
-      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined,
-    });
+      street: deliveryMethod === "entrega" ? street : "Retirada",
+      number: deliveryMethod === "entrega" ? number : "0",
+      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : "retirada",
+    };
+
+    const parsed = checkoutSchema.safeParse(checkoutData);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -363,11 +366,10 @@ export default function CartDrawer() {
         _delivery_fee: Number(fee),
         _total: Number(total),
         _payment_method: payment,
-        _address_street: (deliveryMethod === "entrega" ? street : undefined) || undefined,
-        _address_number: (deliveryMethod === "entrega" ? number : undefined) || undefined,
+        _address_street: deliveryMethod === "entrega" ? street : "Retirada",
+        _address_number: deliveryMethod === "entrega" ? number : "0",
         _address_neighborhood:
-          (deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local") ||
-          undefined,
+          deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local",
         _address_complement: complement || undefined,
         _address_reference: reference || undefined,
         _notes: notes || undefined,
