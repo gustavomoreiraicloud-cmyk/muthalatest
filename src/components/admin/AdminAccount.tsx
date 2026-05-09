@@ -40,7 +40,7 @@ export default function AdminAccount() {
           <h3 className="font-bold">Conta</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          E-mail: <b className="text-primary">{user?.email}</b>
+          E-mail: <b className="text-primary">{user?.email?.split('@')[0]}</b>
         </p>
 
         <div className="border-t border-border pt-4 mt-4">
