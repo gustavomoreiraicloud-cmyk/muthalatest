@@ -162,17 +162,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {settings &&
-        (!settings.is_open || !isWithinHours(settings.business_hours ?? DEFAULT_HOURS)) &&
-        (() => {
-          const next = nextOpening(settings.business_hours ?? DEFAULT_HOURS);
-          return (
-            <div className="fixed top-0 inset-x-0 z-50 bg-destructive text-destructive-foreground text-center text-sm font-bold py-2 px-4">
-              🔒 Fechado agora
-              {next ? ` — ${formatNextOpening(next)}` : " — não estamos aceitando pedidos"}
-            </div>
-          );
-        })()}
       {/* NAV */}
       <header
         className={`fixed top-0 inset-x-0 z-40 transition-smooth ${scrolled ? "backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md" : "bg-transparent"}`}
