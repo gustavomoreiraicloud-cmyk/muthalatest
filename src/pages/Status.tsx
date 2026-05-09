@@ -177,7 +177,7 @@ export default function OrderStatus() {
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
             <p className="text-xs text-muted-foreground mb-3">
-              Informe <b>apenas um</b> dos campos abaixo:
+              Informe o número do pedido <b>e</b> o telefone cadastrado:
             </p>
             <form onSubmit={handleSearch} className="space-y-3">
               <Input
