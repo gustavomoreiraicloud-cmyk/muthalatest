@@ -17,7 +17,10 @@ export type StoreSettings = {
   estimated_delivery_time: number | null;
   pix_key: string | null;
   pix_qr_code_url: string | null;
-};
+} & Partial<{
+  pix_key: string;
+  pix_qr_code_url: string;
+}>;
 
 export function useStoreSettings() {
   const [settings, setSettings] = useState<StoreSettings | null>(null);
