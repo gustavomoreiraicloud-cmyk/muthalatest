@@ -12,6 +12,7 @@ import {
   Wallet,
   MapPin,
   Clock,
+  FileDown,
 } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import {
