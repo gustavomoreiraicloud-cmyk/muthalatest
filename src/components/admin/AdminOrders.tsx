@@ -196,7 +196,7 @@ const printOrder = (o: Order) => {
   w.document.close();
 };
 
-const printDailyReport = (orders: Order[]) => {
+const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
   const today = new Date().toLocaleDateString("pt-BR");
   const finishedOrders = orders.filter(
     (o) =>
@@ -261,10 +261,12 @@ const printDailyReport = (orders: Order[]) => {
       <p class="footer">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
       <script>
         window.onload = () => {
-          window.print();
-          window.onafterprint = () => window.close();
-          // Fallback
-          setTimeout(() => window.close(), 10000);
+          if (${autoPrint}) {
+            window.print();
+            window.onafterprint = () => window.close();
+            // Fallback
+            setTimeout(() => window.close(), 10000);
+          }
         };
       </script>
     </body></html>
@@ -430,7 +432,7 @@ export default function AdminOrders() {
             <Switch checked={soundOn} onCheckedChange={toggleSound} />
           </label>
 
-          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders)} className="font-bold uppercase text-xs h-8">
+          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders, autoPrint)} className="font-bold uppercase text-xs h-8">
             <Printer className="w-3.5 h-3.5 mr-1" /> Relatório
           </Button>
           <Button variant="outline" size="sm" onClick={load} className="font-bold h-8">
