@@ -409,15 +409,16 @@ export default function CartDrawer() {
       }
     }
 
-    // Se for retirada, não validamos rua/número/bairro
-    const checkoutData = {
-      name,
-      phone,
-      deliveryMethod,
-      street: deliveryMethod === "entrega" ? street : "Retirada",
-      number: deliveryMethod === "entrega" ? number : "0",
-      deliveryRangeId: deliveryMethod === "entrega" ? (detectedDistance !== null ? "auto" : undefined) : "retirada",
-    };
+      // Se for retirada, não validamos rua/número/bairro
+      const checkoutData = {
+        name,
+        phone,
+        deliveryMethod,
+        street: deliveryMethod === "entrega" ? street : "Retirada",
+        number: deliveryMethod === "entrega" ? number : "0",
+        neighborhood: deliveryMethod === "entrega" ? neighborhood : "Retirada",
+        deliveryRangeId: deliveryMethod === "entrega" ? (detectedDistance !== null ? "auto" : undefined) : "retirada",
+      };
 
     const parsed = checkoutSchema.safeParse(checkoutData);
     if (!parsed.success) {
