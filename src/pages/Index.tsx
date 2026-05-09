@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -15,6 +16,7 @@ import {
   Plus,
   Loader2,
   ClipboardList,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -39,6 +41,7 @@ import ItemDetailDialog, { DetailItem } from "@/components/ItemDetailDialog";
 import { useCart, formatBRL } from "@/hooks/useCart";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { useMenu } from "@/hooks/useMenu";
+import { useAuth } from "@/hooks/useAuth";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { nextOpening, formatNextOpening, DEFAULT_HOURS } from "@/lib/businessHours";
 
@@ -105,6 +108,9 @@ const reviews = [
 ];
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     // Scroll to top when entering index
     window.scrollTo(0, 0);
@@ -201,6 +207,26 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            {!user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden sm:flex text-xs font-bold uppercase tracking-wider"
+                onClick={() => navigate({ to: "/auth" })}
+              >
+                <User className="w-4 h-4 mr-2" /> Entrar
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden sm:flex text-xs font-bold uppercase tracking-wider text-primary"
+                onClick={() => navigate({ to: "/status" })}
+              >
+                <User className="w-4 h-4 mr-2" /> Minha Conta
+              </Button>
+            )}
+
             <a
               href="/status"
               aria-label="Acompanhar Pedido"
