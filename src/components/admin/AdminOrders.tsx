@@ -323,7 +323,16 @@ export default function AdminOrders() {
               `Novo pedido de ${o.customer_name || "cliente"} recebido agora.`,
             );
           }
-          toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`);
+          toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
+            duration: 15000,
+            action: {
+              label: "Ver pedido",
+              onClick: () => {
+                // Rola para o topo para garantir que o pedido apareça
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }
+          });
         }
         load();
       })
