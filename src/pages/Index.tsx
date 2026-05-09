@@ -160,8 +160,45 @@ const Index = () => {
     ingredients: it.ingredients ?? undefined,
   });
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "name": "Muthala Burger",
+    "image": [ASSET_MAP["/src/assets/hero-burger.jpg"]],
+    "priceRange": "$$",
+    "servesCuisine": "Hambúrguer",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "R. Smith Vasconcelos, 312",
+      "addressLocality": "Assis",
+      "addressRegion": "SP",
+      "postalCode": "19800-010",
+      "addressCountry": "BR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -22.6617,
+      "longitude": -50.4132
+    },
+    "url": "https://oi-hug-happy.lovable.app/",
+    "telephone": "+5518997962510",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "18:00",
+        "closes": "23:00"
+      }
+    ],
+    "menu": "https://oi-hug-happy.lovable.app/#menu"
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* NAV */}
       <header
         className={`fixed top-0 inset-x-0 z-40 transition-smooth ${scrolled ? "backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md" : "bg-transparent"}`}
@@ -274,12 +311,13 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/40 md:bg-black/20" />
         <div className="container mx-auto relative z-10 py-12 md:py-20 px-4">
           <div className="max-w-3xl animate-fade-in-up text-center md:text-left">
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-3 uppercase tracking-tighter">
+            <h1 className="sr-only">Muthala Burger - Melhor Hamburgueria Artesanal de Assis SP</h1>
+            <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-3 uppercase tracking-tighter" aria-hidden="true">
               <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-1 md:mb-0">
                 MUTHALA
               </span>{" "}
               Burguer
-            </h1>
+            </div>
             <p className="text-xs md:text-base text-primary font-bold mb-4 tracking-[0.2em] uppercase">
               O Sabor dos Deuses • Assis/SP
             </p>
