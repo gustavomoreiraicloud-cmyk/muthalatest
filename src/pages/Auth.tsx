@@ -5,18 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Lock, User, Mail, Phone, ArrowLeft } from "lucide-react";
+import { Lock, User, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+
+// Converte username -> e-mail interno (Supabase exige e-mail)
+const toInternalEmail = (raw: string) => {
+  const v = raw.trim().toLowerCase();
+  if (!v) return "";
+  if (v.includes("@")) return v;
+  // sanitize: apenas letras, números, ponto, hífen, underline
+  const safe = v.replace(/[^a-z0-9._-]/g, "");
+  return `${safe}@muthala.local`;
+};
 
 export default function Auth() {
   const { signIn, signUp, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const search = useSearch({ from: "/auth" }) as { redirect?: string; mode?: string };
   const [isSignUp, setIsSignUp] = useState(search.mode === "signup");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -31,22 +39,31 @@ export default function Auth() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!username.trim()) {
+      toast.error("Informe o usuário");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Senha deve ter pelo menos 6 caracteres");
+      return;
+    }
     setSubmitting(true);
+    const email = toInternalEmail(username);
 
     if (isSignUp) {
-      const { error } = await signUp(email, password, { full_name: fullName, phone });
+      const { error } = await signUp(email, password, { full_name: username });
       setSubmitting(false);
       if (error) {
         toast.error(error);
         return;
       }
-      toast.success("Conta criada! Verifique seu e-mail (se habilitado) ou entre agora.");
-      setIsSignUp(false);
+      toast.success("Conta criada! Entrando...");
+      await signIn(email, password);
     } else {
       const { error } = await signIn(email, password);
       setSubmitting(false);
       if (error) {
-        toast.error("Credenciais inválidas");
+        toast.error("Usuário ou senha inválidos");
         return;
       }
       toast.success("Bem-vindo!");
@@ -83,57 +100,20 @@ export default function Auth() {
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
-          {isSignUp && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-xs uppercase font-bold">
-                  Nome Completo
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="fullName"
-                    className="pl-10 bg-background/50"
-                    placeholder="Seu nome"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-xs uppercase font-bold">
-                  Telefone / WhatsApp
-                </Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="phone"
-                    className="pl-10 bg-background/50"
-                    placeholder="18 99999-9999"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-xs uppercase font-bold">
-              E-mail
+            <Label htmlFor="username" className="text-xs uppercase font-bold">
+              Usuário
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                id="email"
-                type="email"
+                id="username"
+                type="text"
                 className="pl-10 bg-background/50"
-                placeholder="seu@email.com"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ex: admin"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
@@ -150,7 +130,7 @@ export default function Auth() {
                 type="password"
                 className="pl-10 bg-background/50"
                 placeholder="••••••••"
-                autoComplete="current-password"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
