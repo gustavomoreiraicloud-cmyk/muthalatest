@@ -108,7 +108,7 @@ export default function CartDrawer() {
   const [number, setNumber] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
   const [deliveryRangeId, setDeliveryRangeId] = useState("");
-  const [deliveryRanges, setDeliveryRanges] = useState<any[]>([]);
+  const [deliveryRanges, setDeliveryRanges] = useState<DeliveryRange[]>([]);
   const [loadingRanges, setLoadingRanges] = useState(false);
   const [complement, setComplement] = useState("");
   const [reference, setReference] = useState("");
@@ -137,7 +137,7 @@ export default function CartDrawer() {
         .select("*")
         .eq("active", true)
         .order("min_km");
-      setDeliveryRanges(data || []);
+      setDeliveryRanges((data as unknown as DeliveryRange[]) || []);
       setLoadingRanges(false);
     };
     if (isOpen) loadRanges();
@@ -183,7 +183,9 @@ export default function CartDrawer() {
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
     setValidatingCoupon(true);
-    const { data: rows, error } = await (supabase as any).rpc("validate_coupon", { _code: code });
+    const { data: rows, error } = await supabase.rpc("validate_coupon", {
+      _code: code,
+    });
     const data = Array.isArray(rows) ? rows[0] : rows;
     setValidatingCoupon(false);
     if (error || !data) {
@@ -227,8 +229,8 @@ export default function CartDrawer() {
       }
 
       const { lat, lon } = data[0];
-      const storeLat = (settings as any)?.latitude || -22.6612;
-      const storeLon = (settings as any)?.longitude || -50.4132;
+      const storeLat = settings?.latitude || -22.6612;
+      const storeLon = settings?.longitude || -50.4132;
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
@@ -351,7 +353,8 @@ export default function CartDrawer() {
       const { data: user } = await supabase.auth.getUser();
 
       // 1. Inserir o pedido principal
-      const { data: order, error: orderError } = await (supabase.from("orders") as any)
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
         .insert({
           customer_name: name,
           customer_phone: phone,
@@ -388,7 +391,7 @@ export default function CartDrawer() {
       // 2. Inserir os itens do pedido para relatórios detalhados
       const itemsToInsert = items.map((i) => ({
         order_id: order.id,
-        product_id: (i as any).id || null,
+        product_id: (i as { id?: string }).id || null,
         product_name: i.name,
         quantity: i.qty,
         price: Number(i.price),
@@ -396,7 +399,9 @@ export default function CartDrawer() {
         options: i.options || [],
       }));
 
-      const { error: itemsError } = await supabase.from("order_items").insert(itemsToInsert as any);
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(itemsToInsert as any);
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
