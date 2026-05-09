@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
+import { Link, Outlet, useNavigate, useLocation } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,8 @@ import {
   UserCog,
   MapPin,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function Admin() {
   const { user, isAdmin, loading, signOut } = useAuth();
