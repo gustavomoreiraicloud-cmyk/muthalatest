@@ -509,7 +509,7 @@ const Index = () => {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 animate-fade-in">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 animate-fade-in">
                 {current.items.map((item) => {
                   const detail = toDetail(item);
                   return (
@@ -523,7 +523,7 @@ const Index = () => {
                       }`}
                     >
                       {item.highlight && (
-                        <div className="bg-gradient-gold text-primary-foreground text-[10px] md:text-xs font-black uppercase tracking-widest py-1.5 px-4 text-center">
+                        <div className="bg-gradient-gold text-primary-foreground text-[8px] md:text-xs font-black uppercase tracking-widest py-1 md:py-1.5 px-4 text-center">
                           ⭐ Destaque
                         </div>
                       )}
@@ -545,19 +545,19 @@ const Index = () => {
                           height={225}
                         />
                       </div>
-                      <div className="p-4 md:p-6 flex-1 flex flex-col">
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h4 className="font-display text-xl md:text-2xl uppercase leading-none tracking-tight">
+                      <div className="p-2.5 md:p-6 flex-1 flex flex-col">
+                        <div className="flex items-start justify-between gap-1 mb-1 md:mb-2">
+                          <h4 className="font-display text-base md:text-2xl uppercase leading-tight tracking-tight">
                             {item.name}
                           </h4>
                         </div>
                         {item.description && (
-                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                          <p className="text-[10px] md:text-sm text-muted-foreground leading-tight mb-2 line-clamp-2 md:line-clamp-3">
                             {item.description}
                           </p>
                         )}
-                        <div className="flex items-center justify-between gap-2 pt-3 mt-auto border-t border-border/40">
-                          <p className="font-bold text-primary text-xl md:text-2xl whitespace-nowrap font-display">
+                        <div className="flex items-center justify-between gap-2 pt-2 md:pt-3 mt-auto border-t border-border/40">
+                          <p className="font-bold text-primary text-base md:text-2xl whitespace-nowrap font-display">
                             {formatBRL(Number(item.price))}
                           </p>
                           <motion.div whileTap={{ scale: 0.9 }}>
@@ -567,9 +567,9 @@ const Index = () => {
                                 e.stopPropagation();
                                 setDetailItem(detail);
                               }}
-                              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-8 md:h-10 text-xs md:text-sm"
+                              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-7 md:h-10 text-[10px] md:text-sm px-2 md:px-4"
                             >
-                              <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Pedir
+                              <Plus className="w-3 h-3 md:w-4 md:h-4 mr-0.5 md:mr-1" /> Pedir
                             </Button>
                           </motion.div>
                         </div>
