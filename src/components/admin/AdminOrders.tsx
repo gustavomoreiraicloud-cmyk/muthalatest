@@ -297,7 +297,7 @@ export default function AdminOrders() {
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(500);
     if (error) toast.error("Erro ao carregar pedidos");
     const list = (data as unknown as Order[]) ?? [];
     setOrders(list);
