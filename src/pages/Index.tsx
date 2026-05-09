@@ -224,7 +224,7 @@ const Index = () => {
             <div className="relative group-hover:scale-105 transition-smooth">
               <img
                 src={muthalaLogo}
-                alt="Muthala Burger"
+                alt="Logo Muthala Burger - O Sabor dos Deuses"
                 className="relative h-10 w-10 md:h-14 md:w-14 object-contain"
                 width={56}
                 height={56}
@@ -424,7 +424,7 @@ const Index = () => {
             <div className="absolute -inset-4 bg-primary/20 rounded-full opacity-30 blur-3xl animate-pulse" />
             <img
               src={burgerBacon}
-              alt="Hambúrguer artesanal Muthala"
+              alt="Suculento hambúrguer de bacon com queijo derretido"
               className="relative rounded-2xl md:rounded-3xl shadow-2xl w-full max-w-[280px] md:max-w-none mx-auto aspect-square object-cover"
               loading="lazy"
               width={600}
@@ -530,7 +530,7 @@ const Index = () => {
                       <div className="aspect-[4/3] overflow-hidden bg-muted">
                         <img
                           src={detail.img}
-                          alt={item.name}
+                          alt={`Hambúrguer ${item.name} - Muthala Burger`}
                           className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-700 brightness-[1.05] contrast-[1.1] saturate-[1.1] [image-rendering:auto]"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
