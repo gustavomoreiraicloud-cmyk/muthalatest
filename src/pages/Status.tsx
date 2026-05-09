@@ -40,19 +40,22 @@ export default function OrderStatus() {
   }, []);
 
   const fetchOrder = async (id: string, ph: string) => {
-    if (!id || !ph) return;
+    if (!id && !ph) return;
     setLoading(true);
     setSearched(true);
 
-    if (!(id.length === 4 && /^\d+$/.test(id))) {
+    const orderNum = id ? parseInt(id) : null;
+    
+    // Se ID for fornecido, deve ser numérico de 4 dígitos (opcional se ph estiver presente)
+    if (id && !(/^\d+$/.test(id))) {
       setLoading(false);
       setOrder(null);
       return;
     }
 
     const { data, error } = await supabase.rpc("lookup_order_status", {
-      _order_number: parseInt(id),
-      _phone: ph,
+      _order_number: orderNum ?? undefined,
+      _phone: ph || undefined,
     });
 
     const found = Array.isArray(data) && data.length > 0 ? data[0] : null;
@@ -152,7 +155,7 @@ export default function OrderStatus() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              Informe o número de 4 dígitos e o telefone usado no pedido para acompanhar.
+              Informe o número do pedido OU o telefone usado no pedido para acompanhar.
             </p>
             {searched && !order && (
               <p className="text-xs text-destructive mt-2">

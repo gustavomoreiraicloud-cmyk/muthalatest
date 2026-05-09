@@ -346,7 +346,7 @@ export type Database = {
         Returns: boolean
       }
       lookup_order_status: {
-        Args: { _order_number: number; _phone: string }
+        Args: { _order_number?: number; _phone?: string }
         Returns: {
           created_at: string
           delivery_fee: number
