@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -15,6 +16,7 @@ import {
   Plus,
   Loader2,
   ClipboardList,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
