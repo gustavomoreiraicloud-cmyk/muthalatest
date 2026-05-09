@@ -73,9 +73,11 @@ const sendPushNotification = (title: string, body: string) => {
 
   const notification = new Notification(title, {
     body,
-    icon: "/muthala-logo.png", // Usando o logo como ícone
+    icon: "/muthala-logo.png",
     tag: "new-order",
     requireInteraction: true,
+    silent: false, // Tenta forçar o som do sistema
+    badge: "/muthala-logo.png",
   });
 
   notification.onclick = () => {

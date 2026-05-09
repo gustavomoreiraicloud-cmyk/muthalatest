@@ -38,7 +38,8 @@ export default function Admin() {
         icon: "/muthala-logo.png",
         tag: "new-order",
         requireInteraction: true,
-        silent: false, // Força som se o sistema permitir
+        silent: false,
+        badge: "/muthala-logo.png",
       });
     };
 
