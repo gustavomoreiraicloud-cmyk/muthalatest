@@ -182,7 +182,7 @@ export default function CartDrawer() {
   }, [street, number, deliveryMethod]);
 
   const handleCEPChange = async (value: string) => {
-    const raw = value.replace(/\D/g, "");
+    const raw = value.replace(/\D/g, "").slice(0, 8);
     setCep(raw);
     if (raw.length === 8) {
       try {
@@ -193,12 +193,11 @@ export default function CartDrawer() {
           if (data.bairro) setNeighborhood(data.bairro);
           toast.success("Endereço preenchido!");
           
-          // Focar no número após preencher a rua
           setTimeout(() => {
             const numInput = document.getElementById("address-number");
             if (numInput) (numInput as HTMLInputElement).focus();
           }, 100);
-        } else {
+        } else if (data.erro) {
           toast.error("CEP não encontrado");
         }
       } catch (err) {

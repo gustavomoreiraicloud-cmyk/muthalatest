@@ -32,9 +32,10 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "muthala_cart_v1";
 
-const parsePrice = (p: string | number): number => {
+const parsePrice = (p: string | number | undefined | null): number => {
+  if (p == null) return 0;
   if (typeof p === "number") return p;
-  const cleaned = p.replace(/[^\d,]/g, "").replace(",", ".");
+  const cleaned = p.replace(/[^\d,.]/g, "").replace(",", ".");
   const n = parseFloat(cleaned);
   return Number.isFinite(n) ? n : 0;
 };
