@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff } from "lucide-react";
+import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
