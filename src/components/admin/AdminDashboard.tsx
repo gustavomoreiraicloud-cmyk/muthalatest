@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Loader2,
   TrendingUp,
@@ -12,6 +13,7 @@ import {
   Wallet,
   MapPin,
   Clock,
+  FileDown,
 } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import {
@@ -190,16 +192,112 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="flex items-center justify-between border-b border-border pb-4">
+      <div className="flex items-center justify-between border-b border-border pb-4 flex-wrap gap-4">
         <div>
           <h2 className="font-display text-3xl uppercase text-primary">Resumo Geral</h2>
           <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">
             Métricas dos últimos 30 dias
           </p>
         </div>
-        <div className="text-right">
-          <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Última atualização</p>
-          <p className="text-sm font-bold text-foreground">{lastUpdate.toLocaleTimeString()}</p>
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="font-bold uppercase text-[10px] tracking-widest h-9"
+            onClick={() => {
+              const today = new Date().toLocaleDateString('pt-BR');
+              const w = window.open("", "_blank", "width=800,height=900");
+              if (!w) return;
+              
+              const validOrders = orders.filter(o => o.status !== 'cancelado');
+              const totalRevenue = validOrders.reduce((acc, o) => acc + Number(o.total), 0);
+              
+              w.document.write(`
+                <html><head><title>Relatório de Vendas - Muthala Burger</title>
+                <style>
+                  body{font-family:sans-serif;padding:40px;color:#333;line-height:1.5}
+                  .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e94560;padding-bottom:20px;margin-bottom:30px}
+                  .title{font-size:24px;font-weight:bold;color:#e94560}
+                  .meta{font-size:12px;color:#666}
+                  table{width:100%;border-collapse:collapse;margin-top:20px}
+                  th{background:#f8f9fa;text-align:left;padding:12px;border-bottom:2px solid #dee2e6;font-size:12px;text-transform:uppercase}
+                  td{padding:12px;border-bottom:1px solid #dee2e6;font-size:13px}
+                  .total-row{background:#f8f9fa;font-weight:bold}
+                  .footer{margin-top:40px;text-align:center;font-size:10px;color:#999}
+                  .badge{padding:4px 8px;border-radius:4px;font-size:10px;font-weight:bold;text-transform:uppercase}
+                  @media print { .no-print { display: none } }
+                </style></head><body>
+                  <div class="no-print" style="margin-bottom: 20px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; background: #e94560; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🖨️ Imprimir / Salvar PDF</button>
+                  </div>
+                  <div class="header">
+                    <div>
+                      <div class="title">MUTHALA BURGER</div>
+                      <div class="meta">Relatório de Vendas (Últimos 30 dias)</div>
+                    </div>
+                    <div style="text-align:right">
+                      <div class="meta">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+                      <div class="meta">Total de Pedidos: ${validOrders.length}</div>
+                    </div>
+                  </div>
+
+                  <div style="display:grid;grid-template-cols:1fr 1fr;gap:20px;margin-bottom:30px">
+                    <div style="background:#fef2f2;padding:20px;border-radius:10px;border:1px solid #fee2e2">
+                      <div class="meta" style="color:#e94560;font-weight:bold;margin-bottom:5px">FATURAMENTO TOTAL</div>
+                      <div style="font-size:28px;font-weight:bold;color:#e94560">${formatBRL(totalRevenue)}</div>
+                    </div>
+                  </div>
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Nº Pedido</th>
+                        <th>Método</th>
+                        <th>Pagamento</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${validOrders.reverse().map(o => `
+                        <tr>
+                          <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
+                          <td>#${o.id.slice(0, 6).toUpperCase()}</td>
+                          <td>${o.delivery_method === 'retirada' ? 'Retirada' : 'Entrega'}</td>
+                          <td style="text-transform:uppercase">${o.payment_method}</td>
+                          <td style="font-weight:bold">${formatBRL(Number(o.total))}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                    <tfoot>
+                      <tr class="total-row">
+                        <td colspan="4" style="text-align:right">TOTAL ACUMULADO:</td>
+                        <td>${formatBRL(totalRevenue)}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
+                  <div class="footer">
+                    Muthala Burger - Sistema de Gestão Interna<br/>
+                    © ${new Date().getFullYear()} - Todos os direitos reservados
+                  </div>
+                  <script>
+                    window.onload = () => {
+                      // Opcional: auto disparar print
+                      // setTimeout(() => window.print(), 500);
+                    };
+                  </script>
+                </body></html>
+              `);
+              w.document.close();
+            }}
+          >
+            <FileDown className="w-4 h-4 mr-2" /> Exportar PDF
+          </Button>
+          <div className="text-right hidden sm:block">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Última atualização</p>
+            <p className="text-sm font-bold text-foreground">{lastUpdate.toLocaleTimeString()}</p>
+          </div>
         </div>
       </div>
 
