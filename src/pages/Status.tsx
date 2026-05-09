@@ -185,13 +185,12 @@ export default function OrderStatus() {
                 value={orderId}
                 onChange={(e) => {
                   setOrderId(e.target.value);
-                  if (e.target.value) setPhone("");
                 }}
                 className="bg-background"
               />
               <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
                 <div className="flex-1 h-px bg-border" />
-                ou
+                E
                 <div className="flex-1 h-px bg-border" />
               </div>
               <Input
@@ -199,7 +198,6 @@ export default function OrderStatus() {
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);
-                  if (e.target.value) setOrderId("");
                 }}
                 className="bg-background"
               />
