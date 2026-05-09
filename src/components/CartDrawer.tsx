@@ -27,6 +27,7 @@ import {
   MapPinIcon,
   User,
   LogOut,
+  Clock,
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -129,6 +130,7 @@ export default function CartDrawer() {
   const [submitting, setSubmitting] = useState(false);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
+  const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
 
   const [confirmation, setConfirmation] = useState<{
     orderNumber: number | null;
@@ -188,12 +190,17 @@ export default function CartDrawer() {
   })();
   const freeShipping =
     coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
-  const fee =
-    deliveryMethod === "retirada" || freeShipping
-      ? 0
-      : selectedRange
-        ? Number(selectedRange.fee)
-        : DEFAULT_DELIVERY_FEE;
+
+  // Regras de frete: até 3km = R$5, até 5km = R$8, acima de 5km = R$12
+  const calculatedFee = useMemo(() => {
+    if (deliveryMethod === "retirada") return 0;
+    if (detectedDistance === null) return DEFAULT_DELIVERY_FEE;
+    if (detectedDistance <= 3) return 5;
+    if (detectedDistance <= 5) return 8;
+    return 12;
+  }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
+
+  const fee = freeShipping ? 0 : calculatedFee;
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
@@ -231,42 +238,38 @@ export default function CartDrawer() {
     }
 
     setCalculatingDistance(true);
+    setEstimatedTime(null);
     try {
       const address = `${street}, ${number}, Assis, SP, Brasil`;
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
       );
       const data = await response.json();
 
       if (!data || data.length === 0) {
         toast.error(
-          "Não encontramos este endereço em Assis. Verifique os dados ou chame no WhatsApp.",
+          "Não encontramos este endereço em Assis. Verifique os dados.",
         );
         return;
       }
 
       const { lat, lon } = data[0];
-      const storeLat = settings?.latitude || -22.6612;
+      const storeLat = settings?.latitude || -22.6617;
       const storeLon = settings?.longitude || -50.4132;
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Adicionar margem de erro/trajeto (aprox 30% a mais que linha reta)
+      // Adicionar margem de trajeto (aprox 30% a mais que linha reta)
       const estimatedRoadDist = dist * 1.3;
       setDetectedDistance(estimatedRoadDist);
+      
+      // Estimativa de tempo: 20 min base + 3 min por km
+      const time = Math.round(20 + estimatedRoadDist * 3);
+      setEstimatedTime(`${time}-${time + 15} min`);
 
-      const range = deliveryRanges.find(
-        (r) => estimatedRoadDist >= Number(r.min_km) && estimatedRoadDist <= Number(r.max_km),
+      toast.success(
+        `Distância: ${estimatedRoadDist.toFixed(1)}km. Frete calculado!`,
       );
-
-      if (range) {
-        setDeliveryRangeId(range.id);
-        toast.success(
-          `Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`,
-        );
-      } else {
-        toast.error("Este endereço parece estar fora da nossa área de entrega.");
-      }
     } catch (err) {
       console.error(err);
       toast.error("Erro ao calcular distância");
@@ -293,7 +296,8 @@ export default function CartDrawer() {
     if (deliveryMethod === "entrega") {
       lines.push("📍 *ENDEREÇO DE ENTREGA*");
       lines.push(`${street}, ${number}`);
-      lines.push(`Distância: ${selectedRange?.label || "Não informada"}`);
+      lines.push(`Distância: ${detectedDistance ? detectedDistance.toFixed(1) + "km" : "Não calculada"}`);
+      if (estimatedTime) lines.push(`Tempo estimado: ${estimatedTime}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
@@ -347,7 +351,7 @@ export default function CartDrawer() {
     return lines.join("\n");
   };
 
-  const canCheckout = items.length > 0 && !submitting && isOpenStore && subtotal >= MIN_ORDER;
+  const canCheckout = items.length > 0 && !submitting && isOpenStore && subtotal >= MIN_ORDER && (deliveryMethod === "retirada" || detectedDistance !== null);
 
   const handleCheckout = async () => {
     if (!canCheckout) return;
@@ -385,7 +389,7 @@ export default function CartDrawer() {
         _address_street: deliveryMethod === "entrega" ? street : "Retirada",
         _address_number: deliveryMethod === "entrega" ? number : "0",
         _address_neighborhood:
-          deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local",
+          deliveryMethod === "entrega" ? (detectedDistance ? `${detectedDistance.toFixed(1)}km` : "Calculado") : "Retirada no Local",
         _address_complement: complement || undefined,
         _address_reference: reference || undefined,
         _notes: notes || undefined,
@@ -421,6 +425,8 @@ export default function CartDrawer() {
     setStreet("");
     setNumber("");
     setDeliveryRangeId("");
+    setDetectedDistance(null);
+    setEstimatedTime(null);
     setComplement("");
     setReference("");
     setNotes("");
@@ -730,6 +736,36 @@ export default function CartDrawer() {
                       placeholder="Próximo ao mercado..."
                     />
                   </div>
+                  
+                  {calculatingDistance && (
+                    <div className="flex items-center gap-2 text-xs text-primary animate-pulse py-2">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Calculando distância e frete...
+                    </div>
+                  )}
+
+                  {detectedDistance !== null && !calculatingDistance && (
+                    <div className="bg-primary/10 rounded-lg p-3 border border-primary/20 space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-primary flex items-center gap-1">
+                          <MapPinIcon className="w-3 h-3" /> Distância
+                        </span>
+                        <span className="text-xs font-black">{detectedDistance.toFixed(1)} km</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-primary flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> Tempo estimado
+                        </span>
+                        <span className="text-xs font-black">{estimatedTime}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-primary flex items-center gap-1">
+                          <Tag className="w-3 h-3" /> Frete automático
+                        </span>
+                        <span className="text-xs font-black">{formatBRL(fee)}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
