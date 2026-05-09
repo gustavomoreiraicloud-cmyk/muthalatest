@@ -512,35 +512,35 @@ export default function AdminOrders() {
 
                 <div className="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-border">
                   {/* Coluna 1: Itens e Observações */}
-                  <div className="p-4 space-y-4">
+                  <div className="p-6 space-y-6">
                     <div>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
-                        Itens do Pedido
+                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+                        <ShoppingBag className="w-4 h-4" /> Itens do Pedido
                       </h4>
                       <ul className="space-y-3">
                         {o.items?.map((it, idx) => (
                           <li
                             key={idx}
-                            className="bg-background/40 rounded-lg p-2 border border-border/50"
+                            className="bg-background border border-border/60 rounded-xl p-3 shadow-sm"
                           >
-                            <div className="flex justify-between items-start">
-                              <span className="font-bold text-sm leading-tight">
-                                <span className="text-primary mr-1">{it.qty}×</span> {it.name}
+                            <div className="flex justify-between items-start gap-4">
+                              <span className="font-black text-lg text-foreground leading-tight">
+                                <span className="text-primary mr-1.5">{it.qty}×</span> {it.name}
                               </span>
-                              <span className="text-xs font-medium text-muted-foreground">
+                              <span className="font-bold text-sm text-muted-foreground whitespace-nowrap">
                                 {it.price}
                               </span>
                             </div>
                             {it.options && Object.keys(it.options).length > 0 && (
-                              <div className="mt-1.5 pt-1.5 border-t border-border/30 grid grid-cols-1 gap-0.5 text-[10px] text-muted-foreground">
-                                {it.options.burgerSize && <span>📏 {it.options.burgerSize}</span>}
-                                {it.options.doneness && <span>🔥 {it.options.doneness}</span>}
-                                {it.options.beverage && <span>🥤 {it.options.beverage}</span>}
+                              <div className="mt-2.5 pt-2.5 border-t border-border/30 grid grid-cols-1 gap-1 text-[11px] font-medium text-muted-foreground">
+                                {it.options.burgerSize && <span className="flex items-center gap-1.5"><span className="text-primary/70">📏</span> {it.options.burgerSize}</span>}
+                                {it.options.doneness && <span className="flex items-center gap-1.5"><span className="text-primary/70">🔥</span> {it.options.doneness}</span>}
+                                {it.options.beverage && <span className="flex items-center gap-1.5"><span className="text-primary/70">🥤</span> {it.options.beverage}</span>}
                                 {it.options.extras && it.options.extras.length > 0 && (
-                                  <span>➕ {it.options.extras.join(", ")}</span>
+                                  <span className="flex items-center gap-1.5"><span className="text-primary/70">➕</span> {it.options.extras.join(", ")}</span>
                                 )}
                                 {it.options.notes && (
-                                  <span className="italic text-primary/80">
+                                  <span className="mt-1 p-2 bg-primary/5 rounded border border-primary/10 italic text-primary font-bold">
                                     📝 {it.options.notes}
                                   </span>
                                 )}
@@ -552,11 +552,11 @@ export default function AdminOrders() {
                     </div>
 
                     {o.notes && (
-                      <div className="p-3 bg-primary/5 border border-primary/10 rounded-lg">
-                        <p className="text-[10px] font-black uppercase text-primary mb-1">
-                          Observação Geral
+                      <div className="p-4 bg-orange-500/10 border-2 border-orange-500/20 rounded-xl">
+                        <p className="text-xs font-black uppercase text-orange-400 mb-2 flex items-center gap-2">
+                          📢 Observação do Cliente
                         </p>
-                        <p className="text-xs italic leading-relaxed">{o.notes}</p>
+                        <p className="text-sm font-bold italic leading-relaxed text-foreground">{o.notes}</p>
                       </div>
                     )}
                   </div>
