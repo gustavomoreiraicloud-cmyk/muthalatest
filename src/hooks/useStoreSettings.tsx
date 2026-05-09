@@ -12,6 +12,9 @@ export type StoreSettings = {
   is_open: boolean;
   hours: string | null;
   business_hours: BusinessHours | null;
+  latitude: number | null;
+  longitude: number | null;
+  estimated_delivery_time: number | null;
 };
 
 export function useStoreSettings() {
