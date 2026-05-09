@@ -366,6 +366,9 @@ export default function AdminOrders() {
             )}
             <Switch checked={soundOn} onCheckedChange={toggleSound} />
           </label>
+          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders)}>
+            <Printer className="w-4 h-4 mr-1" /> Relatório do Dia
+          </Button>
           <Button variant="outline" size="sm" onClick={load}>
             <RefreshCw className="w-4 h-4" /> Atualizar
           </Button>
