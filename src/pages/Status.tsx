@@ -141,29 +141,40 @@ export default function OrderStatus() {
         {!order && !loading && (
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
+            <p className="text-xs text-muted-foreground mb-3">
+              Informe <b>apenas um</b> dos campos abaixo:
+            </p>
             <form onSubmit={handleSearch} className="space-y-3">
               <Input
                 placeholder="Número do pedido (ex: 5821)"
                 value={orderId}
-                onChange={(e) => setOrderId(e.target.value)}
+                onChange={(e) => {
+                  setOrderId(e.target.value);
+                  if (e.target.value) setPhone("");
+                }}
                 className="bg-background"
               />
+              <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                <div className="flex-1 h-px bg-border" />
+                ou
+                <div className="flex-1 h-px bg-border" />
+              </div>
               <Input
                 placeholder="Seu telefone (ex: 18999998888)"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  if (e.target.value) setOrderId("");
+                }}
                 className="bg-background"
               />
-              <Button type="submit" className="w-full gap-2">
+              <Button type="submit" className="w-full gap-2" disabled={!orderId && !phone}>
                 <Search className="w-4 h-4" /> Buscar
               </Button>
             </form>
-            <p className="text-xs text-muted-foreground mt-4 italic">
-              Informe o número do pedido OU o telefone usado no pedido para acompanhar.
-            </p>
             {searched && !order && (
-              <p className="text-xs text-destructive mt-2">
-                Pedido não encontrado ou telefone incorreto.
+              <p className="text-xs text-destructive mt-3">
+                Pedido não encontrado.
               </p>
             )}
           </Card>
