@@ -23,8 +23,11 @@ import {
   Tag,
   Loader2,
   MapPinIcon,
+  User,
+  LogOut,
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
