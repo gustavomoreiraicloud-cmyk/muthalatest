@@ -205,14 +205,18 @@ export default function AdminDashboard() {
             size="sm" 
             className="font-bold uppercase text-[10px] tracking-widest h-9"
             onClick={() => {
-              const today = new Date().toLocaleDateString('pt-BR');
-              const w = window.open("", "_blank", "width=800,height=900");
-              if (!w) return;
-              
+              const esc = (s: unknown) =>
+                String(s ?? "")
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#39;");
+
               const validOrders = orders.filter(o => o.status !== 'cancelado');
               const totalRevenue = validOrders.reduce((acc, o) => acc + Number(o.total), 0);
-              
-              w.document.write(`
+
+              const html = `
                 <html><head><title>Relatório de Vendas - Muthala Burger</title>
                 <style>
                   body{font-family:sans-serif;padding:40px;color:#333;line-height:1.5}
@@ -258,18 +262,18 @@ export default function AdminDashboard() {
                     <tbody>
                       ${validOrders.reverse().map(o => `
                         <tr>
-                          <td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td>
-                          <td>#${o.id.slice(0, 6).toUpperCase()}</td>
-                          <td>${o.delivery_method === 'retirada' ? 'Retirada' : 'Entrega'}</td>
-                          <td style="text-transform:uppercase">${o.payment_method}</td>
-                          <td style="font-weight:bold">${formatBRL(Number(o.total))}</td>
+                          <td>${esc(new Date(o.created_at).toLocaleDateString('pt-BR'))}</td>
+                          <td>#${esc(o.id.slice(0, 6).toUpperCase())}</td>
+                          <td>${esc(o.delivery_method === 'retirada' ? 'Retirada' : 'Entrega')}</td>
+                          <td style="text-transform:uppercase">${esc(o.payment_method)}</td>
+                          <td style="font-weight:bold">${esc(formatBRL(Number(o.total)))}</td>
                         </tr>
                       `).join('')}
                     </tbody>
                     <tfoot>
                       <tr class="total-row">
                         <td colspan="4" style="text-align:right">TOTAL ACUMULADO:</td>
-                        <td>${formatBRL(totalRevenue)}</td>
+                        <td>${esc(formatBRL(totalRevenue))}</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -278,16 +282,18 @@ export default function AdminDashboard() {
                     Muthala Burger - Sistema de Gestão Interna<br/>
                     © ${new Date().getFullYear()} - Todos os direitos reservados
                   </div>
-                  <script>
-                    window.onload = () => {
-                      window.print();
-                      // Tentar fechar a janela após a impressão, mas pode ser bloqueado
-                      // window.close(); 
-                    };
-                  </script>
                 </body></html>
-              `);
-              w.document.close();
+              `;
+
+              const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `relatorio-muthala-${new Date().toISOString().slice(0,10)}.html`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
             }}
           >
             <FileDown className="w-4 h-4 mr-2" /> Exportar PDF
