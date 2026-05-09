@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Pencil, Plus, Trash2, Loader2, MapPin } from "lucide-react";
+import { Pencil, Plus, Trash2, Loader2, MapPin, Navigation, Info, Car } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
