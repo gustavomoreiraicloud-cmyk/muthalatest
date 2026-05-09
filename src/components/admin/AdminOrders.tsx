@@ -83,42 +83,28 @@ const sendPushNotification = (title: string, body: string) => {
   };
 };
 
-// Som de notificação mais longo e chamativo
+// Referência global para o áudio para evitar recriação constante e facilitar o controle
+let audioInstance: HTMLAudioElement | null = null;
+
 const playBeep = () => {
   try {
-    // Usar um elemento de áudio real se possível, ou melhorar o AudioContext
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-
-    if (ctx.state === "suspended") {
-      ctx.resume();
+    // No ambiente do navegador, precisamos de interação prévia do usuário.
+    // Criamos o áudio apenas uma vez e reutilizamos.
+    if (!audioInstance) {
+      // Usando um som de notificação real (estilo campainha de balcão) que é mais audível que osciladores sintetizados
+      audioInstance = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+      audioInstance.load();
     }
-
-    const playNote = (
-      freq: number,
-      start: number,
-      duration: number,
-      type: OscillatorType = "sine",
-    ) => {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.connect(g);
-      g.connect(ctx.destination);
-      o.type = type;
-      o.frequency.value = freq;
-
-      // Envelope de volume
-      g.gain.setValueAtTime(0, ctx.currentTime + start);
-      g.gain.linearRampToValueAtTime(0.6, ctx.currentTime + start + 0.1);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
-
-      o.start(ctx.currentTime + start);
-      o.stop(ctx.currentTime + start + duration + 0.1);
-    };
-
-    // Sequência mais "alerta" (estilo sirene/campainha forte)
-    playNote(880, 0, 0.5, "triangle");
-    playNote(880, 0.6, 0.5, "triangle");
-    playNote(880, 1.2, 0.8, "triangle");
+    
+    // Reinicia e toca
+    audioInstance.currentTime = 0;
+    const playPromise = audioInstance.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn("Autoplay bloqueado pelo navegador. Interaja com a página primeiro.", error);
+      });
+    }
   } catch (err) {
     console.error("Erro ao tocar som:", err);
   }
