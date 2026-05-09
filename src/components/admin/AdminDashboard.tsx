@@ -197,38 +197,48 @@ export default function AdminDashboard() {
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={stats.chart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} opacity={0.2} />
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#e94560" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#e94560" stopOpacity={0.6} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" vertical={false} opacity={0.1} />
                 <XAxis
                   dataKey="day"
-                  stroke="hsl(var(--muted-foreground))"
-                  fontSize={11}
+                  stroke="hsl(var(--foreground))"
+                  fontSize={12}
+                  fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
                   tick={{ dy: 10 }}
                 />
                 <YAxis
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke="hsl(var(--foreground))"
                   fontSize={11}
+                  fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) => `R$${v}`}
                 />
                 <Tooltip
-                  cursor={{ fill: "hsl(var(--primary)/0.05)" }}
+                  cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
                   contentStyle={{
-                    background: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
+                    background: "#1a1a1a",
+                    border: "2px solid #e94560",
                     borderRadius: 12,
-                    boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.8)",
                     padding: "12px",
                   }}
+                  itemStyle={{ color: "#fff", fontWeight: "bold" }}
+                  labelStyle={{ color: "#e94560", fontWeight: "black", marginBottom: "4px" }}
                   formatter={(v: number) => [formatBRL(v), "Faturamento"]}
                 />
                 <Bar
                   dataKey="total"
-                  fill="hsl(var(--primary))"
-                  radius={[6, 6, 0, 0]}
-                  barSize={32}
+                  fill="url(#barGradient)"
+                  radius={[8, 8, 0, 0]}
+                  barSize={40}
                 />
               </BarChart>
             </ResponsiveContainer>
