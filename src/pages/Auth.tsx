@@ -20,10 +20,14 @@ export default function Auth() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user && isAdmin) {
-      navigate({ to: "/admin", replace: true });
+    if (!loading && user) {
+      if (isAdmin) {
+        navigate({ to: "/admin", replace: true });
+      } else {
+        navigate({ to: (search.redirect as any) || "/", replace: true });
+      }
     }
-  }, [loading, user, isAdmin, navigate]);
+  }, [loading, user, isAdmin, navigate, search.redirect]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
