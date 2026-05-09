@@ -57,6 +57,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null };
   };
 
+  const signUp = async (email: string, password: string, metadata: any) => {
+    const { error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: { data: metadata }
+    });
+    return { error: error?.message ?? null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
