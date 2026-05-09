@@ -206,20 +206,21 @@ export default function AdminDashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" vertical={false} opacity={0.1} />
                 <XAxis
                   dataKey="day"
-                  stroke="hsl(var(--foreground))"
+                  stroke="#ffffff"
                   fontSize={12}
                   fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ dy: 10 }}
+                  tick={{ dy: 10, fill: "#ffffff" }}
                 />
                 <YAxis
-                  stroke="hsl(var(--foreground))"
+                  stroke="#ffffff"
                   fontSize={11}
                   fontWeight="bold"
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) => `R$${v}`}
+                  tick={{ fill: "#ffffff" }}
                 />
                 <Tooltip
                   cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
