@@ -188,7 +188,7 @@ const printOrder = (o: Order) => {
           setTimeout(() => {
             window.print();
             window.onafterprint = () => window.close();
-          }, 500);
+          }, 800);
           // Fallback
           setTimeout(() => window.close(), 15000);
         };
@@ -268,7 +268,7 @@ const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
               window.print();
               window.onafterprint = () => window.close();
             }
-          }, 500);
+          }, 800);
           // Fallback
           setTimeout(() => {
             if (${autoPrint}) window.close();
