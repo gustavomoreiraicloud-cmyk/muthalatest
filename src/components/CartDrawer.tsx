@@ -288,17 +288,19 @@ export default function CartDrawer() {
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Reduzir a margem de trajeto (estava em 30%, vamos para 15% para ser mais fiel ao centro)
-      const estimatedRoadDist = dist * 1.15;
+      // Margem de trajeto reduzida para 10% (mais justo para cidades do interior)
+      const estimatedRoadDist = dist * 1.1;
       setDetectedDistance(estimatedRoadDist);
       
-      // Estimativa de tempo: 20 min base + 3 min por km
-      const time = Math.round(20 + estimatedRoadDist * 3);
-      setEstimatedTime(`${time}-${time + 15} min`);
+      // Estimativa de tempo mais realista
+      const time = Math.round(15 + estimatedRoadDist * 2.5);
+      setEstimatedTime(`${time}-${time + 10} min`);
 
-      toast.success(
-        `Distância: ${estimatedRoadDist.toFixed(1)}km. Frete calculado!`,
-      );
+      // Feedback visual do endereço encontrado para o usuário conferir
+      const foundAddr = data[0].display_name.split(',')[0] + ', ' + data[0].display_name.split(',')[1];
+      toast.info(`Localizado: ${foundAddr}`, {
+        description: `Distância estimada: ${estimatedRoadDist.toFixed(1)}km`,
+      });
     } catch (err) {
       console.error(err);
       toast.error("Erro ao calcular distância");
