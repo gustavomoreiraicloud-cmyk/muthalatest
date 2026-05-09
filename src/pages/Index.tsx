@@ -160,8 +160,45 @@ const Index = () => {
     ingredients: it.ingredients ?? undefined,
   });
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "name": "Muthala Burger",
+    "image": [ASSET_MAP["/src/assets/hero-burger.jpg"]],
+    "priceRange": "$$",
+    "servesCuisine": "Hambúrguer",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "R. Smith Vasconcelos, 312",
+      "addressLocality": "Assis",
+      "addressRegion": "SP",
+      "postalCode": "19800-010",
+      "addressCountry": "BR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -22.6617,
+      "longitude": -50.4132
+    },
+    "url": "https://oi-hug-happy.lovable.app/",
+    "telephone": "+5518997962510",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "18:00",
+        "closes": "23:00"
+      }
+    ],
+    "menu": "https://oi-hug-happy.lovable.app/#menu"
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* NAV */}
       <header
         className={`fixed top-0 inset-x-0 z-40 transition-smooth ${scrolled ? "backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md" : "bg-transparent"}`}
