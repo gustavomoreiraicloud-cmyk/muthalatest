@@ -148,6 +148,14 @@ export default function CartDrawer() {
     if (isOpen) loadRanges();
   }, [isOpen]);
 
+  // Load user data into form
+  useEffect(() => {
+    if (user && isOpen && !name) {
+      setName(user.user_metadata?.full_name || "");
+      setPhone(user.user_metadata?.phone || "");
+    }
+  }, [user, isOpen, name]);
+
   // Reset confirmation when reopening
   useEffect(() => {
     if (isOpen) setConfirmation(null);
