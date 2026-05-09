@@ -309,7 +309,7 @@ export default function AdminDashboard() {
             {stats.paymentData.map((p, i) => (
               <div key={p.name} className="bg-muted/30 border border-border/50 px-4 py-3 rounded-xl min-w-[120px] text-center">
                 <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{p.name}</p>
-                <p className="font-display text-2xl text-primary leading-none">{p.value}</p>
+                <p className="font-display text-2xl text-white leading-none">{p.value}</p>
               </div>
             ))}
           </div>
