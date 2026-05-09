@@ -25,6 +25,7 @@ const STATUS_MAP = {
 
 export default function OrderStatus() {
   const [orderId, setOrderId] = useState("");
+  const [phone, setPhone] = useState("");
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -32,46 +33,47 @@ export default function OrderStatus() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    if (id) {
-      setOrderId(id);
-      fetchOrder(id);
-    }
+    const ph = params.get("phone");
+    if (id) setOrderId(id);
+    if (ph) setPhone(ph);
+    if (id && ph) fetchOrder(id, ph);
   }, []);
 
-  const fetchOrder = async (id: string) => {
-    if (!id) return;
+  const fetchOrder = async (id: string, ph: string) => {
+    if (!id || !ph) return;
     setLoading(true);
     setSearched(true);
 
-    let query = supabase.from("orders").select("*");
-
-    if (id.length === 4 && /^\d+$/.test(id)) {
-      query = query.eq("order_number", parseInt(id));
-    } else {
-      query = query.eq("id", id);
+    if (!(id.length === 4 && /^\d+$/.test(id))) {
+      setLoading(false);
+      setOrder(null);
+      return;
     }
 
-    const { data, error } = await query.maybeSingle();
+    const { data, error } = await supabase.rpc("lookup_order_status", {
+      _order_number: parseInt(id),
+      _phone: ph,
+    });
 
-    if (data) {
-      setOrder(data);
-      // Subscrever a mudanças específicas deste pedido para notificar o cliente
+    const found = Array.isArray(data) && data.length > 0 ? data[0] : null;
+
+    if (found) {
+      setOrder(found);
       const channel = supabase
-        .channel(`order-status-${data.id}`)
+        .channel(`order-status-${found.id}`)
         .on(
           "postgres_changes",
           {
             event: "UPDATE",
             schema: "public",
             table: "orders",
-            filter: `id=eq.${data.id}`,
+            filter: `id=eq.${found.id}`,
           },
           (payload) => {
             const updatedOrder = payload.new as any;
-            setOrder(updatedOrder);
+            setOrder((prev: any) => ({ ...prev, ...updatedOrder }));
 
-            // Notificação do navegador se o status mudou
-            if (updatedOrder.status !== data.status) {
+            if (updatedOrder.status !== found.status) {
               const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
               if (Notification.permission === "granted") {
                 new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
@@ -84,7 +86,6 @@ export default function OrderStatus() {
         )
         .subscribe();
 
-      // Pedir permissão para notificações se ainda não tiver
       if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission();
       }
@@ -100,7 +101,7 @@ export default function OrderStatus() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchOrder(orderId);
+    fetchOrder(orderId, phone);
   };
 
   return (
@@ -132,20 +133,31 @@ export default function OrderStatus() {
         {!order && !loading && (
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
-            <form onSubmit={handleSearch} className="flex gap-2">
+            <form onSubmit={handleSearch} className="space-y-3">
               <Input
-                placeholder="Ex: 5821"
+                placeholder="Número do pedido (ex: 5821)"
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 className="bg-background"
               />
-              <Button type="submit" size="icon">
-                <Search className="w-4 h-4" />
+              <Input
+                placeholder="Seu telefone (ex: 18999998888)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="bg-background"
+              />
+              <Button type="submit" className="w-full gap-2">
+                <Search className="w-4 h-4" /> Buscar
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              Digite o número de 4 dígitos que apareceu na tela após você finalizar o seu pedido.
+              Informe o número de 4 dígitos e o telefone usado no pedido para acompanhar.
             </p>
+            {searched && !order && (
+              <p className="text-xs text-destructive mt-2">
+                Pedido não encontrado ou telefone incorreto.
+              </p>
+            )}
           </Card>
         )}
 

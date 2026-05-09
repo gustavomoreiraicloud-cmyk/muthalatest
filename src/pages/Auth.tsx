@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function Auth() {
   const { signIn, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,11 +24,11 @@ export default function Auth() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signIn(username, password);
+    const { error } = await signIn(email, password);
     setSubmitting(false);
 
     if (error) {
-      toast.error(error);
+      toast.error("Credenciais inválidas");
       return;
     }
 
@@ -51,13 +51,13 @@ export default function Auth() {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="username">Usuário</Label>
+            <Label htmlFor="email">E-mail</Label>
             <Input
-              id="username"
-              type="text"
-              autoComplete="off"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -66,7 +66,7 @@ export default function Auth() {
             <Input
               id="password"
               type="password"
-              autoComplete="off"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
