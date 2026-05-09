@@ -201,7 +201,7 @@ export default function OrderStatus() {
                 }}
                 className="bg-background"
               />
-              <Button type="submit" className="w-full gap-2" disabled={!orderId && !phone}>
+              <Button type="submit" className="w-full gap-2" disabled={!orderId || !phone}>
                 <Search className="w-4 h-4" /> Buscar
               </Button>
             </form>
