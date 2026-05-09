@@ -1095,10 +1095,20 @@ export default function CartDrawer() {
                 <div className="flex items-center justify-center gap-3">
                   {submitting ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : !isOpenStore ? (
+                    <Clock className="w-6 h-6" />
                   ) : (
                     <CheckCircle2 className="w-6 h-6 fill-current" />
                   )}
-                  <span>{isOpenStore ? "Finalizar Pedido" : "Loja Fechada"}</span>
+                  <span>
+                    {!isOpenStore 
+                      ? "Loja Fechada" 
+                      : subtotal < MIN_ORDER 
+                        ? `Mínimo ${formatBRL(MIN_ORDER)}`
+                        : deliveryMethod === "entrega" && detectedDistance === null
+                          ? "Calcular frete..."
+                          : "Finalizar Pedido"}
+                  </span>
                 </div>
               </Button>
             </div>

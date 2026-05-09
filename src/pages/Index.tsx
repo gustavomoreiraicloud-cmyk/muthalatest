@@ -220,7 +220,7 @@ const Index = () => {
         className="fixed top-0 inset-x-0 z-40 transition-smooth backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md"
       >
         <nav className="container mx-auto flex items-center justify-between py-3 md:py-4 px-4">
-          <a href="#home" className="group flex items-center gap-2 md:gap-3">
+          <a href="#home" title="Ir para o topo" className="group flex items-center gap-2 md:gap-3">
             <div className="relative group-hover:scale-105 transition-smooth">
               <img
                 src={muthalaLogo}
@@ -337,10 +337,10 @@ const Index = () => {
           <div className="max-w-3xl animate-fade-in-up text-center md:text-left">
             <h1 className="sr-only">Muthala Burger - Melhor Hamburgueria Artesanal de Assis SP</h1>
             <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-4 uppercase tracking-tighter" aria-hidden="true">
-              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-2 md:mb-0">
-                MUTHALA
-              </span>{" "}
-              Burguer
+                <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-2 md:mb-0">
+                  MUTHALA
+                </span>{" "}
+                Burguer
             </div>
             <p className="text-[10px] md:text-base text-primary font-bold mb-5 tracking-[0.25em] uppercase">
               O Sabor dos Deuses • Assis/SP
