@@ -651,27 +651,26 @@ export default function AdminOrders() {
                 </div>
 
                 {/* Footer do Card - Ações */}
-                <div className="p-3 bg-muted/20 border-t border-border flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => printOrder(o)}
-                      className="h-9 px-3"
-                    >
-                      <Printer className="w-4 h-4 mr-2" />{" "}
-                      <span className="text-xs font-bold">Imprimir</span>
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="p-4 bg-muted/30 border-t border-border/50 flex flex-wrap items-center justify-between gap-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => printOrder(o)}
+                    className="h-12 px-6 border-2 border-primary/20 hover:border-primary/60 font-black uppercase text-xs tracking-widest shadow-sm"
+                  >
+                    <Printer className="w-5 h-5 mr-2 text-primary" /> Imprimir
+                  </Button>
+                  <div className="flex flex-wrap gap-2">
                     {STATUSES.map((s) => (
                       <Button
                         key={s}
                         size="sm"
                         variant={o.status === s ? "default" : "outline"}
                         onClick={() => updateStatus(o.id, s)}
-                        className={`h-9 px-3 text-[10px] uppercase font-black transition-all ${
-                          o.status === s ? "bg-primary shadow-glow" : "opacity-60 hover:opacity-100"
+                        className={`h-10 px-4 text-[10px] uppercase font-black tracking-widest transition-all duration-300 ${
+                          o.status === s 
+                            ? "bg-primary text-primary-foreground shadow-glow scale-105" 
+                            : "opacity-40 hover:opacity-100 hover:border-primary/50"
                         }`}
                       >
                         {STATUS_CONFIG[s].label}
