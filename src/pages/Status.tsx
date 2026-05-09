@@ -77,8 +77,8 @@ export default function OrderStatus() {
     }
 
     const { data, error } = await supabase.rpc("lookup_order_status", {
-      _order_number: orderNum ?? undefined,
-      _phone: ph || undefined,
+      _order_number: orderNum || 0,
+      _phone: ph || "",
     });
 
     const found = Array.isArray(data) && data.length > 0 ? data[0] : null;
