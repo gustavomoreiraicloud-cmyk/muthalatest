@@ -273,36 +273,41 @@ export default function CartDrawer() {
     setCalculatingDistance(true);
     setEstimatedTime(null);
     try {
-      // Usar uma busca mais específica priorizando a cidade e o bairro para evitar erros de geocodificação
-      const query = `${street}, ${number}, ${neighborhood || ""}, Assis, SP, 19800, Brazil`;
+      // Simplificando a busca para aumentar a taxa de sucesso no Nominatim
+      // A ordem dos termos influencia muito. Rua + Bairro + Cidade é mais estável.
+      const searchTerms = [street, number, neighborhood, "Assis", "SP", "Brazil"].filter(Boolean);
+      const query = searchTerms.join(", ");
 
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=1`,
+        { headers: { 'Accept-Language': 'pt-BR' } }
       );
-      const data = await response.json();
+      let data = await response.json();
 
       if (!data || data.length === 0) {
-        // Fallback: tenta sem o número se o número específico não for encontrado
-        const fallbackResponse = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(`${street}, Assis, SP, Brazil`)}&limit=1`,
-        );
-        const fallbackData = await fallbackResponse.json();
-        
-        if (!fallbackData || fallbackData.length === 0) {
-          toast.error("Não encontramos este endereço. Verifique o nome da rua.");
-          return;
-        }
-        data.push(fallbackData[0]);
+        // Fallback 1: Tira o bairro, mantém rua e número
+        const fallback1 = [street, number, "Assis", "SP", "Brazil"].filter(Boolean).join(", ");
+        const res1 = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallback1)}&limit=1`);
+        data = await res1.json();
+      }
+
+      if (!data || data.length === 0) {
+        // Fallback 2: Apenas rua e cidade (mais abrangente)
+        const fallback2 = `${street}, Assis, SP, Brazil`;
+        const res2 = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallback2)}&limit=1`);
+        data = await res2.json();
+      }
+
+      if (!data || data.length === 0) {
+        toast.error("Endereço não localizado. Verifique o nome da rua.");
+        return;
       }
 
       const { lat, lon } = data[0];
       const storeLat = settings?.latitude || -22.6612;
       const storeLon = settings?.longitude || -50.4132;
 
-      // Cálculo Haversine direto (linha reta)
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
-
-      // Fator de correção urbana para Assis (15% é o padrão ouro para cidades planejadas em grade)
       const estimatedRoadDist = dist * 1.15;
       setDetectedDistance(estimatedRoadDist);
       
@@ -310,8 +315,8 @@ export default function CartDrawer() {
       setEstimatedTime(`${time}-${time + 10} min`);
 
       const displayName = data[0].display_name.split(',')[0];
-      toast.info(`Localizado: ${displayName}`, {
-        description: `Distância: ${estimatedRoadDist.toFixed(1)}km — Frete atualizado.`,
+      toast.success(`Endereço localizado: ${displayName}`, {
+        description: `Distância: ${estimatedRoadDist.toFixed(1)}km`,
       });
     } catch (err) {
       console.error(err);
