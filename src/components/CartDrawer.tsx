@@ -999,10 +999,16 @@ export default function CartDrawer() {
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Taxa de entrega</span>
               <span>
-                {freeShipping ? (
-                  <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
+                {deliveryMethod === "retirada" ? (
+                  formatBRL(0)
+                ) : detectedDistance !== null ? (
+                  freeShipping ? (
+                    <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
+                  ) : (
+                    formatBRL(fee)
+                  )
                 ) : (
-                  formatBRL(fee)
+                  <span className="text-[10px] text-muted-foreground italic">Calculará com endereço</span>
                 )}
               </span>
             </div>
