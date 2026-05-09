@@ -178,6 +178,25 @@ export default function CartDrawer() {
     }
   }, [street, number, deliveryMethod]);
 
+  const handleCEPChange = async (value: string) => {
+    const raw = value.replace(/\D/g, "");
+    setCep(raw);
+    if (raw.length === 8) {
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
+        const data = await res.json();
+        if (data.logradouro) {
+          setStreet(data.logradouro);
+          toast.success("Endereço encontrado!");
+        } else {
+          toast.error("CEP não encontrado");
+        }
+      } catch (err) {
+        toast.error("Erro ao buscar CEP");
+      }
+    }
+  };
+
   // Compute discount + total
   const selectedRange = deliveryRanges.find((r) => r.id === deliveryRangeId);
 
