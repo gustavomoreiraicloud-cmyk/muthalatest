@@ -315,6 +315,13 @@ export default function AdminOrders() {
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("orders").update({ status }).eq("id", id);
     if (error) return toast.error("Erro ao atualizar");
+    
+    // Se mudou para preparo, imprime automaticamente
+    if (status === "preparo") {
+      const order = orders.find(o => o.id === id);
+      if (order) printOrder(order);
+    }
+    
     toast.success("Pedido atualizado");
   };
 

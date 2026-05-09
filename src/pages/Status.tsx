@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import {
   Search,
   ShoppingBag,
   ArrowLeft,
+  Award,
 } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import muthalaLogo from "@/assets/muthala-logo.png";
@@ -24,11 +26,23 @@ const STATUS_MAP = {
 };
 
 export default function OrderStatus() {
+  const { user } = useAuth();
   const [orderId, setOrderId] = useState("");
   const [phone, setPhone] = useState("");
   const [order, setOrder] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const loadProfile = async () => {
+        const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+        setUserProfile(data);
+      };
+      loadProfile();
+    }
+  }, [user]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -124,6 +138,25 @@ export default function OrderStatus() {
               O Sabor dos Deuses
             </p>
           </div>
+
+          {userProfile && (
+            <Card className="w-full p-4 bg-primary/5 border-primary/20 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center text-primary-foreground font-black">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase text-primary leading-none">Seu Saldo</p>
+                  <p className="text-lg font-display">{userProfile.points || 0} Pontos</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase">Fidelidade</p>
+                <p className="text-[10px] text-muted-foreground italic">1 ponto = R$ 1,00</p>
+              </div>
+            </Card>
+          )}
+
           <Button
             variant="ghost"
             size="sm"
