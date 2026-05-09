@@ -32,16 +32,25 @@ export default function Auth() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signIn(email, password);
-    setSubmitting(false);
 
-    if (error) {
-      toast.error("Credenciais inválidas");
-      return;
+    if (isSignUp) {
+      const { error } = await signUp(email, password, { full_name: fullName, phone });
+      setSubmitting(false);
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      toast.success("Conta criada! Verifique seu e-mail (se habilitado) ou entre agora.");
+      setIsSignUp(false);
+    } else {
+      const { error } = await signIn(email, password);
+      setSubmitting(false);
+      if (error) {
+        toast.error("Credenciais inválidas");
+        return;
+      }
+      toast.success("Bem-vindo!");
     }
-
-    toast.success("Bem-vindo!");
-    navigate({ to: "/admin", replace: true });
   };
 
   return (
