@@ -294,7 +294,7 @@ export default function AdminDashboard() {
             {stats.deliveryData.map((d, i) => (
               <div key={d.name} className="text-center">
                 <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">{d.name}</p>
-                <p className="font-display text-4xl text-foreground leading-none">{d.value}</p>
+                <p className="font-display text-4xl text-white leading-none">{d.value}</p>
                 <div className={`h-1 w-12 mx-auto mt-3 rounded-full ${i === 0 ? 'bg-primary' : 'bg-orange-500'}`} />
               </div>
             ))}
