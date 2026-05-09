@@ -628,8 +628,12 @@ export default function AdminOrders() {
               </Card>
             );
           })}
-        </div>
-      )}
+                </div>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </div>
   );
 }
