@@ -29,7 +29,7 @@ import {
   LogOut,
   Clock,
 } from "lucide-react";
-import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
+import { useCart, formatBRL, parsePrice, getItemId } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
@@ -567,8 +567,8 @@ export default function CartDrawer() {
                 <LayoutGroup>
                   <AnimatePresence initial={false}>
                     {items.map((i) => {
-                    const lineTotal = parsePrice(i.price) * i.qty;
-                    const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
+                      const lineTotal = parsePrice(i.price) * i.qty;
+                      const uniqueId = getItemId(i);
                     return (
                       <motion.li
                         layout

@@ -42,7 +42,7 @@ const parsePrice = (p: string | number): number => {
 const formatBRL = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // Helper to generate unique ID for same product with different options
-const getItemId = (item: Omit<CartItem, "qty"> | CartItem) => {
+export const getItemId = (item: Omit<CartItem, "qty"> | CartItem) => {
   if (!item.options) return item.name;
   return `${item.name}-${JSON.stringify(item.options)}`;
 };
@@ -86,10 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const inc = (id: string) => {
     setItems((prev) =>
-      prev.map((i) => {
-        const currentId = getItemId(i);
-        return currentId === id ? { ...i, qty: i.qty + 1 } : i;
-      }),
+      prev.map((i) => (getItemId(i) === id ? { ...i, qty: i.qty + 1 } : i)),
     );
   };
 
