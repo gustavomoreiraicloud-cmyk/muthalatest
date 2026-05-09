@@ -99,10 +99,10 @@ export default function AdminDashboard() {
     // Por padrão, vamos focar no faturamento do "dia operacional" (de hoje até o fechamento)
     const operationalDay = new Date(today);
 
-    const validOrders = orders.filter((o) => o.status !== "cancelado");
-    const todayOrders = validOrders.filter((o) => new Date(o.created_at) >= operationalDay);
+    const validOrders = Array.isArray(orders) ? orders.filter((o) => o && o.status !== "cancelado") : [];
+    const todayOrders = validOrders.filter((o) => o.created_at && new Date(o.created_at) >= operationalDay);
     const monthOrders = validOrders.filter(
-      (o) => new Date(o.created_at) >= new Date(now.getFullYear(), now.getMonth(), 1),
+      (o) => o.created_at && new Date(o.created_at) >= new Date(now.getFullYear(), now.getMonth(), 1),
     );
 
     const todayRevenue = todayOrders.reduce((s, o) => s + Number(o.total), 0);
