@@ -125,6 +125,8 @@ export default function CartDrawer() {
   const [couponCode, setCouponCode] = useState("");
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
