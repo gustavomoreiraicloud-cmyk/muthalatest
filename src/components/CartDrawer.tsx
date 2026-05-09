@@ -188,7 +188,14 @@ export default function CartDrawer() {
         const data = await res.json();
         if (data.logradouro) {
           setStreet(data.logradouro);
-          toast.success("Endereço encontrado!");
+          if (data.bairro) setNeighborhood(data.bairro);
+          toast.success("Endereço preenchido!");
+          
+          // Focar no número após preencher a rua
+          setTimeout(() => {
+            const numInput = document.getElementById("address-number");
+            if (numInput) (numInput as HTMLInputElement).focus();
+          }, 100);
         } else {
           toast.error("CEP não encontrado");
         }
