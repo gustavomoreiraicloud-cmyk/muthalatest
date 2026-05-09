@@ -362,6 +362,31 @@ export type Database = {
           updated_at: string
         }[]
       }
+      place_order: {
+        Args: {
+          _address_complement?: string
+          _address_neighborhood?: string
+          _address_number?: string
+          _address_reference?: string
+          _address_street?: string
+          _coupon_code?: string
+          _customer_name: string
+          _customer_phone: string
+          _delivery_fee: number
+          _delivery_method: string
+          _discount: number
+          _items?: Json
+          _notes?: string
+          _payment_method: string
+          _subtotal: number
+          _total: number
+          _user_id?: string
+        }
+        Returns: {
+          id: string
+          order_number: number
+        }[]
+      }
       validate_coupon: {
         Args: { _code: string }
         Returns: {
