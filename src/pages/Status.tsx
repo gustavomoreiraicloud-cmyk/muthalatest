@@ -25,6 +25,7 @@ const STATUS_MAP = {
 
 export default function OrderStatus() {
   const [orderId, setOrderId] = useState("");
+  const [phone, setPhone] = useState("");
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -32,46 +33,47 @@ export default function OrderStatus() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    if (id) {
-      setOrderId(id);
-      fetchOrder(id);
-    }
+    const ph = params.get("phone");
+    if (id) setOrderId(id);
+    if (ph) setPhone(ph);
+    if (id && ph) fetchOrder(id, ph);
   }, []);
 
-  const fetchOrder = async (id: string) => {
-    if (!id) return;
+  const fetchOrder = async (id: string, ph: string) => {
+    if (!id || !ph) return;
     setLoading(true);
     setSearched(true);
 
-    let query = supabase.from("orders").select("*");
-
-    if (id.length === 4 && /^\d+$/.test(id)) {
-      query = query.eq("order_number", parseInt(id));
-    } else {
-      query = query.eq("id", id);
+    if (!(id.length === 4 && /^\d+$/.test(id))) {
+      setLoading(false);
+      setOrder(null);
+      return;
     }
 
-    const { data, error } = await query.maybeSingle();
+    const { data, error } = await supabase.rpc("lookup_order_status", {
+      _order_number: parseInt(id),
+      _phone: ph,
+    });
 
-    if (data) {
-      setOrder(data);
-      // Subscrever a mudanças específicas deste pedido para notificar o cliente
+    const found = Array.isArray(data) && data.length > 0 ? data[0] : null;
+
+    if (found) {
+      setOrder(found);
       const channel = supabase
-        .channel(`order-status-${data.id}`)
+        .channel(`order-status-${found.id}`)
         .on(
           "postgres_changes",
           {
             event: "UPDATE",
             schema: "public",
             table: "orders",
-            filter: `id=eq.${data.id}`,
+            filter: `id=eq.${found.id}`,
           },
           (payload) => {
             const updatedOrder = payload.new as any;
-            setOrder(updatedOrder);
+            setOrder((prev: any) => ({ ...prev, ...updatedOrder }));
 
-            // Notificação do navegador se o status mudou
-            if (updatedOrder.status !== data.status) {
+            if (updatedOrder.status !== found.status) {
               const statusInfo = (STATUS_MAP as any)[updatedOrder.status];
               if (Notification.permission === "granted") {
                 new Notification(`Muthala Burger: ${statusInfo?.label || updatedOrder.status}`, {
@@ -84,7 +86,6 @@ export default function OrderStatus() {
         )
         .subscribe();
 
-      // Pedir permissão para notificações se ainda não tiver
       if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission();
       }
@@ -100,7 +101,7 @@ export default function OrderStatus() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchOrder(orderId);
+    fetchOrder(orderId, phone);
   };
 
   return (
