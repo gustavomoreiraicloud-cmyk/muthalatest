@@ -777,7 +777,7 @@ export default function CartDrawer() {
                         />
                       </div>
                       <div>
-                        <Label className="text-xs">Bairro</Label>
+                        <Label className="text-xs">Bairro *</Label>
                         <Input
                           value={neighborhood}
                           onChange={(e) => setNeighborhood(e.target.value)}
