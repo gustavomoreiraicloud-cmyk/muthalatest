@@ -219,13 +219,16 @@ export default function CartDrawer() {
   const freeShipping =
     coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
 
-  // Regras de frete solicitadas: até 3km = R$5, até 5km = R$8, acima de 5km = R$12
+  // Regras de frete otimizadas para precisão máxima e justiça
   const calculatedFee = useMemo(() => {
     if (deliveryMethod === "retirada") return 0;
     if (detectedDistance === null) return DEFAULT_DELIVERY_FEE;
-    // Usando as regras originais do usuário para ser mais justo
-    if (detectedDistance <= 3.1) return 5;
-    if (detectedDistance <= 5.1) return 8;
+    
+    // Arredondamento para baixo para beneficiar o cliente em casos limítrofes (ex: 3.05km vira 3km)
+    const effectiveDist = Math.floor(detectedDistance * 10) / 10;
+    
+    if (effectiveDist <= 3.0) return 5;
+    if (effectiveDist <= 5.0) return 8;
     return 12;
   }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
 
