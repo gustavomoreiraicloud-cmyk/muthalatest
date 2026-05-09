@@ -357,10 +357,17 @@ export default function AdminOrders() {
 
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
+  const activeOrders = orders.filter(
+    (o) => o.status === "novo" || o.status === "preparo" || o.status === "entrega",
+  );
+  const finishedOrders = orders.filter(
+    (o) => o.status === "finalizado" || o.status === "cancelado",
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="font-display text-2xl uppercase">Pedidos ({orders.length})</h2>
+        <h2 className="font-display text-2xl uppercase">Pedidos</h2>
         <div className="flex items-center gap-4">
           <label
             className="flex items-center gap-2 text-sm cursor-pointer"
