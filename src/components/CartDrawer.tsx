@@ -1066,7 +1066,7 @@ export default function CartDrawer() {
                       variant="ghost" 
                       className="h-8 px-2 text-primary hover:text-primary hover:bg-primary/20"
                       onClick={() => {
-                        navigator.clipboard.writeText(settings.pix_key!);
+                        navigator.clipboard.writeText(PIX_KEY!);
                         toast.success("Chave PIX copiada!");
                       }}
                     >
