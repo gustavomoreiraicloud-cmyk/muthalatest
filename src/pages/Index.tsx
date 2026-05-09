@@ -322,7 +322,7 @@ const Index = () => {
       {/* HERO */}
       <section
         id="home"
-        className="relative min-h-[90vh] md:min-h-screen flex items-center overflow-hidden pt-20 md:pt-28 scroll-mt-20"
+        className="relative h-[100dvh] md:min-h-screen flex items-center overflow-hidden pt-20 md:pt-28 scroll-mt-20"
       >
         <img
           src={heroBurger}
