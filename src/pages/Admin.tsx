@@ -63,7 +63,7 @@ export default function Admin() {
           <div>
             <h1 className="font-display text-xl uppercase">Painel Muthala</h1>
             <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">
-              Logado como: {user?.username}
+              Logado como: {user?.email}
             </p>
           </div>
           <Button
