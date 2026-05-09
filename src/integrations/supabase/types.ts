@@ -345,6 +345,23 @@ export type Database = {
         }
         Returns: boolean
       }
+      lookup_order_status: {
+        Args: { _order_number: number; _phone: string }
+        Returns: {
+          created_at: string
+          delivery_fee: number
+          delivery_method: string
+          discount: number
+          id: string
+          items: Json
+          order_number: number
+          payment_method: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }[]
+      }
       validate_coupon: {
         Args: { _code: string }
         Returns: {
