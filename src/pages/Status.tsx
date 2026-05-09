@@ -133,20 +133,31 @@ export default function OrderStatus() {
         {!order && !loading && (
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
-            <form onSubmit={handleSearch} className="flex gap-2">
+            <form onSubmit={handleSearch} className="space-y-3">
               <Input
-                placeholder="Ex: 5821"
+                placeholder="Número do pedido (ex: 5821)"
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 className="bg-background"
               />
-              <Button type="submit" size="icon">
-                <Search className="w-4 h-4" />
+              <Input
+                placeholder="Seu telefone (ex: 18999998888)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="bg-background"
+              />
+              <Button type="submit" className="w-full gap-2">
+                <Search className="w-4 h-4" /> Buscar
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              Digite o número de 4 dígitos que apareceu na tela após você finalizar o seu pedido.
+              Informe o número de 4 dígitos e o telefone usado no pedido para acompanhar.
             </p>
+            {searched && !order && (
+              <p className="text-xs text-destructive mt-2">
+                Pedido não encontrado ou telefone incorreto.
+              </p>
+            )}
           </Card>
         )}
 
