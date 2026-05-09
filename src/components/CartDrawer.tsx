@@ -409,7 +409,8 @@ export default function CartDrawer() {
           price: Number(parsePrice(i.price)),
           options: i.options,
         })),
-        _user_id: user.user?.id || undefined,
+        _user_id: user?.id || undefined,
+        _points_used: pointsDiscount,
       });
 
       if (orderError) throw orderError;
