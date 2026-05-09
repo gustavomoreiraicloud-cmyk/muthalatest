@@ -251,7 +251,7 @@ const printDailyReport = (orders: Order[]) => {
 
       <h4>VENDAS POR PAGAMENTO</h4>
       ${Object.entries(paymentTotals)
-        .map(([m, val]) => `<div class="row"><span>${m}</span><span>${formatBRL(val)}</span></div>`)
+        .map(([m, val]) => `<div class="row"><span>${esc(m)}</span><span>${esc(formatBRL(val))}</span></div>`)
         .join("")}
 
       <hr/>
@@ -259,7 +259,7 @@ const printDailyReport = (orders: Order[]) => {
       <table>
         ${Object.entries(productStats)
           .sort((a, b) => b[1] - a[1])
-          .map(([name, qty]) => `<tr><td>${qty}x</td><td>${name}</td></tr>`)
+          .map(([name, qty]) => `<tr><td>${esc(qty)}x</td><td>${esc(name)}</td></tr>`)
           .join("")}
       </table>
 
