@@ -15,6 +15,7 @@ export const DEFAULT_HOURS: BusinessHours = {
 };
 
 function toMinutes(hhmm: string): number {
+  if (!hhmm) return 0;
   const [h, m] = hhmm.split(":").map(Number);
   return (h || 0) * 60 + (m || 0);
 }
