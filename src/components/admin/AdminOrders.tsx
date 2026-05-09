@@ -311,24 +311,18 @@ export default function AdminOrders() {
   useEffect(() => {
     load();
     const ch = supabase
-      .channel("orders-admin")
+      .channel("orders-admin-local")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, (payload) => {
         const o = payload.new as Order;
         if (!knownIds.current.has(o.id)) {
           knownIds.current.add(o.id);
-          if (soundOn) playBeep();
-          if (notifyOn) {
-            sendPushNotification(
-              "🍔 NOVO PEDIDO!",
-              `Novo pedido de ${o.customer_name || "cliente"} recebido agora.`,
-            );
-          }
+          // Som e notificações globais são tratados no Admin.tsx agora
+          // Aqui mantemos apenas o toast local para feedback imediato se o adm estiver na aba de pedidos
           toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
             duration: 15000,
             action: {
               label: "Ver pedido",
               onClick: () => {
-                // Rola para o topo para garantir que o pedido apareça
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }
