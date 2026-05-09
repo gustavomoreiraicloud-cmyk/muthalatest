@@ -752,6 +752,27 @@ const Index = () => {
 
       {/* FLOATING ACTIONS — Mobile Optimized */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
+        {/* Floating Order Status Button */}
+        {(() => {
+          const [hasOrder, setHasOrder] = useState(false);
+          useEffect(() => {
+            if (localStorage.getItem("last_order_number")) setHasOrder(true);
+          }, []);
+          
+          if (!hasOrder) return null;
+          
+          return (
+            <button
+              onClick={() => navigate({ to: "/status" })}
+              className="h-12 px-4 rounded-full bg-card border border-primary/50 text-primary font-bold flex items-center gap-2 shadow-xl hover:bg-primary hover:text-primary-foreground transition-all group"
+            >
+              <div className="w-2 h-2 bg-primary group-hover:bg-primary-foreground rounded-full animate-pulse" />
+              <ClipboardList className="w-5 h-5" />
+              <span className="text-xs uppercase tracking-tighter">Acompanhar Pedido</span>
+            </button>
+          );
+        })()}
+
         {cartCount > 0 && (
           <button
             onClick={openCart}
