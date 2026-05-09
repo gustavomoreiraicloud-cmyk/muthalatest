@@ -124,6 +124,14 @@ const playBeep = () => {
   }
 };
 
+const esc = (s: unknown): string =>
+  String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 const printOrder = (o: Order) => {
   const w = window.open("", "_blank", "width=380,height=600");
   if (!w) return;
@@ -132,20 +140,21 @@ const printOrder = (o: Order) => {
       let opts = "";
       if (it.options && Object.keys(it.options).length > 0) {
         const details = [];
-        if (it.options.burgerSize) details.push(`Tamanho: ${it.options.burgerSize}`);
-        if (it.options.doneness) details.push(`Ponto: ${it.options.doneness}`);
-        if (it.options.beverage) details.push(`Bebida: ${it.options.beverage}`);
-        if (it.options.extras?.length) details.push(`Extras: ${it.options.extras.join(", ")}`);
-        if (it.options.notes) details.push(`Obs: ${it.options.notes}`);
+        if (it.options.burgerSize) details.push(`Tamanho: ${esc(it.options.burgerSize)}`);
+        if (it.options.doneness) details.push(`Ponto: ${esc(it.options.doneness)}`);
+        if (it.options.beverage) details.push(`Bebida: ${esc(it.options.beverage)}`);
+        if (it.options.extras?.length)
+          details.push(`Extras: ${esc((it.options.extras as unknown[]).map(String).join(", "))}`);
+        if (it.options.notes) details.push(`Obs: ${esc(it.options.notes)}`);
         opts = `<div style="font-size:10px;margin-left:8px;color:#333">${details.join("<br/>")}</div>`;
       }
-      return `<tr><td colspan="3"><b>${it.qty}x ${it.name}</b></td><td style="text-align:right">${it.price}</td></tr>
+      return `<tr><td colspan="3"><b>${esc(it.qty)}x ${esc(it.name)}</b></td><td style="text-align:right">${esc(it.price)}</td></tr>
               <tr><td colspan="4">${opts}</td></tr>`;
     })
     .join("");
   const addr = [o.address_street, o.address_number].filter(Boolean).join(", ");
   w.document.write(`
-    <html><head><title>Pedido #${o.order_number ?? o.id.slice(0, 8)}</title>
+    <html><head><title>Pedido #${esc(o.order_number ?? o.id.slice(0, 8))}</title>
     <style>
       body{font-family:monospace;width:280px;padding:8px;color:#000}
       h2{text-align:center;margin:4px 0}
@@ -156,35 +165,35 @@ const printOrder = (o: Order) => {
       .row{display:flex;justify-content:space-between;font-size:12px}
     </style></head><body>
       <h2>MUTHALA BURGER</h2>
-      <p><b>Pedido #${o.order_number ?? o.id.slice(0, 8)}</b></p>
-      <p>${new Date(o.created_at).toLocaleString("pt-BR")}</p>
+      <p><b>Pedido #${esc(o.order_number ?? o.id.slice(0, 8))}</b></p>
+      <p>${esc(new Date(o.created_at).toLocaleString("pt-BR"))}</p>
       <hr/>
       <p><b>MÉTODO:</b> ${o.delivery_method === "retirada" ? "RETIRADA NO LOCAL" : "ENTREGA"}</p>
-      <p><b>CLIENTE</b><br/>${o.customer_name || "—"}<br/>${o.customer_phone || "—"}</p>
+      <p><b>CLIENTE</b><br/>${esc(o.customer_name || "—")}<br/>${esc(o.customer_phone || "—")}</p>
       <hr/>
       ${
         o.delivery_method !== "retirada"
           ? `
       <p><b>ENDEREÇO</b><br/>
-        ${addr || "—"}<br/>
-        ${o.address_neighborhood ? `Bairro: ${o.address_neighborhood}<br/>` : ""}
-        ${o.address_complement ? `Compl.: ${o.address_complement}<br/>` : ""}
-        ${o.address_reference ? `Ref.: ${o.address_reference}` : ""}
+        ${esc(addr || "—")}<br/>
+        ${o.address_neighborhood ? `Bairro: ${esc(o.address_neighborhood)}<br/>` : ""}
+        ${o.address_complement ? `Compl.: ${esc(o.address_complement)}<br/>` : ""}
+        ${o.address_reference ? `Ref.: ${esc(o.address_reference)}` : ""}
       </p>
       <hr/>`
           : ""
       }
       <table>${itemsHtml}</table>
       <hr/>
-      <div class="row"><span>Subtotal</span><span>${formatBRL(Number(o.subtotal ?? o.total))}</span></div>
-      ${Number(o.discount) > 0 ? `<div class="row"><span>Desc${o.coupon_code ? ` (${o.coupon_code})` : ""}</span><span>-${formatBRL(Number(o.discount))}</span></div>` : ""}
-      ${o.delivery_method !== "retirada" ? `<div class="row"><span>Entrega</span><span>${formatBRL(Number(o.delivery_fee ?? 0))}</span></div>` : ""}
-      <p class="total">TOTAL: ${formatBRL(Number(o.total))}</p>
+      <div class="row"><span>Subtotal</span><span>${esc(formatBRL(Number(o.subtotal ?? o.total)))}</span></div>
+      ${Number(o.discount) > 0 ? `<div class="row"><span>Desc${o.coupon_code ? ` (${esc(o.coupon_code)})` : ""}</span><span>-${esc(formatBRL(Number(o.discount)))}</span></div>` : ""}
+      ${o.delivery_method !== "retirada" ? `<div class="row"><span>Entrega</span><span>${esc(formatBRL(Number(o.delivery_fee ?? 0)))}</span></div>` : ""}
+      <p class="total">TOTAL: ${esc(formatBRL(Number(o.total)))}</p>
       <hr/>
-      <p><b>PAGAMENTO:</b> ${PAY_LABEL[o.payment_method ?? ""] ?? "—"}
-      ${o.payment_method === "dinheiro" && o.change_for ? `<br/>Troco para ${formatBRL(Number(o.change_for))} (levar ${formatBRL(Number(o.change_for) - Number(o.total))})` : ""}
+      <p><b>PAGAMENTO:</b> ${esc(PAY_LABEL[o.payment_method ?? ""] ?? "—")}
+      ${o.payment_method === "dinheiro" && o.change_for ? `<br/>Troco para ${esc(formatBRL(Number(o.change_for)))} (levar ${esc(formatBRL(Number(o.change_for) - Number(o.total)))})` : ""}
       </p>
-      ${o.notes ? `<hr/><p><b>Obs Geral:</b> ${o.notes}</p>` : ""}
+      ${o.notes ? `<hr/><p><b>Obs Geral:</b> ${esc(o.notes)}</p>` : ""}
       <hr/>
       <p style="text-align:center">Obrigado! 🍔</p>
       <script>window.print();setTimeout(()=>window.close(),500);</script>
@@ -192,7 +201,6 @@ const printOrder = (o: Order) => {
   `);
   w.document.close();
 };
-const printDailyReport = (orders: Order[]) => {
   const today = new Date().toLocaleDateString("pt-BR");
   const finishedOrders = orders.filter(
     (o) =>
