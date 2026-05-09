@@ -229,9 +229,9 @@ export default function CartDrawer() {
     // Arredondamento para baixo para beneficiar o cliente em casos limítrofes (ex: 3.05km vira 3km)
     const effectiveDist = Math.floor(detectedDistance * 10) / 10;
     
-    if (effectiveDist <= 3.0) return 5;
-    if (effectiveDist <= 5.0) return 8;
-    return 12;
+    if (effectiveDist <= 3.0) return 6;
+    if (effectiveDist <= 5.0) return 9;
+    return 13;
   }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
 
   const fee = freeShipping ? 0 : calculatedFee;
@@ -309,7 +309,7 @@ export default function CartDrawer() {
       const storeLon = settings?.longitude || -50.4132;
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
-      const estimatedRoadDist = dist * 1.15;
+      const estimatedRoadDist = Math.max(0.1, dist * 1.3);
       setDetectedDistance(estimatedRoadDist);
       
       const time = Math.round(15 + estimatedRoadDist * 2.5);
@@ -329,7 +329,7 @@ export default function CartDrawer() {
           if (cepData && cepData.length > 0) {
             const { lat, lon } = cepData[0];
             const dist = calculateDistance(settings?.latitude || -22.6612, settings?.longitude || -50.4132, parseFloat(lat), parseFloat(lon));
-            const estimatedRoadDist = dist * 1.15;
+            const estimatedRoadDist = Math.max(0.1, dist * 1.3);
             setDetectedDistance(estimatedRoadDist);
             const time = Math.round(15 + estimatedRoadDist * 2.5);
             setEstimatedTime(`${time}-${time + 10} min`);
