@@ -177,7 +177,7 @@ export default function OrderStatus() {
           <Card className="p-6 bg-card border-border">
             <h2 className="font-bold mb-4">Acompanhar Pedido</h2>
             <p className="text-xs text-muted-foreground mb-3">
-              Informe <b>apenas um</b> dos campos abaixo:
+              Informe o número do pedido <b>e</b> o telefone cadastrado:
             </p>
             <form onSubmit={handleSearch} className="space-y-3">
               <Input
@@ -185,13 +185,12 @@ export default function OrderStatus() {
                 value={orderId}
                 onChange={(e) => {
                   setOrderId(e.target.value);
-                  if (e.target.value) setPhone("");
                 }}
                 className="bg-background"
               />
               <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
                 <div className="flex-1 h-px bg-border" />
-                ou
+                E
                 <div className="flex-1 h-px bg-border" />
               </div>
               <Input
@@ -199,11 +198,10 @@ export default function OrderStatus() {
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);
-                  if (e.target.value) setOrderId("");
                 }}
                 className="bg-background"
               />
-              <Button type="submit" className="w-full gap-2" disabled={!orderId && !phone}>
+              <Button type="submit" className="w-full gap-2" disabled={!orderId || !phone}>
                 <Search className="w-4 h-4" /> Buscar
               </Button>
             </form>
