@@ -110,6 +110,8 @@ export default function CartDrawer() {
   const { settings } = useStoreSettings();
   const MIN_ORDER = settings?.min_order ?? 30;
   const DEFAULT_DELIVERY_FEE = settings?.delivery_fee ?? 0;
+  const PIX_KEY = settings?.pix_key;
+  const PIX_QR = settings?.pix_qr_code_url;
   const isOpenStore = settings?.is_open ?? true;
 
   const [name, setName] = useState("");
