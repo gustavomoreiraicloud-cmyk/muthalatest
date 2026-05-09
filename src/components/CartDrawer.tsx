@@ -86,6 +86,15 @@ type Coupon = {
   active: boolean;
 };
 
+type DeliveryRange = {
+  id: string;
+  label: string;
+  min_km: number;
+  max_km: number;
+  fee: number;
+  active: boolean;
+};
+
 export default function CartDrawer() {
   const { items, isOpen, close, inc, dec, remove, clear, total: subtotal, totalLabel } = useCart();
   const { settings } = useStoreSettings();
