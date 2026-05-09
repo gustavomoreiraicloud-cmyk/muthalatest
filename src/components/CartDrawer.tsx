@@ -407,9 +407,10 @@ export default function CartDrawer() {
 
     // Validação de troco
     if (payment === "dinheiro" && needsChange === true) {
-      const changeVal = Number(parsePrice(changeFor));
+      const changeVal = parsePrice(changeFor);
       if (!changeFor || isNaN(changeVal) || changeVal <= total) {
         toast.error(`O valor para troco deve ser maior que o total do pedido (${formatBRL(total)})`);
+        setSubmitting(false);
         return;
       }
     }
