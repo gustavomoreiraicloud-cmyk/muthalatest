@@ -45,15 +45,19 @@ export default function AdminDashboard() {
   useEffect(() => {
     const since = new Date();
     since.setDate(since.getDate() - 30); // Aumentar para 30 dias para métricas mensais
-    supabase
-      .from("orders")
-      .select("id,total,items,status,created_at,payment_method,delivery_method")
-      .gte("created_at", since.toISOString())
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
-        setOrders((data as unknown as Order[]) ?? []);
-        setLoading(false);
-      });
+    const fetchOrders = async () => {
+      const { data } = await supabase
+        .from("orders")
+        .select("id,total,items,status,created_at,payment_method,delivery_method")
+        .gte("created_at", since.toISOString())
+        .order("created_at", { ascending: true });
+      
+      setOrders((data as unknown as Order[]) ?? []);
+      setLastUpdate(new Date());
+      setLoading(false);
+    };
+
+    fetchOrders();
   }, []);
 
   useEffect(() => {
