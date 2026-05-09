@@ -115,7 +115,25 @@ export default function AdminSettings() {
           />
         </div>
 
-        <div className="space-y-2 pt-2 border-t border-border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border">
+          <div className="space-y-2">
+            <Label>Chave PIX (CPF, CNPJ, Celular, etc)</Label>
+            <Input 
+              value={s.pix_key ?? ""} 
+              onChange={(e) => setS({ ...s, pix_key: e.target.value })} 
+              placeholder="Ex: 123.456.789-00"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>URL do QR Code (opcional)</Label>
+            <Input 
+              value={s.pix_qr_code_url ?? ""} 
+              onChange={(e) => setS({ ...s, pix_qr_code_url: e.target.value })} 
+              placeholder="https://..."
+            />
+          </div>
+        </div>
+
           <Label>Horários por dia da semana</Label>
           <p className="text-xs text-muted-foreground">
             Quando a loja estiver fechada, o site mostra automaticamente "Abrimos em..." baseado
