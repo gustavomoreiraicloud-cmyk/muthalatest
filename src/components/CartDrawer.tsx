@@ -756,40 +756,41 @@ export default function CartDrawer() {
                     <div className="grid grid-cols-3 gap-2">
                       <div className="col-span-2">
                         <Label className="text-xs">Rua *</Label>
+                        <Input
+                          maxLength={120}
+                          value={street}
+                          onChange={(e) => setStreet(e.target.value)}
+                          placeholder="R. Smith Vasconcelos"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Número *</Label>
+                        <Input
+                          maxLength={10}
+                          value={number}
+                          onChange={(e) => setNumber(e.target.value)}
+                          placeholder="312"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs">Complemento</Label>
                       <Input
-                        maxLength={120}
-                        value={street}
-                        onChange={(e) => setStreet(e.target.value)}
-                        placeholder="R. Smith Vasconcelos"
+                        maxLength={80}
+                        value={complement}
+                        onChange={(e) => setComplement(e.target.value)}
+                        placeholder="Apto 21, bloco B"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Número *</Label>
+                      <Label className="text-xs">Ponto de referência</Label>
                       <Input
-                        maxLength={10}
-                        value={number}
-                        onChange={(e) => setNumber(e.target.value)}
-                        placeholder="312"
+                        maxLength={120}
+                        value={reference}
+                        onChange={(e) => setReference(e.target.value)}
+                        placeholder="Próximo ao mercado..."
                       />
                     </div>
-                  </div>
-                  <div>
-                    <Label className="text-xs">Complemento</Label>
-                    <Input
-                      maxLength={80}
-                      value={complement}
-                      onChange={(e) => setComplement(e.target.value)}
-                      placeholder="Apto 21, bloco B"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Ponto de referência</Label>
-                    <Input
-                      maxLength={120}
-                      value={reference}
-                      onChange={(e) => setReference(e.target.value)}
-                      placeholder="Próximo ao mercado..."
-                    />
                   </div>
                   
                   {calculatingDistance && (
