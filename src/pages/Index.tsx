@@ -204,6 +204,26 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            {!user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden sm:flex text-xs font-bold uppercase tracking-wider"
+                onClick={() => navigate({ to: "/auth" })}
+              >
+                <User className="w-4 h-4 mr-2" /> Entrar
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden sm:flex text-xs font-bold uppercase tracking-wider text-primary"
+                onClick={() => navigate({ to: "/status" })}
+              >
+                <User className="w-4 h-4 mr-2" /> Minha Conta
+              </Button>
+            )}
+
             <a
               href="/status"
               aria-label="Acompanhar Pedido"
