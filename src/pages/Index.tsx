@@ -336,23 +336,23 @@ const Index = () => {
         <div className="container mx-auto relative z-10 py-12 md:py-20 px-4">
           <div className="max-w-3xl animate-fade-in-up text-center md:text-left">
             <h1 className="sr-only">Muthala Burger - Melhor Hamburgueria Artesanal de Assis SP</h1>
-            <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-3 uppercase tracking-tighter" aria-hidden="true">
-              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-1 md:mb-0">
+            <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-4 uppercase tracking-tighter" aria-hidden="true">
+              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-2 md:mb-0">
                 MUTHALA
               </span>{" "}
               Burguer
             </div>
-            <p className="text-xs md:text-base text-primary font-bold mb-4 tracking-[0.2em] uppercase">
+            <p className="text-[10px] md:text-base text-primary font-bold mb-5 tracking-[0.25em] uppercase">
               O Sabor dos Deuses • Assis/SP
             </p>
-            <p className="text-lg md:text-2xl text-foreground/95 max-w-xl mx-auto md:mx-0 mb-6 font-semibold leading-tight">
+            <p className="text-lg md:text-2xl text-foreground/95 max-w-xl mx-auto md:mx-0 mb-8 font-semibold leading-tight">
               Smash de carne nobre e pão selado na manteiga. Experiência única em cada mordida.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-10">
               <Button
                 asChild
                 size="lg"
-                className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-16 shadow-glow animate-pulse-cta"
+                className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-14 md:h-16 shadow-glow animate-pulse-cta"
               >
                 <a href="#menu">
                   <ShoppingBag className="mr-2 w-6 h-6" />
