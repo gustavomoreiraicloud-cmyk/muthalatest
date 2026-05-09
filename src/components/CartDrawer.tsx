@@ -418,6 +418,11 @@ export default function CartDrawer() {
       if (!order) throw new Error("Order not returned");
 
       setConfirmation({ orderNumber: order.order_number, orderId: order.id });
+      
+      // Salvar no localStorage para facilitar o acompanhamento posterior
+      localStorage.setItem("last_order_number", String(order.order_number));
+      localStorage.setItem("last_order_phone", phone);
+
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -473,11 +478,20 @@ export default function CartDrawer() {
               </div>
 
               <Button
-                onClick={resetAll}
+                onClick={() => {
+                  window.location.href = `/status?id=${confirmation.orderNumber}&phone=${phone}`;
+                }}
                 size="lg"
-                className="w-full bg-gradient-gold text-primary-foreground font-bold"
+                className="w-full bg-primary text-black font-bold h-14 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
               >
-                Fechar e voltar ao site
+                Acompanhar Pedido Agora
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={resetAll}
+                className="w-full text-muted-foreground font-bold"
+              >
+                Voltar ao Início
               </Button>
             </div>
           </div>
