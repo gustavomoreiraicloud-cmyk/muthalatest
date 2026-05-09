@@ -133,7 +133,7 @@ export default function AdminSettings() {
             />
           </div>
         </div>
-
+        <div className="space-y-2 pt-2 border-t border-border">
           <Label>Horários por dia da semana</Label>
           <p className="text-xs text-muted-foreground">
             Quando a loja estiver fechada, o site mostra automaticamente "Abrimos em..." baseado
