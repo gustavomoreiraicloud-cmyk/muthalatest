@@ -55,6 +55,34 @@ export default function AdminDashboard() {
       });
   }, []);
 
+  useEffect(() => {
+    // Canal em tempo real para atualizar o dashboard quando houver novos pedidos ou mudanças
+    const channel = supabase
+      .channel("dashboard-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders" },
+        () => {
+          // Recarrega os dados quando algo muda
+          const since = new Date();
+          since.setDate(since.getDate() - 30);
+          supabase
+            .from("orders")
+            .select("id,total,items,status,created_at,payment_method,delivery_method")
+            .gte("created_at", since.toISOString())
+            .order("created_at", { ascending: true })
+            .then(({ data }) => {
+              setOrders((data as unknown as Order[]) ?? []);
+            });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const stats = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
