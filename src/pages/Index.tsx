@@ -271,18 +271,26 @@ const Index = () => {
               <Instagram className="w-4 h-4" />
             </a>
 
-            <button
+            <motion.button
+              whileTap={{ scale: 0.9 }}
               onClick={openCart}
               aria-label="Abrir carrinho"
               className="relative w-9 h-9 md:w-10 md:h-10 rounded-full border border-border bg-card/50 flex items-center justify-center hover:border-primary hover:text-primary transition-smooth"
             >
               <ShoppingBag className="w-4 h-4" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] md:text-[11px] font-bold flex items-center justify-center shadow-lg">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+              <AnimatePresence>
+                {cartCount > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] md:text-[11px] font-bold flex items-center justify-center shadow-lg"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
 
             <Button
               asChild
@@ -426,14 +434,27 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Tabs - Mobile Optimized */}
-          <div className="sticky top-16 md:top-24 z-30 -mx-4 px-4 py-4 bg-background/95 backdrop-blur-md border-y border-border/50 mb-8 overflow-hidden">
+          {/* Tabs - Mobile Optimized - STICKY */}
+          <div className="sticky top-[64px] md:top-[88px] z-30 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-md border-y border-border/50 mb-8 overflow-hidden shadow-sm">
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => {
                     setActiveCat(cat.id);
+                    // Smooth scroll to menu section top when changing category
+                    const menu = document.getElementById("menu");
+                    if (menu) {
+                      const offset = 140; // sticky header + category tabs height
+                      const bodyRect = document.body.getBoundingClientRect().top;
+                      const elementRect = menu.getBoundingClientRect().top;
+                      const elementPosition = elementRect - bodyRect;
+                      const offsetPosition = elementPosition - offset;
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                      });
+                    }
                   }}
                   className={`px-6 py-2.5 rounded-full whitespace-nowrap text-xs md:text-sm font-black uppercase tracking-wider transition-all duration-300 border ${
                     activeCat === cat.id || (!activeCat && cat === categories[0])

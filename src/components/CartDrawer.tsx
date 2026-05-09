@@ -35,7 +35,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371; // Raio da Terra em km
@@ -489,14 +489,16 @@ export default function CartDrawer() {
             </div>
           ) : (
             <>
-              <ul className="space-y-3 mb-6">
-                <AnimatePresence initial={false}>
-                  {items.map((i, idx) => {
+              <ul className="space-y-4 mb-8">
+                <LayoutGroup>
+                  <AnimatePresence initial={false}>
+                    {items.map((i, idx) => {
                     const lineTotal = parsePrice(i.price) * i.qty;
                     const itemKey = `${i.name}-${idx}`;
                     const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
                     return (
                       <motion.li
+                        layout
                         key={uniqueId}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -581,6 +583,7 @@ export default function CartDrawer() {
                     );
                   })}
                 </AnimatePresence>
+              </LayoutGroup>
               </ul>
 
               {/* User Login/Account Header */}
