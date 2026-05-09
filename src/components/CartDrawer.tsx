@@ -515,6 +515,8 @@ export default function CartDrawer() {
                               const target = e.target as HTMLImageElement;
                               if (target.src.includes("/src/assets/")) {
                                 target.src = target.src.replace("/src/assets/", "/assets/");
+                              } else {
+                                target.src = "/placeholder.svg";
                               }
                             }}
                             loading="lazy"

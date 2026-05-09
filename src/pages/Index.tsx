@@ -520,6 +520,8 @@ const Index = () => {
                             const target = e.target as HTMLImageElement;
                             if (target.src.includes("/src/assets/")) {
                               target.src = target.src.replace("/src/assets/", "/assets/");
+                            } else {
+                              target.src = FALLBACK_IMG;
                             }
                           }}
                           loading="lazy"

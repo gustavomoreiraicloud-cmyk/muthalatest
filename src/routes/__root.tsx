@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/hooks/useCart";
 import { AuthProvider } from "@/hooks/useAuth";
 import CartDrawer from "@/components/CartDrawer";
+import { NotFound } from "@/components/NotFound";
+import { RouteError } from "@/components/RouteError";
 
 import appCss from "../styles.css?url";
 
@@ -49,6 +51,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   }),
   shellComponent: RootShell,
   component: RootComponent,
+  errorComponent: RouteError,
+  notFoundComponent: NotFound,
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
