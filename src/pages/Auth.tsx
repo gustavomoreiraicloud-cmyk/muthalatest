@@ -39,6 +39,8 @@ export default function Auth() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+
     if (!username.trim()) {
       toast.error("Informe o usuário");
       return;
@@ -50,23 +52,28 @@ export default function Auth() {
     setSubmitting(true);
     const email = toInternalEmail(username);
 
-    if (isSignUp) {
-      const { error } = await signUp(email, password, { full_name: username });
-      setSubmitting(false);
-      if (error) {
-        toast.error(error);
-        return;
+    try {
+      if (isSignUp) {
+        const { error } = await signUp(email, password, { full_name: username });
+        if (error) {
+          toast.error(error);
+          setSubmitting(false);
+          return;
+        }
+        toast.success("Conta criada! Entrando...");
+        await signIn(email, password);
+      } else {
+        const { error } = await signIn(email, password);
+        if (error) {
+          toast.error("Usuário ou senha inválidos");
+          setSubmitting(false);
+          return;
+        }
+        toast.success("Bem-vindo!");
       }
-      toast.success("Conta criada! Entrando...");
-      await signIn(email, password);
-    } else {
-      const { error } = await signIn(email, password);
+    } catch (err: any) {
+      toast.error("Erro inesperado: " + (err.message || "Tente novamente"));
       setSubmitting(false);
-      if (error) {
-        toast.error("Usuário ou senha inválidos");
-        return;
-      }
-      toast.success("Bem-vindo!");
     }
   };
 
