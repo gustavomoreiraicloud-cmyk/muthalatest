@@ -96,7 +96,8 @@ export default function OrderStatus() {
     }
 
     setLoading(false);
-    if (error) console.error(error);
+    // Silently handle error for production
+    // if (error) console.error(error);
   };
 
   const handleSearch = (e: React.FormEvent) => {

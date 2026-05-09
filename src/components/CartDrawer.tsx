@@ -387,10 +387,6 @@ export default function CartDrawer() {
       setConfirmation({ orderNumber: order.order_number, orderId: order.id });
       clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
-
-      setConfirmation({ orderNumber: order.order_number, orderId: order.id });
-      clear();
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("save order failed", err);
       toast.error("Não foi possível registrar o pedido. Verifique o endereço e tente novamente.");
