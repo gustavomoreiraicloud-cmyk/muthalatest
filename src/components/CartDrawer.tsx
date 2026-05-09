@@ -767,14 +767,13 @@ export default function CartDrawer() {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <Label className="text-xs">CEP *</Label>
+                        <Label className="text-xs">CEP (Opcional)</Label>
                         <Input
                           placeholder="00000-000"
                           maxLength={9}
                           value={cep}
                           onChange={(e) => handleCEPChange(e.target.value)}
                           inputMode="numeric"
-                          className="font-bold"
                         />
                       </div>
                       <div>
