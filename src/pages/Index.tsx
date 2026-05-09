@@ -336,23 +336,23 @@ const Index = () => {
         <div className="container mx-auto relative z-10 py-12 md:py-20 px-4">
           <div className="max-w-3xl animate-fade-in-up text-center md:text-left">
             <h1 className="sr-only">Muthala Burger - Melhor Hamburgueria Artesanal de Assis SP</h1>
-            <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-3 uppercase tracking-tighter" aria-hidden="true">
-              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-1 md:mb-0">
+            <div className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.85] mb-4 uppercase tracking-tighter" aria-hidden="true">
+              <span className="font-serif-italic normal-case text-gradient-fire block md:inline mb-2 md:mb-0">
                 MUTHALA
               </span>{" "}
               Burguer
             </div>
-            <p className="text-xs md:text-base text-primary font-bold mb-4 tracking-[0.2em] uppercase">
+            <p className="text-[10px] md:text-base text-primary font-bold mb-5 tracking-[0.25em] uppercase">
               O Sabor dos Deuses • Assis/SP
             </p>
-            <p className="text-lg md:text-2xl text-foreground/95 max-w-xl mx-auto md:mx-0 mb-6 font-semibold leading-tight">
+            <p className="text-lg md:text-2xl text-foreground/95 max-w-xl mx-auto md:mx-0 mb-8 font-semibold leading-tight">
               Smash de carne nobre e pão selado na manteiga. Experiência única em cada mordida.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-10">
               <Button
                 asChild
                 size="lg"
-                className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-16 shadow-glow animate-pulse-cta"
+                className="w-full sm:w-auto bg-gradient-fire text-primary-foreground hover:opacity-95 font-black uppercase tracking-wider text-lg px-10 h-14 md:h-16 shadow-glow animate-pulse-cta"
               >
                 <a href="#menu">
                   <ShoppingBag className="mr-2 w-6 h-6" />
@@ -509,7 +509,7 @@ const Index = () => {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 animate-fade-in">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 animate-fade-in">
                 {current.items.map((item) => {
                   const detail = toDetail(item);
                   return (
@@ -523,7 +523,7 @@ const Index = () => {
                       }`}
                     >
                       {item.highlight && (
-                        <div className="bg-gradient-gold text-primary-foreground text-[10px] md:text-xs font-black uppercase tracking-widest py-1.5 px-4 text-center">
+                        <div className="bg-gradient-gold text-primary-foreground text-[8px] md:text-xs font-black uppercase tracking-widest py-1 md:py-1.5 px-4 text-center">
                           ⭐ Destaque
                         </div>
                       )}
@@ -545,19 +545,19 @@ const Index = () => {
                           height={225}
                         />
                       </div>
-                      <div className="p-4 md:p-6 flex-1 flex flex-col">
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h4 className="font-display text-xl md:text-2xl uppercase leading-none tracking-tight">
+                      <div className="p-2.5 md:p-6 flex-1 flex flex-col">
+                        <div className="flex items-start justify-between gap-1 mb-1 md:mb-2">
+                          <h4 className="font-display text-base md:text-2xl uppercase leading-tight tracking-tight">
                             {item.name}
                           </h4>
                         </div>
                         {item.description && (
-                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                          <p className="text-[10px] md:text-sm text-muted-foreground leading-tight mb-2 line-clamp-2 md:line-clamp-3">
                             {item.description}
                           </p>
                         )}
-                        <div className="flex items-center justify-between gap-2 pt-3 mt-auto border-t border-border/40">
-                          <p className="font-bold text-primary text-xl md:text-2xl whitespace-nowrap font-display">
+                        <div className="flex items-center justify-between gap-2 pt-2 md:pt-3 mt-auto border-t border-border/40">
+                          <p className="font-bold text-primary text-base md:text-2xl whitespace-nowrap font-display">
                             {formatBRL(Number(item.price))}
                           </p>
                           <motion.div whileTap={{ scale: 0.9 }}>
@@ -567,9 +567,9 @@ const Index = () => {
                                 e.stopPropagation();
                                 setDetailItem(detail);
                               }}
-                              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-8 md:h-10 text-xs md:text-sm"
+                              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-bold h-7 md:h-10 text-[10px] md:text-sm px-2 md:px-4"
                             >
-                              <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Pedir
+                              <Plus className="w-3 h-3 md:w-4 md:h-4 mr-0.5 md:mr-1" /> Pedir
                             </Button>
                           </motion.div>
                         </div>
