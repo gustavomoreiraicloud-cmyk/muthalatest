@@ -71,7 +71,21 @@ export default {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const finalResponse = await normalizeCatastrophicSsrResponse(response);
+
+      // Add security headers
+      const headers = new Headers(finalResponse.headers);
+      headers.set("X-Frame-Options", "DENY");
+      headers.set("X-Content-Type-Options", "nosniff");
+      headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+      headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+      headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+      
+      return new Response(finalResponse.body, {
+        status: finalResponse.status,
+        statusText: finalResponse.statusText,
+        headers,
+      });
     } catch (error) {
       console.error(error);
       return brandedErrorResponse();
