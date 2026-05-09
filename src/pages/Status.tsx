@@ -44,11 +44,17 @@ export default function OrderStatus() {
     const ph = params.get("phone");
     if (id) setOrderId(id);
     if (ph) setPhone(ph);
-    if (id && ph) fetchOrder(id, ph);
+    
+    // Se não tiver na URL, tenta pegar do localStorage
+    const savedId = localStorage.getItem("last_order_number");
+    const savedPh = localStorage.getItem("last_order_phone");
 
-    if (!audioRef.current) {
-      audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
-      audioRef.current.load();
+    if (id && ph) {
+      fetchOrder(id, ph);
+    } else if (savedId && savedPh) {
+      setOrderId(savedId);
+      setPhone(savedPh);
+      fetchOrder(savedId, savedPh);
     }
   }, []);
 
