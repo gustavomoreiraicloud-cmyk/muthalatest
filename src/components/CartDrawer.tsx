@@ -156,6 +156,7 @@ export default function CartDrawer() {
       if (!name) {
         setName(user.user_metadata?.full_name || "");
         setPhone(user.user_metadata?.phone || "");
+      }
     }
   }, [user, isOpen, name]);
 
