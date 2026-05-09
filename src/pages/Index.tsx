@@ -249,7 +249,7 @@ const Index = () => {
                 className="hidden sm:flex text-xs font-bold uppercase tracking-wider text-primary"
                 onClick={() => navigate({ to: "/conta" })}
               >
-                <User className="w-4 h-4 mr-2" /> Minha Conta
+                <User className="w-4 h-4 mr-2" /> {user?.user_metadata?.full_name?.split(' ')[0] || "Minha Conta"}
               </Button>
             )}
 
