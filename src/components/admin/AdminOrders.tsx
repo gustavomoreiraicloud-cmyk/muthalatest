@@ -59,6 +59,7 @@ const STATUSES = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
 const SOUND_KEY = "muthala_admin_sound";
 const NOTIFY_KEY = "muthala_admin_notify";
+const AUTO_PRINT_KEY = "muthala_admin_auto_print";
 
 const requestNotificationPermission = async () => {
   if (!("Notification" in window)) return false;
@@ -276,6 +277,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_KEY) !== "0");
   const [notifyOn, setNotifyOn] = useState(() => localStorage.getItem(NOTIFY_KEY) === "1");
+  const [autoPrint, setAutoPrint] = useState(() => localStorage.getItem(AUTO_PRINT_KEY) === "1");
   const knownIds = useRef<Set<string>>(new Set());
   const initialLoadDone = useRef(false);
 
@@ -343,8 +345,8 @@ export default function AdminOrders() {
       return toast.error("Sem permissão. Faça login como administrador.");
     }
 
-    // Se mudou para preparo, imprime automaticamente
-    if (status === "preparo") {
+    // Se mudou para preparo e auto-print estiver ligado, imprime
+    if (status === "preparo" && autoPrint) {
       const order = prev.find((o) => o.id === id);
       if (order) printOrder(order);
     }
@@ -375,6 +377,13 @@ export default function AdminOrders() {
     if (v) toast.success("Notificações de sistema ativadas");
   };
 
+  const toggleAutoPrint = (v: boolean) => {
+    setAutoPrint(v);
+    localStorage.setItem(AUTO_PRINT_KEY, v ? "1" : "0");
+    if (v) toast.success("Impressão automática ativada");
+    else toast.info("Impressão automática desativada");
+  };
+
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   const activeOrders = orders.filter(
@@ -388,9 +397,18 @@ export default function AdminOrders() {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="font-display text-2xl uppercase">Pedidos</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <label
-            className="flex items-center gap-2 text-sm cursor-pointer"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer"
+            title="Impressão automática ao aceitar"
+          >
+            <Printer className={`w-4 h-4 ${autoPrint ? "text-primary" : "text-muted-foreground"}`} />
+            <span className="hidden sm:inline">Auto Imprimir</span>
+            <Switch checked={autoPrint} onCheckedChange={toggleAutoPrint} />
+          </label>
+
+          <label
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer"
             title="Notificação no sistema"
           >
             {notifyOn ? (
@@ -398,42 +416,53 @@ export default function AdminOrders() {
             ) : (
               <BellOff className="w-4 h-4 text-muted-foreground" />
             )}
+            <span className="hidden sm:inline">Notificar</span>
             <Switch checked={notifyOn} onCheckedChange={toggleNotify} />
           </label>
-          <label className="flex items-center gap-2 text-sm cursor-pointer" title="Aviso sonoro">
+
+          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer" title="Aviso sonoro">
             {soundOn ? (
               <Volume2 className="w-4 h-4 text-primary" />
             ) : (
               <VolumeX className="w-4 h-4 text-muted-foreground" />
             )}
+            <span className="hidden sm:inline">Sons</span>
             <Switch checked={soundOn} onCheckedChange={toggleSound} />
           </label>
-          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders)}>
-            <Printer className="w-4 h-4 mr-1" /> Relatório do Dia
+
+          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders)} className="font-bold uppercase text-xs h-8">
+            <Printer className="w-3.5 h-3.5 mr-1" /> Relatório
           </Button>
-          <Button variant="outline" size="sm" onClick={load}>
-            <RefreshCw className="w-4 h-4" /> Atualizar
+          <Button variant="outline" size="sm" onClick={load} className="font-bold h-8">
+            <RefreshCw className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="ativos" className="w-full">
-        <TabsList className="grid grid-cols-2 w-full max-w-md">
-          <TabsTrigger value="ativos">
+        <TabsList className="grid grid-cols-3 w-full max-w-lg h-10">
+          <TabsTrigger value="ativos" className="text-xs uppercase font-bold">
             Ativos ({activeOrders.length})
           </TabsTrigger>
-          <TabsTrigger value="finalizados">
-            Finalizados ({finishedOrders.length})
+          <TabsTrigger value="entregando" className="text-xs uppercase font-bold">
+            Entregando ({orders.filter(o => o.status === 'entrega').length})
+          </TabsTrigger>
+          <TabsTrigger value="finalizados" className="text-xs uppercase font-bold">
+            Histórico ({finishedOrders.length})
           </TabsTrigger>
         </TabsList>
 
-        {(["ativos", "finalizados"] as const).map((tab) => {
-          const list = tab === "ativos" ? activeOrders : finishedOrders;
+        {(["ativos", "entregando", "finalizados"] as const).map((tab) => {
+          let list = [];
+          if (tab === "ativos") list = activeOrders;
+          else if (tab === "entregando") list = orders.filter(o => o.status === "entrega");
+          else list = finishedOrders;
+
           return (
             <TabsContent key={tab} value={tab}>
               {list.length === 0 ? (
                 <Card className="p-12 text-center text-muted-foreground">
-                  {tab === "ativos" ? "Nenhum pedido em andamento." : "Nenhum pedido finalizado ainda."}
+                  {tab === "ativos" ? "Nenhum pedido em andamento." : tab === "entregando" ? "Nenhum pedido em rota de entrega." : "Nenhum pedido finalizado ainda."}
                 </Card>
               ) : (
                 <div className="grid gap-4">
