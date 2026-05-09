@@ -352,58 +352,41 @@ export default function CartDrawer() {
     try {
       const { data: user } = await supabase.auth.getUser();
 
-      // 1. Inserir o pedido principal
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
-          customer_name: name,
-          customer_phone: phone,
-          delivery_method: deliveryMethod,
-          subtotal: Number(subtotal),
-          discount: Number(discount),
-          delivery_fee: Number(fee),
-          total: Number(total),
-          coupon_code: coupon?.code ?? null,
-          payment_method: payment,
-          needs_change: needsChange === true,
-          change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
-          address_street: deliveryMethod === "entrega" ? street : null,
-          address_number: deliveryMethod === "entrega" ? number : null,
-          address_neighborhood:
-            deliveryMethod === "entrega" ? selectedRange?.label || null : "Retirada no Local",
-          address_complement: deliveryMethod === "entrega" ? complement || null : null,
-          address_reference: deliveryMethod === "entrega" ? reference || null : null,
-          notes: notes || null,
-          status: "novo",
-          user_id: user.user?.id || null,
-          items: items.map((i) => ({
-            name: i.name,
-            qty: i.qty,
-            price: Number(parsePrice(i.price)),
-            options: i.options,
-          })),
-        })
-        .select()
-        .single();
+      // Inserir o pedido via RPC (Security Definer para garantir retorno do ID/Número)
+      const { data: rows, error: orderError } = await supabase.rpc("place_order", {
+        _customer_name: name,
+        _customer_phone: phone,
+        _delivery_method: deliveryMethod,
+        _subtotal: Number(subtotal),
+        _discount: Number(discount),
+        _delivery_fee: Number(fee),
+        _total: Number(total),
+        _payment_method: payment,
+        _address_street: (deliveryMethod === "entrega" ? street : undefined) || undefined,
+        _address_number: (deliveryMethod === "entrega" ? number : undefined) || undefined,
+        _address_neighborhood:
+          (deliveryMethod === "entrega" ? selectedRange?.label : "Retirada no Local") ||
+          undefined,
+        _address_complement: complement || undefined,
+        _address_reference: reference || undefined,
+        _notes: notes || undefined,
+        _coupon_code: coupon?.code || undefined,
+        _items: items.map((i) => ({
+          name: i.name,
+          qty: i.qty,
+          price: Number(parsePrice(i.price)),
+          options: i.options,
+        })),
+        _user_id: user.user?.id || undefined,
+      });
 
       if (orderError) throw orderError;
+      const order = Array.isArray(rows) ? rows[0] : rows;
+      if (!order) throw new Error("Order not returned");
 
-      // 2. Inserir os itens do pedido para relatórios detalhados
-      const itemsToInsert = items.map((i) => ({
-        order_id: order.id,
-        product_id: (i as { id?: string }).id || null,
-        product_name: i.name,
-        quantity: i.qty,
-        price: Number(i.price),
-        subtotal: Number(i.price) * i.qty,
-        options: i.options || [],
-      }));
-
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(itemsToInsert as any);
-
-      if (itemsError) console.error("Error inserting order items:", itemsError);
+      setConfirmation({ orderNumber: order.order_number, orderId: order.id });
+      clear();
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
       setConfirmation({ orderNumber: order.order_number, orderId: order.id });
       clear();
