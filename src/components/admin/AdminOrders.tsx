@@ -196,7 +196,14 @@ const printOrder = (o: Order) => {
       ${o.notes ? `<hr/><p><b>Obs Geral:</b> ${esc(o.notes)}</p>` : ""}
       <hr/>
       <p style="text-align:center">Obrigado! 🍔</p>
-      <script>window.print();setTimeout(()=>window.close(),500);</script>
+      <script>
+        window.onload = () => {
+          window.print();
+          window.onafterprint = () => window.close();
+          // Fallback para navegadores que não suportam onafterprint ou se o usuário cancelar
+          setTimeout(() => window.close(), 10000);
+        };
+      </script>
     </body></html>
   `);
   w.document.close();
@@ -265,7 +272,14 @@ const printDailyReport = (orders: Order[]) => {
 
       <hr/>
       <p class="footer">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
-      <script>window.print();setTimeout(()=>window.close(),500);</script>
+      <script>
+        window.onload = () => {
+          window.print();
+          window.onafterprint = () => window.close();
+          // Fallback
+          setTimeout(() => window.close(), 10000);
+        };
+      </script>
     </body></html>
   `);
   w.document.close();
