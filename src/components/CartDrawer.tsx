@@ -397,7 +397,7 @@ export default function CartDrawer() {
           options: i.options,
         })),
         _user_id: (user as any)?.id || undefined,
-        _points_used: pointsDiscount,
+        _points_used: 0,
       });
 
       if (orderError) throw orderError;
