@@ -42,26 +42,19 @@ export default function Admin() {
       });
     };
 
-    const playBeep = (loop = false) => {
+    const playBeep = () => {
       const soundOn = localStorage.getItem("muthala_admin_sound") !== "0";
       if (!soundOn || !audioRef.current) return;
       
       audioRef.current.currentTime = 0;
-      audioRef.current.loop = loop;
+      audioRef.current.loop = false;
       audioRef.current.play().catch(e => console.warn("Erro ao tocar áudio:", e));
-
-      if (loop) {
-        setTimeout(() => {
-          if (audioRef.current) audioRef.current.loop = false;
-        }, 30000);
-      }
     };
 
     const stopBeep = () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
-        audioRef.current.loop = false;
       }
     };
 
@@ -84,7 +77,7 @@ export default function Admin() {
           const isOrdersPage = location.pathname === "/admin/pedidos";
           
           if (!isOrdersPage) {
-            playBeep(true); // Toca em loop até atender
+            playBeep();
             
             const notifyOn = localStorage.getItem("muthala_admin_notify") === "1";
             if (notifyOn) {
@@ -95,14 +88,10 @@ export default function Admin() {
             }
 
             toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
-              duration: 30000,
-              onAutoClose: () => stopBeep(),
+              duration: 15000,
               action: {
-                label: "ATENDER",
-                onClick: () => {
-                  stopBeep();
-                  navigate({ to: "/admin/pedidos" });
-                }
+                label: "Ver pedidos",
+                onClick: () => navigate({ to: "/admin/pedidos" })
               }
             });
           }
