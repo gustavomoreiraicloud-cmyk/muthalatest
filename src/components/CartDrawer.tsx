@@ -101,6 +101,7 @@ type DeliveryRange = {
 
 export default function CartDrawer() {
   const { items, isOpen, close, inc, dec, remove, clear, total: subtotal, totalLabel } = useCart();
+  const { user, signOut } = useAuth();
   const { settings } = useStoreSettings();
   const MIN_ORDER = settings?.min_order ?? 30;
   const DEFAULT_DELIVERY_FEE = settings?.delivery_fee ?? 0;
