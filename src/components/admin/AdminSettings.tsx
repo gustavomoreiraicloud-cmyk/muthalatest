@@ -20,6 +20,8 @@ type Settings = {
   is_open: boolean;
   hours: string | null;
   business_hours: BusinessHours | null;
+  pix_key: string | null;
+  pix_qr_code_url: string | null;
 };
 
 export default function AdminSettings() {
