@@ -775,7 +775,7 @@ const Index = () => {
           className="h-14 w-14 md:h-14 md:px-8 rounded-full bg-gradient-fire text-primary-foreground font-black uppercase tracking-widest text-sm flex items-center justify-center md:gap-2 shadow-glow animate-pulse-cta hover:scale-110 transition-all border-2 border-white/20"
         >
           <ShoppingBag className="w-6 h-6" />
-          <span className="hidden md:inline">Pedir agora</span>
+          <span className="hidden md:inline text-xs">Pedir agora</span>
         </button>
       </div>
 
