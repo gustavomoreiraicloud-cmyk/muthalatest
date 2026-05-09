@@ -37,7 +37,7 @@ export function useStoreSettings() {
       .channel(`store-settings-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "store_settings" },
+        { event: "*", schema: "public", table: "store_settings_public" },
         (payload) => {
           if (payload.new) setSettings(payload.new as unknown as StoreSettings);
         },
