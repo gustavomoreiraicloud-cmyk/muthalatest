@@ -110,6 +110,8 @@ export default function CartDrawer() {
   const { settings } = useStoreSettings();
   const MIN_ORDER = settings?.min_order ?? 30;
   const DEFAULT_DELIVERY_FEE = settings?.delivery_fee ?? 0;
+  const PIX_KEY = settings?.pix_key;
+  const PIX_QR = settings?.pix_qr_code_url;
   const isOpenStore = settings?.is_open ?? true;
 
   const [name, setName] = useState("");
@@ -1051,29 +1053,29 @@ export default function CartDrawer() {
             )}
 
             <div className="space-y-4 pt-2">
-              {payment === "pix" && settings?.pix_key && (
+              {payment === "pix" && PIX_KEY && (
                 <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in slide-in-from-top-2">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black uppercase tracking-widest text-primary">Pague com PIX</p>
                     <Badge variant="outline" className="text-[10px] uppercase font-bold">Copia e Cola</Badge>
                   </div>
                   <div className="bg-background/50 p-3 rounded-lg border border-primary/10 flex items-center justify-between gap-3">
-                    <code className="text-[11px] font-mono break-all line-clamp-1">{settings.pix_key}</code>
+                    <code className="text-[11px] font-mono break-all line-clamp-1">{PIX_KEY}</code>
                     <Button 
                       size="sm" 
                       variant="ghost" 
                       className="h-8 px-2 text-primary hover:text-primary hover:bg-primary/20"
                       onClick={() => {
-                        navigator.clipboard.writeText(settings.pix_key!);
+                        navigator.clipboard.writeText(PIX_KEY!);
                         toast.success("Chave PIX copiada!");
                       }}
                     >
                       Copiar
                     </Button>
                   </div>
-                  {settings.pix_qr_code_url && (
+                  {PIX_QR && (
                     <div className="flex flex-col items-center gap-2 pt-2">
-                      <img src={settings.pix_qr_code_url} alt="QR Code PIX" className="w-32 h-32 rounded-lg bg-white p-2" />
+                      <img src={PIX_QR} alt="QR Code PIX" className="w-32 h-32 rounded-lg bg-white p-2" />
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">Ou escaneie o QR Code acima</p>
                     </div>
                   )}

@@ -17,7 +17,10 @@ export type StoreSettings = {
   estimated_delivery_time: number | null;
   pix_key: string | null;
   pix_qr_code_url: string | null;
-};
+} & Partial<{
+  pix_key: string;
+  pix_qr_code_url: string;
+}>;
 
 export function useStoreSettings() {
   const [settings, setSettings] = useState<StoreSettings | null>(null);
@@ -26,7 +29,7 @@ export function useStoreSettings() {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      const { data } = await supabase.from("store_settings").select("*").maybeSingle();
+      const { data } = await supabase.rpc("get_public_store_settings").maybeSingle();
       if (mounted) {
         setSettings(data as unknown as StoreSettings | null);
         setLoading(false);
@@ -39,7 +42,9 @@ export function useStoreSettings() {
         "postgres_changes",
         { event: "*", schema: "public", table: "store_settings" },
         (payload) => {
-          if (payload.new) setSettings(payload.new as unknown as StoreSettings);
+          if (mounted) {
+            load(); // Refetch via RPC on change to ensure we get the safe data
+          }
         },
       )
       .subscribe();
