@@ -24,13 +24,8 @@ export default function Admin() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/auth", replace: true });
-  }, [loading, user, navigate]);
-
-  useEffect(() => {
     if (!isAdmin || !user) return;
 
-    // Inicializa o áudio se ainda não existir
     if (!audioRef.current) {
       audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
       audioRef.current.load();
@@ -43,18 +38,33 @@ export default function Admin() {
         icon: "/muthala-logo.png",
         tag: "new-order",
         requireInteraction: true,
+        silent: false, // Força som se o sistema permitir
       });
     };
 
-    const playBeep = () => {
+    const playBeep = (loop = false) => {
       const soundOn = localStorage.getItem("muthala_admin_sound") !== "0";
       if (!soundOn || !audioRef.current) return;
       
       audioRef.current.currentTime = 0;
+      audioRef.current.loop = loop;
       audioRef.current.play().catch(e => console.warn("Erro ao tocar áudio:", e));
+
+      if (loop) {
+        setTimeout(() => {
+          if (audioRef.current) audioRef.current.loop = false;
+        }, 30000);
+      }
     };
 
-    // Carregar IDs iniciais para evitar notificações duplicadas de pedidos antigos
+    const stopBeep = () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current.loop = false;
+      }
+    };
+
     supabase
       .from("orders")
       .select("id")
@@ -71,12 +81,10 @@ export default function Admin() {
         if (!knownIds.current.has(o.id)) {
           knownIds.current.add(o.id);
           
-          // Só toca o som e mostra toast se NÃO estiver na aba de pedidos
-          // Se estiver na aba de pedidos, o componente AdminOrders já lida com isso
           const isOrdersPage = location.pathname === "/admin/pedidos";
           
           if (!isOrdersPage) {
-            playBeep();
+            playBeep(true); // Toca em loop até atender
             
             const notifyOn = localStorage.getItem("muthala_admin_notify") === "1";
             if (notifyOn) {
@@ -87,10 +95,14 @@ export default function Admin() {
             }
 
             toast.success(`🔔 Novo pedido — ${o.customer_name || "cliente"}`, {
-              duration: 15000,
+              duration: 30000,
+              onAutoClose: () => stopBeep(),
               action: {
-                label: "Ver pedidos",
-                onClick: () => navigate({ to: "/admin/pedidos" })
+                label: "ATENDER",
+                onClick: () => {
+                  stopBeep();
+                  navigate({ to: "/admin/pedidos" });
+                }
               }
             });
           }
