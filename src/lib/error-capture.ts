@@ -6,17 +6,22 @@ const TTL_MS = 5_000;
 function record(error: unknown) {
   lastCapturedError = { error, at: Date.now() };
   
-  // Log de monitoramento em produção
-  console.error("🚨 ERRO CAPTURADO:", {
-    error: error instanceof Error ? error.message : error,
+  const errorData = {
+    message: error instanceof Error ? error.message : String(error),
     stack: error instanceof Error ? error.stack : "N/A",
     timestamp: new Date().toISOString(),
-    url: typeof window !== "undefined" ? window.location.href : "server"
-  });
+    url: typeof window !== "undefined" ? window.location.href : "server",
+    userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "N/A"
+  };
 
-  // Notificação silenciosa via UI se estiver no navegador
-  if (typeof window !== "undefined") {
-    // Apenas logamos internamente, mas poderíamos enviar para um serviço como Sentry aqui
+  console.error("🚨 ALERTA DE ERRO:", errorData);
+
+  // Alerta visual no Console para o Admin e notificação toast silenciosa se necessário
+  if (typeof window !== "undefined" && window.location.pathname.startsWith('/admin')) {
+    toast.error("Erro detectado no sistema!", {
+      description: "Um log técnico foi gerado no console. Verifique se a operação continua normal.",
+      duration: 10000
+    });
   }
 }
 
