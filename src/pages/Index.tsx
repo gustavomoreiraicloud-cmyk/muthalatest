@@ -41,6 +41,7 @@ import ItemDetailDialog, { DetailItem } from "@/components/ItemDetailDialog";
 import { useCart, formatBRL } from "@/hooks/useCart";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { useMenu } from "@/hooks/useMenu";
+import { useAuth } from "@/hooks/useAuth";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { nextOpening, formatNextOpening, DEFAULT_HOURS } from "@/lib/businessHours";
 
