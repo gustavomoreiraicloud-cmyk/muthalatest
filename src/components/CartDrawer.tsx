@@ -269,9 +269,13 @@ export default function CartDrawer() {
     setCalculatingDistance(true);
     setEstimatedTime(null);
     try {
-      const address = `${street}, ${number}, Assis, SP, Brasil`;
+      // Se tiver bairro, ajuda muito na precisão do Nominatim
+      const query = neighborhood 
+        ? `${street}, ${number}, ${neighborhood}, Assis, SP, Brasil`
+        : `${street}, ${number}, Assis, SP, Brasil`;
+
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
       );
       const data = await response.json();
 
