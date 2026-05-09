@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { BusinessHours, DAY_LABELS, DEFAULT_HOURS } from "@/lib/businessHours";
+import { BusinessHours, DAY_LABELS, DEFAULT_HOURS, isWithinHours } from "@/lib/businessHours";
 
 type Settings = {
   id: string;
@@ -77,15 +77,54 @@ export default function AdminSettings() {
       <h2 className="font-display text-2xl uppercase">Configurações da loja</h2>
 
       <Card className="p-6 space-y-4 bg-card border-border">
-        <div className="flex items-center justify-between p-4 rounded-lg border-2 border-primary/40 bg-primary/5">
-          <div>
-            <p className="font-bold">Loja {s.is_open ? "ABERTA" : "FECHADA"}</p>
-            <p className="text-xs text-muted-foreground">
-              {s.is_open ? "Aceitando pedidos" : "Carrinho bloqueado para clientes"}
-            </p>
-          </div>
-          <Switch checked={s.is_open} onCheckedChange={(v) => setS({ ...s, is_open: v })} />
-        </div>
+        {(() => {
+          const hoursOpen = isWithinHours(bh);
+          const forceOpen = s.is_open;
+          const statusMatch = forceOpen === hoursOpen;
+
+          return (
+            <div className={`p-4 rounded-xl border-2 transition-all ${
+              forceOpen 
+                ? 'border-primary/40 bg-primary/5' 
+                : 'border-destructive/40 bg-destructive/5'
+            }`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-full ${forceOpen ? 'bg-primary/20 text-primary' : 'bg-destructive/20 text-destructive'}`}>
+                    {forceOpen ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
+                  </div>
+                  <div>
+                    <p className="font-display uppercase text-lg leading-none">
+                      Loja {forceOpen ? "Aberta" : "Fechada"}
+                    </p>
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground mt-1 tracking-widest">
+                      Status de Funcionamento
+                    </p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={forceOpen} 
+                  onCheckedChange={(v) => setS({ ...s, is_open: v })}
+                  className="data-[state=checked]:bg-primary"
+                />
+              </div>
+
+              {!statusMatch && (
+                <div className="mt-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-start gap-3">
+                  <AlertTriangle className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-orange-200/80 leading-relaxed">
+                    <p className="font-bold text-orange-400 uppercase mb-1">Atenção ao horário!</p>
+                    {forceOpen && !hoursOpen ? (
+                      <p>A loja está marcada como <b>ABERTA</b>, mas seus horários semanais indicam que deveria estar <b>FECHADA</b> agora. Os clientes conseguirão pedir.</p>
+                    ) : (
+                      <p>A loja está marcada como <b>FECHADA</b>, mas seus horários semanais indicam que deveria estar <b>ABERTA</b>. Os clientes <b>NÃO</b> conseguirão pedir.</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         <div>
           <Label>Nome da loja</Label>

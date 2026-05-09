@@ -191,12 +191,12 @@ export default function CartDrawer() {
   const freeShipping =
     coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
 
-  // Regras de frete: até 3km = R$5, até 5km = R$8, acima de 5km = R$12
+  // Regras de frete: até 1.5km = R$5, até 3.5km = R$8, acima de 3.5km = R$12
   const calculatedFee = useMemo(() => {
     if (deliveryMethod === "retirada") return 0;
     if (detectedDistance === null) return DEFAULT_DELIVERY_FEE;
-    if (detectedDistance <= 3) return 5;
-    if (detectedDistance <= 5) return 8;
+    if (detectedDistance <= 1.5) return 5;
+    if (detectedDistance <= 3.5) return 8;
     return 12;
   }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
 
@@ -259,8 +259,8 @@ export default function CartDrawer() {
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Adicionar margem de trajeto (aprox 30% a mais que linha reta)
-      const estimatedRoadDist = dist * 1.3;
+      // Reduzir a margem de trajeto (estava em 30%, vamos para 15% para ser mais fiel ao centro)
+      const estimatedRoadDist = dist * 1.15;
       setDetectedDistance(estimatedRoadDist);
       
       // Estimativa de tempo: 20 min base + 3 min por km
