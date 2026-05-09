@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
@@ -12,17 +12,21 @@ import {
   Search,
   ShoppingBag,
   ArrowLeft,
-  
+  ChefHat,
+  MapPin,
+  MessageCircle,
 } from "lucide-react";
 import { formatBRL } from "@/hooks/useCart";
 import muthalaLogo from "@/assets/muthala-logo.png";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 const STATUS_MAP = {
-  novo: { label: "Novo Pedido", icon: ShoppingBag, color: "text-blue-400" },
-  preparo: { label: "Preparando", icon: Clock, color: "text-yellow-400" },
-  entrega: { label: "Saiu para Entrega", icon: Truck, color: "text-orange-400" },
-  finalizado: { label: "Entregue", icon: CheckCircle2, color: "text-green-400" },
-  cancelado: { label: "Cancelado", icon: PackageCheck, color: "text-destructive" },
+  novo: { label: "Recebido", icon: ShoppingBag, color: "text-blue-400", bg: "bg-blue-400/10", step: 0 },
+  preparo: { label: "Na Cozinha", icon: ChefHat, color: "text-yellow-400", bg: "bg-yellow-400/10", step: 1 },
+  entrega: { label: "Em Rota", icon: Truck, color: "text-orange-400", bg: "bg-orange-400/10", step: 2 },
+  finalizado: { label: "Entregue", icon: CheckCircle2, color: "text-green-400", bg: "bg-green-400/10", step: 3 },
+  cancelado: { label: "Cancelado", icon: PackageCheck, color: "text-destructive", bg: "bg-destructive/10", step: -1 },
 };
 
 export default function OrderStatus() {
@@ -32,6 +36,7 @@ export default function OrderStatus() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
