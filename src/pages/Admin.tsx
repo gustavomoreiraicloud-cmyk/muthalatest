@@ -2,7 +2,17 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, ShoppingBag, UtensilsCrossed, Settings as SettingsIcon, Loader2, BarChart3, Tag, UserCog, MapPin } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBag,
+  UtensilsCrossed,
+  Settings as SettingsIcon,
+  Loader2,
+  BarChart3,
+  Tag,
+  UserCog,
+  MapPin,
+} from "lucide-react";
 
 export default function Admin() {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -52,9 +62,15 @@ export default function Admin() {
         <div className="container mx-auto flex items-center justify-between py-3 px-4">
           <div>
             <h1 className="font-display text-xl uppercase">Painel Muthala</h1>
-            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Logado como: {user?.username}</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">
+              Logado como: {user?.username}
+            </p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => signOut().then(() => navigate({ to: "/auth" }))}
+          >
             <LogOut className="w-4 h-4" /> Sair
           </Button>
         </div>
@@ -64,7 +80,9 @@ export default function Admin() {
               key={t.to}
               to={t.to as any}
               activeProps={{ className: "border-primary text-primary" }}
-              inactiveProps={{ className: "border-transparent text-muted-foreground hover:text-foreground" }}
+              inactiveProps={{
+                className: "border-transparent text-muted-foreground hover:text-foreground",
+              }}
               className="flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors"
             >
               <t.icon className="w-4 h-4" /> {t.label}

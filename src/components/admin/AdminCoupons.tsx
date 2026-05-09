@@ -50,7 +50,9 @@ export default function AdminCoupons() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const create = async () => {
     const c = code.trim().toUpperCase();
@@ -66,9 +68,14 @@ export default function AdminCoupons() {
       active: true,
     });
     setCreating(false);
-    if (error) return toast.error(error.message.includes("duplicate") ? "Cupom já existe" : "Erro ao criar");
+    if (error)
+      return toast.error(error.message.includes("duplicate") ? "Cupom já existe" : "Erro ao criar");
     toast.success("Cupom criado!");
-    setCode(""); setDescription(""); setDiscountValue(""); setMinOrder(""); setExpiresAt("");
+    setCode("");
+    setDescription("");
+    setDiscountValue("");
+    setMinOrder("");
+    setExpiresAt("");
     load();
   };
 
@@ -93,15 +100,26 @@ export default function AdminCoupons() {
       </h2>
 
       <Card className="p-5 bg-card border-border space-y-3">
-        <h3 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4" /> Novo cupom</h3>
+        <h3 className="font-bold flex items-center gap-2">
+          <Plus className="w-4 h-4" /> Novo cupom
+        </h3>
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <Label>Código *</Label>
-            <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="PRIMEIRA10" maxLength={30} />
+            <Input
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              placeholder="PRIMEIRA10"
+              maxLength={30}
+            />
           </div>
           <div>
             <Label>Descrição</Label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="10% pra primeiro pedido" />
+            <Input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="10% pra primeiro pedido"
+            />
           </div>
           <div>
             <Label>Tipo</Label>
@@ -116,9 +134,13 @@ export default function AdminCoupons() {
             </select>
           </div>
           <div>
-            <Label>Valor {discountType === "percent" ? "(%)" : discountType === "fixed" ? "(R$)" : ""}</Label>
+            <Label>
+              Valor {discountType === "percent" ? "(%)" : discountType === "fixed" ? "(R$)" : ""}
+            </Label>
             <Input
-              type="number" step="0.01" min="0"
+              type="number"
+              step="0.01"
+              min="0"
               disabled={discountType === "free_shipping"}
               value={discountValue}
               onChange={(e) => setDiscountValue(e.target.value)}
@@ -127,14 +149,29 @@ export default function AdminCoupons() {
           </div>
           <div>
             <Label>Pedido mínimo (R$)</Label>
-            <Input type="number" step="0.01" min="0" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} placeholder="50" />
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={minOrder}
+              onChange={(e) => setMinOrder(e.target.value)}
+              placeholder="50"
+            />
           </div>
           <div>
             <Label>Validade (opcional)</Label>
-            <Input type="datetime-local" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
+            <Input
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
           </div>
         </div>
-        <Button onClick={create} disabled={creating} className="w-full bg-gradient-gold text-primary-foreground font-bold">
+        <Button
+          onClick={create}
+          disabled={creating}
+          className="w-full bg-gradient-gold text-primary-foreground font-bold"
+        >
           {creating ? "Criando..." : "Criar cupom"}
         </Button>
       </Card>
@@ -148,16 +185,24 @@ export default function AdminCoupons() {
           {list.map((c) => {
             const expired = c.expires_at && new Date(c.expires_at) < new Date();
             return (
-              <Card key={c.id} className="p-4 bg-card border-border flex flex-wrap items-center justify-between gap-3">
+              <Card
+                key={c.id}
+                className="p-4 bg-card border-border flex flex-wrap items-center justify-between gap-3"
+              >
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-display text-lg text-primary">{c.code}</span>
-                    {expired && <Badge variant="outline" className="text-destructive border-destructive">Expirado</Badge>}
+                    {expired && (
+                      <Badge variant="outline" className="text-destructive border-destructive">
+                        Expirado
+                      </Badge>
+                    )}
                     {!c.active && <Badge variant="outline">Inativo</Badge>}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {TYPE_LABEL[c.discount_type]}
-                    {c.discount_type !== "free_shipping" && ` · ${c.discount_value}${c.discount_type === "percent" ? "%" : " R$"}`}
+                    {c.discount_type !== "free_shipping" &&
+                      ` · ${c.discount_value}${c.discount_type === "percent" ? "%" : " R$"}`}
                     {Number(c.min_order) > 0 && ` · mínimo R$ ${Number(c.min_order).toFixed(2)}`}
                     {c.expires_at && ` · até ${new Date(c.expires_at).toLocaleDateString("pt-BR")}`}
                   </p>
@@ -165,7 +210,12 @@ export default function AdminCoupons() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Switch checked={c.active} onCheckedChange={(v) => toggle(c.id, v)} />
-                  <Button variant="ghost" size="sm" onClick={() => remove(c.id)} className="text-destructive">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => remove(c.id)}
+                    className="text-destructive"
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

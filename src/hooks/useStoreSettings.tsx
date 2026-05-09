@@ -35,7 +35,7 @@ export function useStoreSettings() {
         { event: "*", schema: "public", table: "store_settings" },
         (payload) => {
           if (payload.new) setSettings(payload.new as unknown as StoreSettings);
-        }
+        },
       )
       .subscribe();
     return () => {

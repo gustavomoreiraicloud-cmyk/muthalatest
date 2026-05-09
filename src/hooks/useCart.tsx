@@ -39,8 +39,7 @@ const parsePrice = (p: string | number): number => {
   return Number.isFinite(n) ? n : 0;
 };
 
-const formatBRL = (n: number) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const formatBRL = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // Helper to generate unique ID for same product with different options
 const getItemId = (item: Omit<CartItem, "qty"> | CartItem) => {
@@ -86,16 +85,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const inc = (id: string) => {
-    setItems((prev) =>
-      prev.map((i) => (getItemId(i) === id ? { ...i, qty: i.qty + 1 } : i))
-    );
+    setItems((prev) => prev.map((i) => (getItemId(i) === id ? { ...i, qty: i.qty + 1 } : i)));
   };
 
   const dec = (id: string) => {
     setItems((prev) =>
       prev
         .map((i) => (getItemId(i) === id ? { ...i, qty: i.qty - 1 } : i))
-        .filter((i) => i.qty > 0)
+        .filter((i) => i.qty > 0),
     );
   };
 

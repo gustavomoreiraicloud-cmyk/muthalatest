@@ -7,7 +7,12 @@ type AuthContextType = {
   loading: boolean;
   signIn: (user: string, pass: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
-  updateCredentials: (oldUser: string, newUser: string, oldPass: string, newPass: string) => Promise<{ error: string | null }>;
+  updateCredentials: (
+    oldUser: string,
+    newUser: string,
+    oldPass: string,
+    newPass: string,
+  ) => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -46,7 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("muthala_admin_session");
   };
 
-  const updateCredentials = async (oldUser: string, newUser: string, oldPass: string, newPass: string) => {
+  const updateCredentials = async (
+    oldUser: string,
+    newUser: string,
+    oldPass: string,
+    newPass: string,
+  ) => {
     const currentAdminUser = localStorage.getItem("muthala_admin_user") || "admin";
     const currentAdminPass = localStorage.getItem("muthala_admin_pass") || "admin";
 
@@ -57,12 +67,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("muthala_admin_user", newUser);
     localStorage.setItem("muthala_admin_pass", newPass);
     setUser({ username: newUser });
-    
+
     return { error: null };
   };
 
   return (
-    <AuthContext.Provider value={{ user, session: null, isAdmin, loading, signIn, signOut, updateCredentials }}>
+    <AuthContext.Provider
+      value={{ user, session: null, isAdmin, loading, signIn, signOut, updateCredentials }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -73,5 +85,3 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }
-
-
