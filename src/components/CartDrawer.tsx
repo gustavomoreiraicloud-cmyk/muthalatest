@@ -742,9 +742,20 @@ export default function CartDrawer() {
                   <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
                     <MapPin className="w-4 h-4" /> Endereço de entrega
                   </h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="col-span-2">
-                      <Label className="text-xs">Rua *</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-xs">CEP (Opcional - Preenche a rua)</Label>
+                      <Input
+                        placeholder="00000-000"
+                        maxLength={9}
+                        value={cep}
+                        onChange={(e) => handleCEPChange(e.target.value)}
+                        inputMode="numeric"
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-2">
+                        <Label className="text-xs">Rua *</Label>
                       <Input
                         maxLength={120}
                         value={street}
