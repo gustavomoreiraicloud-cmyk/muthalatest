@@ -170,8 +170,8 @@ const Index = () => {
       ASSET_MAP["/src/assets/burger-muthala.jpg"],
       ASSET_MAP["/src/assets/burger-bacon.jpg"]
     ],
-    "@id": "https://oi-hug-happy.lovable.app/",
-    "url": "https://oi-hug-happy.lovable.app/",
+    "@id": typeof window !== "undefined" ? window.location.origin : "https://muthalaburguer.com",
+    "url": typeof window !== "undefined" ? window.location.origin : "https://muthalaburguer.com",
     "telephone": "+5518997962510",
     "priceRange": "$$",
     "menu": "https://oi-hug-happy.lovable.app/#menu",
@@ -330,6 +330,7 @@ const Index = () => {
           className="absolute inset-0 w-full h-full object-cover"
           width={1920}
           height={1080}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute inset-0 bg-black/40 md:bg-black/20" />

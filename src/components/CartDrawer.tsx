@@ -175,11 +175,15 @@ export default function CartDrawer() {
 
   // Auto-calculate distance and find range when address changes
   useEffect(() => {
+    let active = true;
     if (deliveryMethod === "entrega" && street.length > 5 && number.length > 0) {
       const timer = setTimeout(() => {
-        handleAutoDistance();
+        if (active) handleAutoDistance();
       }, 1000);
-      return () => clearTimeout(timer);
+      return () => {
+        active = false;
+        clearTimeout(timer);
+      };
     }
   }, [street, number, deliveryMethod]);
 

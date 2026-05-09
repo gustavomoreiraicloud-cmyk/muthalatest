@@ -441,7 +441,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
 
           <Button
             onClick={handleAdd}
-            disabled={allSizes.length > 0 && !size && item.category !== "bebidas" && item.category !== "porcoes"}
+            disabled={allSizes.length > 0 && !size && (item.category === "hamburgueres" || item.category === "porcoes")}
             className="flex-1 h-12 md:h-14 bg-gradient-gold text-primary-foreground hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase tracking-widest text-xs md:text-sm rounded-xl shadow-glow"
           >
             {allSizes.length > 0 && !size ? "Selecione o tamanho" : "Adicionar"} <span className="mx-2 opacity-50 font-normal">|</span> {formatBRL(totalPrice)}
