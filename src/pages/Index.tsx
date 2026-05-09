@@ -217,7 +217,7 @@ const Index = () => {
       />
       {/* NAV */}
       <header
-        className={`fixed top-0 inset-x-0 z-40 transition-smooth ${scrolled ? "backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md" : "bg-transparent"}`}
+        className="fixed top-0 inset-x-0 z-40 transition-smooth backdrop-blur-md bg-background/80 border-b border-border/50 shadow-md"
       >
         <nav className="container mx-auto flex items-center justify-between py-3 md:py-4 px-4">
           <a href="#home" className="group flex items-center gap-2 md:gap-3">
