@@ -260,6 +260,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          points: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          points?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          points?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           address: string | null
@@ -308,6 +335,45 @@ export type Database = {
           phone?: string
           store_name?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_addresses: {
+        Row: {
+          complement: string | null
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          label: string
+          neighborhood: string
+          number: string
+          reference: string | null
+          street: string
+          user_id: string
+        }
+        Insert: {
+          complement?: string | null
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          label: string
+          neighborhood: string
+          number: string
+          reference?: string | null
+          street: string
+          user_id: string
+        }
+        Update: {
+          complement?: string | null
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          label?: string
+          neighborhood?: string
+          number?: string
+          reference?: string | null
+          street?: string
+          user_id?: string
         }
         Relationships: []
       }
