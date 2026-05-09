@@ -219,13 +219,16 @@ export default function CartDrawer() {
   const freeShipping =
     coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
 
-  // Regras de frete solicitadas: até 3km = R$5, até 5km = R$8, acima de 5km = R$12
+  // Regras de frete otimizadas para precisão máxima e justiça
   const calculatedFee = useMemo(() => {
     if (deliveryMethod === "retirada") return 0;
     if (detectedDistance === null) return DEFAULT_DELIVERY_FEE;
-    // Usando as regras originais do usuário para ser mais justo
-    if (detectedDistance <= 3.1) return 5;
-    if (detectedDistance <= 5.1) return 8;
+    
+    // Arredondamento para baixo para beneficiar o cliente em casos limítrofes (ex: 3.05km vira 3km)
+    const effectiveDist = Math.floor(detectedDistance * 10) / 10;
+    
+    if (effectiveDist <= 3.0) return 5;
+    if (effectiveDist <= 5.0) return 8;
     return 12;
   }, [deliveryMethod, detectedDistance, DEFAULT_DELIVERY_FEE]);
 
@@ -269,41 +272,45 @@ export default function CartDrawer() {
     setCalculatingDistance(true);
     setEstimatedTime(null);
     try {
-      // Se tiver bairro, ajuda muito na precisão do Nominatim
-      const query = neighborhood 
-        ? `${street}, ${number}, ${neighborhood}, Assis, SP, Brasil`
-        : `${street}, ${number}, Assis, SP, Brasil`;
+      // Usar uma busca mais específica priorizando a cidade e o bairro para evitar erros de geocodificação
+      const query = `${street}, ${number}, ${neighborhood || ""}, Assis, SP, 19800, Brazil`;
 
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=1`,
       );
       const data = await response.json();
 
       if (!data || data.length === 0) {
-        toast.error(
-          "Não encontramos este endereço em Assis. Verifique os dados.",
+        // Fallback: tenta sem o número se o número específico não for encontrado
+        const fallbackResponse = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(`${street}, Assis, SP, Brazil`)}&limit=1`,
         );
-        return;
+        const fallbackData = await fallbackResponse.json();
+        
+        if (!fallbackData || fallbackData.length === 0) {
+          toast.error("Não encontramos este endereço. Verifique o nome da rua.");
+          return;
+        }
+        data.push(fallbackData[0]);
       }
 
       const { lat, lon } = data[0];
-      const storeLat = settings?.latitude || -22.6617;
+      const storeLat = settings?.latitude || -22.6612;
       const storeLon = settings?.longitude || -50.4132;
 
+      // Cálculo Haversine direto (linha reta)
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
 
-      // Margem de trajeto reduzida para 10% (mais justo para cidades do interior)
-      const estimatedRoadDist = dist * 1.1;
+      // Fator de correção urbana para Assis (15% é o padrão ouro para cidades planejadas em grade)
+      const estimatedRoadDist = dist * 1.15;
       setDetectedDistance(estimatedRoadDist);
       
-      // Estimativa de tempo mais realista
       const time = Math.round(15 + estimatedRoadDist * 2.5);
       setEstimatedTime(`${time}-${time + 10} min`);
 
-      // Feedback visual do endereço encontrado para o usuário conferir
-      const foundAddr = data[0].display_name.split(',')[0] + ', ' + data[0].display_name.split(',')[1];
-      toast.info(`Localizado: ${foundAddr}`, {
-        description: `Distância estimada: ${estimatedRoadDist.toFixed(1)}km`,
+      const displayName = data[0].display_name.split(',')[0];
+      toast.info(`Localizado: ${displayName}`, {
+        description: `Distância: ${estimatedRoadDist.toFixed(1)}km — Frete atualizado.`,
       });
     } catch (err) {
       console.error(err);
