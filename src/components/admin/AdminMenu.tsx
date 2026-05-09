@@ -63,6 +63,7 @@ export default function AdminMenu() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<MenuItem> | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [saving, setSaving] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -81,10 +82,11 @@ export default function AdminMenu() {
   }, []);
 
   const save = async () => {
-    if (!editing) return;
+    if (!editing || saving) return;
     if (!editing.name || !editing.category || editing.price == null) {
       return toast.error("Preencha nome, categoria e preço");
     }
+    setSaving(true);
     const payload = {
       category: editing.category!,
       name: editing.name!,
@@ -99,8 +101,12 @@ export default function AdminMenu() {
     const { error } = editing.id
       ? await supabase.from("menu_items").update(payload).eq("id", editing.id)
       : await supabase.from("menu_items").insert(payload);
-    if (error) return toast.error("Erro ao salvar");
+    if (error) {
+      setSaving(false);
+      return toast.error("Erro ao salvar");
+    }
     toast.success("Salvo!");
+    setSaving(false);
     setEditing(null);
     load();
   };
@@ -371,8 +377,9 @@ export default function AdminMenu() {
             <Button variant="outline" onClick={() => setEditing(null)}>
               Cancelar
             </Button>
-            <Button onClick={save} className="bg-gradient-gold text-primary-foreground font-bold">
-              Salvar Alterações
+            <Button onClick={save} disabled={saving} className="bg-gradient-gold text-primary-foreground font-bold">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              {saving ? "Salvando..." : "Salvar Alterações"}
             </Button>
           </DialogFooter>
         </DialogContent>

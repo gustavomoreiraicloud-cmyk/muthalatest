@@ -185,6 +185,7 @@ export default function OrderStatus() {
                 value={orderId}
                 onChange={(e) => {
                   setOrderId(e.target.value);
+                  setSearched(false);
                   if (e.target.value) setPhone("");
                 }}
                 className="bg-background"
@@ -199,6 +200,7 @@ export default function OrderStatus() {
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);
+                  setSearched(false);
                   if (e.target.value) setOrderId("");
                 }}
                 className="bg-background"

@@ -11,7 +11,7 @@ import { RouteError } from "@/components/RouteError";
 
 import appCss from "../styles.css?url";
 
-const SITE_URL = "https://oi-hug-happy.lovable.app/";
+const SITE_URL = "https://muthalatest.lovable.app/";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({

@@ -294,6 +294,7 @@ export default function AdminOrders() {
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_KEY) !== "0");
   const [notifyOn, setNotifyOn] = useState(() => localStorage.getItem(NOTIFY_KEY) === "1");
   const [autoPrint, setAutoPrint] = useState(() => localStorage.getItem(AUTO_PRINT_KEY) === "1");
+  const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
   const knownIds = useRef<Set<string>>(new Set());
   const initialLoadDone = useRef(false);
 
@@ -352,32 +353,40 @@ export default function AdminOrders() {
   }, [soundOn, notifyOn]);
 
   const updateStatus = async (id: string, status: string) => {
-    const prev = orders;
+    if (updatingIds.has(id)) return;
+    
+    setUpdatingIds(prev => new Set(prev).add(id));
+    const prevOrders = orders;
     // Atualização otimista — UI muda na hora
     setOrders((curr) => curr.map((o) => (o.id === id ? { ...o, status } : o)));
-
-    const { data, error } = await supabase
-      .from("orders")
-      .update({ status })
-      .eq("id", id)
-      .select("id");
-
-    if (error) {
-      setOrders(prev);
-      return toast.error("Erro: " + error.message);
+ 
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .update({ status })
+        .eq("id", id)
+        .select("id");
+ 
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error("Sem permissão ou registro não encontrado.");
+ 
+      // Se mudou para preparo e auto-print estiver ligado, imprime
+      if ((status === "preparo" || status === "entrega") && autoPrint) {
+        const order = prevOrders.find((o) => o.id === id);
+        if (order) printOrder(order);
+      }
+ 
+      toast.success("Pedido atualizado");
+    } catch (error: any) {
+      setOrders(prevOrders);
+      toast.error("Erro ao atualizar: " + error.message);
+    } finally {
+      setUpdatingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
-    if (!data || data.length === 0) {
-      setOrders(prev);
-      return toast.error("Sem permissão. Faça login como administrador.");
-    }
-
-    // Se mudou para preparo e auto-print estiver ligado, imprime
-    if ((status === "preparo" || status === "entrega") && autoPrint) {
-      const order = prev.find((o) => o.id === id);
-      if (order) printOrder(order);
-    }
-
-    toast.success("Pedido atualizado");
   };
 
   const toggleSound = (v: boolean) => {
