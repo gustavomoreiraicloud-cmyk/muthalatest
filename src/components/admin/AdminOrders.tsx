@@ -348,7 +348,7 @@ export default function AdminOrders() {
     }
 
     // Se mudou para preparo e auto-print estiver ligado, imprime
-    if (status === "preparo" && autoPrint) {
+    if ((status === "preparo" || status === "entrega") && autoPrint) {
       const order = prev.find((o) => o.id === id);
       if (order) printOrder(order);
     }
