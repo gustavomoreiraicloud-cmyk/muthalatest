@@ -156,18 +156,6 @@ export default function CartDrawer() {
       if (!name) {
         setName(user.user_metadata?.full_name || "");
         setPhone(user.user_metadata?.phone || "");
-      }
-      
-      // Load points
-      const loadPoints = async () => {
-        const { data } = await supabase
-          .from("profiles")
-          .select("points")
-          .eq("id", user.id)
-          .maybeSingle();
-        if (data) setUserPoints(data.points || 0);
-      };
-      loadPoints();
     }
   }, [user, isOpen, name]);
 
