@@ -112,6 +112,7 @@ export default function CartDrawer() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [cep, setCep] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
@@ -176,6 +177,25 @@ export default function CartDrawer() {
       return () => clearTimeout(timer);
     }
   }, [street, number, deliveryMethod]);
+
+  const handleCEPChange = async (value: string) => {
+    const raw = value.replace(/\D/g, "");
+    setCep(raw);
+    if (raw.length === 8) {
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
+        const data = await res.json();
+        if (data.logradouro) {
+          setStreet(data.logradouro);
+          toast.success("Endereço encontrado!");
+        } else {
+          toast.error("CEP não encontrado");
+        }
+      } catch (err) {
+        toast.error("Erro ao buscar CEP");
+      }
+    }
+  };
 
   // Compute discount + total
   const selectedRange = deliveryRanges.find((r) => r.id === deliveryRangeId);
@@ -722,43 +742,55 @@ export default function CartDrawer() {
                   <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide flex items-center gap-1">
                     <MapPin className="w-4 h-4" /> Endereço de entrega
                   </h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="col-span-2">
-                      <Label className="text-xs">Rua *</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-xs">CEP (Opcional - Preenche a rua)</Label>
                       <Input
-                        maxLength={120}
-                        value={street}
-                        onChange={(e) => setStreet(e.target.value)}
-                        placeholder="R. Smith Vasconcelos"
+                        placeholder="00000-000"
+                        maxLength={9}
+                        value={cep}
+                        onChange={(e) => handleCEPChange(e.target.value)}
+                        inputMode="numeric"
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-2">
+                        <Label className="text-xs">Rua *</Label>
+                        <Input
+                          maxLength={120}
+                          value={street}
+                          onChange={(e) => setStreet(e.target.value)}
+                          placeholder="R. Smith Vasconcelos"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Número *</Label>
+                        <Input
+                          maxLength={10}
+                          value={number}
+                          onChange={(e) => setNumber(e.target.value)}
+                          placeholder="312"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs">Complemento</Label>
+                      <Input
+                        maxLength={80}
+                        value={complement}
+                        onChange={(e) => setComplement(e.target.value)}
+                        placeholder="Apto 21, bloco B"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs">Número *</Label>
+                      <Label className="text-xs">Ponto de referência</Label>
                       <Input
-                        maxLength={10}
-                        value={number}
-                        onChange={(e) => setNumber(e.target.value)}
-                        placeholder="312"
+                        maxLength={120}
+                        value={reference}
+                        onChange={(e) => setReference(e.target.value)}
+                        placeholder="Próximo ao mercado..."
                       />
                     </div>
-                  </div>
-                  <div>
-                    <Label className="text-xs">Complemento</Label>
-                    <Input
-                      maxLength={80}
-                      value={complement}
-                      onChange={(e) => setComplement(e.target.value)}
-                      placeholder="Apto 21, bloco B"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Ponto de referência</Label>
-                    <Input
-                      maxLength={120}
-                      value={reference}
-                      onChange={(e) => setReference(e.target.value)}
-                      placeholder="Próximo ao mercado..."
-                    />
                   </div>
                   
                   {calculatingDistance && (
