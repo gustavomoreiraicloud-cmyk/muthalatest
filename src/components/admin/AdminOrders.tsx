@@ -200,11 +200,13 @@ const printOrder = (o: Order) => {
 
 const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
   const today = new Date().toLocaleDateString("pt-BR");
-  const finishedOrders = orders.filter(
-    (o) =>
-      o.status === "finalizado" &&
-      new Date(o.created_at).toLocaleDateString("pt-BR") === today
-  );
+  
+  // Filtrar pedidos que foram finalizados HOJE
+  const finishedOrders = orders.filter((o) => {
+    const isFinished = o.status === "finalizado";
+    const orderDate = new Date(o.created_at).toLocaleDateString("pt-BR");
+    return isFinished && orderDate === today;
+  });
 
   const totalRevenue = finishedOrders.reduce((acc, o) => acc + Number(o.total), 0);
   const totalOrders = finishedOrders.length;
@@ -295,7 +297,7 @@ export default function AdminOrders() {
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(500);
     if (error) toast.error("Erro ao carregar pedidos");
     const list = (data as unknown as Order[]) ?? [];
     setOrders(list);
