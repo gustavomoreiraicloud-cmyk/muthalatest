@@ -73,7 +73,8 @@ export default function AdminDashboard() {
             .gte("created_at", since.toISOString())
             .order("created_at", { ascending: true })
             .then(({ data }) => {
-              setOrders((data as unknown as Order[]) ?? []);
+          setOrders((data as unknown as Order[]) ?? []);
+          setLastUpdate(new Date());
             });
         }
       )
