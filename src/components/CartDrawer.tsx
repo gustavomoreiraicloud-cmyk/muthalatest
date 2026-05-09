@@ -315,8 +315,8 @@ export default function CartDrawer() {
       setEstimatedTime(`${time}-${time + 10} min`);
 
       const displayName = data[0].display_name.split(',')[0];
-      toast.info(`Localizado: ${displayName}`, {
-        description: `Distância: ${estimatedRoadDist.toFixed(1)}km — Frete atualizado.`,
+      toast.success(`Endereço localizado: ${displayName}`, {
+        description: `Distância: ${estimatedRoadDist.toFixed(1)}km`,
       });
     } catch (err) {
       console.error(err);
