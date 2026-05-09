@@ -155,7 +155,7 @@ export default function OrderStatus() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4 italic">
-              Informe o número de 4 dígitos e o telefone usado no pedido para acompanhar.
+              Informe o número do pedido OU o telefone usado no pedido para acompanhar.
             </p>
             {searched && !order && (
               <p className="text-xs text-destructive mt-2">
