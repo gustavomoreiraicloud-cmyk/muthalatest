@@ -336,14 +336,17 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({
+    // Se for retirada, não validamos rua/número/bairro
+    const checkoutData = {
       name,
       phone,
       deliveryMethod,
-      street: deliveryMethod === "entrega" ? street : undefined,
-      number: deliveryMethod === "entrega" ? number : undefined,
-      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined,
-    });
+      street: deliveryMethod === "entrega" ? street : "Retirada",
+      number: deliveryMethod === "entrega" ? number : "0",
+      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : "retirada",
+    };
+
+    const parsed = checkoutSchema.safeParse(checkoutData);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
