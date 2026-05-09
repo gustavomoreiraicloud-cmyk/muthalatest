@@ -314,15 +314,22 @@ export default function AdminOrders() {
   }, [soundOn, notifyOn]);
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
-    if (error) return toast.error("Erro ao atualizar");
-    
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ status })
+      .eq("id", id)
+      .select("id");
+    if (error) return toast.error("Erro: " + error.message);
+    if (!data || data.length === 0) {
+      return toast.error("Sem permissão. Faça login como administrador.");
+    }
+
     // Se mudou para preparo, imprime automaticamente
     if (status === "preparo") {
-      const order = orders.find(o => o.id === id);
+      const order = orders.find((o) => o.id === id);
       if (order) printOrder(order);
     }
-    
+
     toast.success("Pedido atualizado");
   };
 
