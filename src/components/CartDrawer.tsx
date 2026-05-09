@@ -1060,7 +1060,7 @@ export default function CartDrawer() {
                     <Badge variant="outline" className="text-[10px] uppercase font-bold">Copia e Cola</Badge>
                   </div>
                   <div className="bg-background/50 p-3 rounded-lg border border-primary/10 flex items-center justify-between gap-3">
-                    <code className="text-[11px] font-mono break-all line-clamp-1">{settings.pix_key}</code>
+                    <code className="text-[11px] font-mono break-all line-clamp-1">{PIX_KEY}</code>
                     <Button 
                       size="sm" 
                       variant="ghost" 
