@@ -12,7 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Minus, Plus, Trash2, ShoppingBag, MessageCircle, CheckCircle2, MapPin, CreditCard, Tag, Loader2, MapPinIcon
+  Minus,
+  Plus,
+  Trash2,
+  ShoppingBag,
+  MessageCircle,
+  CheckCircle2,
+  MapPin,
+  CreditCard,
+  Tag,
+  Loader2,
+  MapPinIcon,
 } from "lucide-react";
 import { useCart, formatBRL, parsePrice } from "@/hooks/useCart";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -23,13 +33,15 @@ import { z } from "zod";
 
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371; // Raio da Terra em km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
 
@@ -43,22 +55,27 @@ const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   cartao_credito: "Cartão de Crédito",
 };
 
-const checkoutSchema = z.object({
-  name: z.string().trim().min(2, "Nome muito curto").max(80),
-  phone: z.string().trim().min(10, "Telefone inválido").max(20),
-  deliveryMethod: z.enum(["entrega", "retirada"]),
-  street: z.string().trim().max(120).optional(),
-  number: z.string().trim().max(10).optional(),
-  deliveryRangeId: z.string().optional(),
-}).refine((data) => {
-  if (data.deliveryMethod === "entrega") {
-    return !!data.street && !!data.number && !!data.deliveryRangeId;
-  }
-  return true;
-}, {
-  message: "Preencha todos os campos do endereço para entrega",
-  path: ["street"],
-});
+const checkoutSchema = z
+  .object({
+    name: z.string().trim().min(2, "Nome muito curto").max(80),
+    phone: z.string().trim().min(10, "Telefone inválido").max(20),
+    deliveryMethod: z.enum(["entrega", "retirada"]),
+    street: z.string().trim().max(120).optional(),
+    number: z.string().trim().max(10).optional(),
+    deliveryRangeId: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.deliveryMethod === "entrega") {
+        return !!data.street && !!data.number && !!data.deliveryRangeId;
+      }
+      return true;
+    },
+    {
+      message: "Preencha todos os campos do endereço para entrega",
+      path: ["street"],
+    },
+  );
 
 type Coupon = {
   code: string;
@@ -97,7 +114,10 @@ export default function CartDrawer() {
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [detectedDistance, setDetectedDistance] = useState<number | null>(null);
 
-  const [confirmation, setConfirmation] = useState<{ orderNumber: number | null; orderId: string | null } | null>(null);
+  const [confirmation, setConfirmation] = useState<{
+    orderNumber: number | null;
+    orderId: string | null;
+  } | null>(null);
 
   // Load delivery ranges
   useEffect(() => {
@@ -121,7 +141,7 @@ export default function CartDrawer() {
 
   // Auto-calculate distance and find range when address changes
   useEffect(() => {
-    if (deliveryMethod === 'entrega' && street.length > 5 && number.length > 0) {
+    if (deliveryMethod === "entrega" && street.length > 5 && number.length > 0) {
       const timer = setTimeout(() => {
         handleAutoDistance();
       }, 1000);
@@ -130,19 +150,24 @@ export default function CartDrawer() {
   }, [street, number, deliveryMethod]);
 
   // Compute discount + total
-  const selectedRange = deliveryRanges.find(r => r.id === deliveryRangeId);
-  
+  const selectedRange = deliveryRanges.find((r) => r.id === deliveryRangeId);
+
   const discount = (() => {
     if (!coupon) return 0;
     if (subtotal < coupon.min_order) return 0;
-    if (coupon.discount_type === "percent") return +(subtotal * (coupon.discount_value / 100)).toFixed(2);
+    if (coupon.discount_type === "percent")
+      return +(subtotal * (coupon.discount_value / 100)).toFixed(2);
     if (coupon.discount_type === "fixed") return Math.min(coupon.discount_value, subtotal);
     return 0;
   })();
-  const freeShipping = coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
-  const fee = (deliveryMethod === "retirada" || freeShipping) 
-    ? 0 
-    : (selectedRange ? Number(selectedRange.fee) : DEFAULT_DELIVERY_FEE);
+  const freeShipping =
+    coupon?.discount_type === "free_shipping" && subtotal >= (coupon?.min_order ?? 0);
+  const fee =
+    deliveryMethod === "retirada" || freeShipping
+      ? 0
+      : selectedRange
+        ? Number(selectedRange.fee)
+        : DEFAULT_DELIVERY_FEE;
   const total = Math.max(0, subtotal - discount + fee);
 
   const applyCoupon = async () => {
@@ -180,11 +205,15 @@ export default function CartDrawer() {
     setCalculatingDistance(true);
     try {
       const address = `${street}, ${number}, Assis, SP, Brasil`;
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`,
+      );
       const data = await response.json();
 
       if (!data || data.length === 0) {
-        toast.error("Não encontramos este endereço em Assis. Verifique os dados ou chame no WhatsApp.");
+        toast.error(
+          "Não encontramos este endereço em Assis. Verifique os dados ou chame no WhatsApp.",
+        );
         return;
       }
 
@@ -193,16 +222,20 @@ export default function CartDrawer() {
       const storeLon = (settings as any)?.longitude || -50.4132;
 
       const dist = calculateDistance(storeLat, storeLon, parseFloat(lat), parseFloat(lon));
-      
+
       // Adicionar margem de erro/trajeto (aprox 30% a mais que linha reta)
       const estimatedRoadDist = dist * 1.3;
       setDetectedDistance(estimatedRoadDist);
 
-      const range = deliveryRanges.find(r => estimatedRoadDist >= Number(r.min_km) && estimatedRoadDist <= Number(r.max_km));
-      
+      const range = deliveryRanges.find(
+        (r) => estimatedRoadDist >= Number(r.min_km) && estimatedRoadDist <= Number(r.max_km),
+      );
+
       if (range) {
         setDeliveryRangeId(range.id);
-        toast.success(`Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`);
+        toast.success(
+          `Distância estimada: ${estimatedRoadDist.toFixed(1)}km. Frete: ${formatBRL(Number(range.fee))}`,
+        );
       } else {
         toast.error("Este endereço parece estar fora da nossa área de entrega.");
       }
@@ -232,7 +265,7 @@ export default function CartDrawer() {
     if (deliveryMethod === "entrega") {
       lines.push("📍 *ENDEREÇO DE ENTREGA*");
       lines.push(`${street}, ${number}`);
-      lines.push(`Distância: ${selectedRange?.label || 'Não informada'}`);
+      lines.push(`Distância: ${selectedRange?.label || "Não informada"}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
@@ -286,19 +319,18 @@ export default function CartDrawer() {
     return lines.join("\n");
   };
 
-  const canCheckout =
-    items.length > 0 && !submitting && isOpenStore && subtotal >= MIN_ORDER;
+  const canCheckout = items.length > 0 && !submitting && isOpenStore && subtotal >= MIN_ORDER;
 
   const handleCheckout = async () => {
     if (!canCheckout) return;
 
-    const parsed = checkoutSchema.safeParse({ 
-      name, 
-      phone, 
+    const parsed = checkoutSchema.safeParse({
+      name,
+      phone,
       deliveryMethod,
-      street: deliveryMethod === "entrega" ? street : undefined, 
-      number: deliveryMethod === "entrega" ? number : undefined, 
-      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined 
+      street: deliveryMethod === "entrega" ? street : undefined,
+      number: deliveryMethod === "entrega" ? number : undefined,
+      deliveryRangeId: deliveryMethod === "entrega" ? deliveryRangeId : undefined,
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
@@ -308,10 +340,9 @@ export default function CartDrawer() {
     setSubmitting(true);
     try {
       const { data: user } = await supabase.auth.getUser();
-      
+
       // 1. Inserir o pedido principal
-      const { data: order, error: orderError } = await (supabase
-        .from("orders") as any)
+      const { data: order, error: orderError } = await (supabase.from("orders") as any)
         .insert({
           customer_name: name,
           customer_phone: phone,
@@ -326,18 +357,19 @@ export default function CartDrawer() {
           change_for: payment === "dinheiro" && changeFor ? Number(parsePrice(changeFor)) : null,
           address_street: deliveryMethod === "entrega" ? street : null,
           address_number: deliveryMethod === "entrega" ? number : null,
-          address_neighborhood: deliveryMethod === "entrega" ? (selectedRange?.label || null) : "Retirada no Local",
-          address_complement: deliveryMethod === "entrega" ? (complement || null) : null,
-          address_reference: deliveryMethod === "entrega" ? (reference || null) : null,
+          address_neighborhood:
+            deliveryMethod === "entrega" ? selectedRange?.label || null : "Retirada no Local",
+          address_complement: deliveryMethod === "entrega" ? complement || null : null,
+          address_reference: deliveryMethod === "entrega" ? reference || null : null,
           notes: notes || null,
           status: "novo",
           user_id: user.user?.id || null,
-          items: items.map((i) => ({ 
-            name: i.name, 
-            qty: i.qty, 
+          items: items.map((i) => ({
+            name: i.name,
+            qty: i.qty,
             price: Number(parsePrice(i.price)),
-            options: i.options 
-          }))
+            options: i.options,
+          })),
         })
         .select()
         .single();
@@ -355,9 +387,7 @@ export default function CartDrawer() {
         options: i.options || [],
       }));
 
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(itemsToInsert as any);
+      const { error: itemsError } = await supabase.from("order_items").insert(itemsToInsert as any);
 
       if (itemsError) console.error("Error inserting order items:", itemsError);
 
@@ -373,9 +403,19 @@ export default function CartDrawer() {
   };
 
   const resetAll = () => {
-    setName(""); setPhone(""); setStreet(""); setNumber(""); setDeliveryRangeId("");
-    setComplement(""); setReference(""); setNotes(""); setChangeFor("");
-    setCoupon(null); setCouponCode(""); setPayment("pix"); setNeedsChange(null);
+    setName("");
+    setPhone("");
+    setStreet("");
+    setNumber("");
+    setDeliveryRangeId("");
+    setComplement("");
+    setReference("");
+    setNotes("");
+    setChangeFor("");
+    setCoupon(null);
+    setCouponCode("");
+    setPayment("pix");
+    setNeedsChange(null);
     setConfirmation(null);
     close();
   };
@@ -389,17 +429,26 @@ export default function CartDrawer() {
             <CheckCircle2 className="w-20 h-20 text-[hsl(142_76%_45%)] mb-4" />
             <h2 className="font-display text-3xl uppercase mb-2">Pedido enviado!</h2>
             <p className="text-sm text-muted-foreground mb-6 mt-2">
-              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site usando o código do seu pedido. 🙏
+              Seu pedido foi recebido com sucesso! Você pode acompanhar o status aqui no site usando
+              o código do seu pedido. 🙏
             </p>
-            
+
             <div className="w-full space-y-3">
               <div className="bg-muted/50 p-4 rounded-xl border border-border mb-4">
-                <p className="text-xs uppercase font-bold text-muted-foreground mb-1">Código do seu pedido:</p>
+                <p className="text-xs uppercase font-bold text-muted-foreground mb-1">
+                  Código do seu pedido:
+                </p>
                 <p className="font-display text-2xl text-primary">#{confirmation.orderNumber}</p>
-                <p className="text-[10px] text-muted-foreground mt-2">Guarde este código para acompanhar o status no topo do site.</p>
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  Guarde este código para acompanhar o status no topo do site.
+                </p>
               </div>
 
-              <Button onClick={resetAll} size="lg" className="w-full bg-gradient-gold text-primary-foreground font-bold">
+              <Button
+                onClick={resetAll}
+                size="lg"
+                className="w-full bg-gradient-gold text-primary-foreground font-bold"
+              >
                 Fechar e voltar ao site
               </Button>
             </div>
@@ -433,42 +482,79 @@ export default function CartDrawer() {
                   const itemKey = `${i.name}-${idx}`;
                   const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
                   return (
-                    <li key={itemKey} className="flex flex-col gap-3 bg-background/40 border border-border rounded-xl p-3">
+                    <li
+                      key={itemKey}
+                      className="flex flex-col gap-3 bg-background/40 border border-border rounded-xl p-3"
+                    >
                       <div className="flex gap-3 items-center">
-                        <img 
-                          src={i.img} 
-                          alt={i.name} 
-                          className="w-16 h-16 rounded-lg object-cover shrink-0" 
+                        <img
+                          src={i.img}
+                          alt={i.name}
+                          className="w-16 h-16 rounded-lg object-cover shrink-0"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            if (target.src.includes('/src/assets/')) {
-                              target.src = target.src.replace('/src/assets/', '/assets/');
+                            if (target.src.includes("/src/assets/")) {
+                              target.src = target.src.replace("/src/assets/", "/assets/");
                             }
                           }}
-                          loading="lazy" 
+                          loading="lazy"
                         />
                         <div className="flex-1 min-w-0">
                           <p className="font-bold text-sm truncate">{i.name}</p>
                           <p className="text-xs text-muted-foreground">{i.price}</p>
                           <div className="flex items-center gap-2 mt-2">
-                            <button onClick={() => dec(uniqueId)} aria-label="Diminuir" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Minus className="w-3 h-3" /></button>
+                            <button
+                              onClick={() => dec(uniqueId)}
+                              aria-label="Diminuir"
+                              className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
                             <span className="text-sm font-bold w-6 text-center">{i.qty}</span>
-                            <button onClick={() => inc(uniqueId)} aria-label="Aumentar" className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"><Plus className="w-3 h-3" /></button>
-                            <button onClick={() => remove(uniqueId)} aria-label="Remover" className="ml-auto w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-destructive hover:text-destructive"><Trash2 className="w-3 h-3" /></button>
+                            <button
+                              onClick={() => inc(uniqueId)}
+                              aria-label="Aumentar"
+                              className="w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-primary"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={() => remove(uniqueId)}
+                              aria-label="Remover"
+                              className="ml-auto w-7 h-7 rounded-md border border-border flex items-center justify-center hover:border-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="font-display text-primary text-lg">{formatBRL(lineTotal)}</p>
+                          <p className="font-display text-primary text-lg">
+                            {formatBRL(lineTotal)}
+                          </p>
                         </div>
                       </div>
-                      
+
                       {i.options && (
                         <div className="text-[10px] text-muted-foreground space-y-1 pl-1 border-l border-primary/30 ml-2">
-                          {i.options.burgerSize && <p>• <b>Opção:</b> {i.options.burgerSize}</p>}
-                          {i.options.doneness && <p>• <b>Ponto:</b> {i.options.doneness}</p>}
-                          {i.options.beverage && <p>• <b>Bebida:</b> {i.options.beverage}</p>}
+                          {i.options.burgerSize && (
+                            <p>
+                              • <b>Opção:</b> {i.options.burgerSize}
+                            </p>
+                          )}
+                          {i.options.doneness && (
+                            <p>
+                              • <b>Ponto:</b> {i.options.doneness}
+                            </p>
+                          )}
+                          {i.options.beverage && (
+                            <p>
+                              • <b>Bebida:</b> {i.options.beverage}
+                            </p>
+                          )}
                           {i.options.extras && i.options.extras.length > 0 && (
-                            <p>• <b>Adicionais:</b> {i.options.extras.join(", ")}</p>
+                            <p>
+                              • <b>Adicionais:</b> {i.options.extras.join(", ")}
+                            </p>
                           )}
                           {i.options.notes && <p className="italic">• "{i.options.notes}"</p>}
                         </div>
@@ -480,20 +566,34 @@ export default function CartDrawer() {
 
               {/* Cliente */}
               <div className="space-y-3 mb-5">
-                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">👤 Seus dados</h3>
+                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">
+                  👤 Seus dados
+                </h3>
                 <div>
                   <Label className="text-xs">Nome completo *</Label>
-                  <Input maxLength={80} value={name} onChange={(e) => setName(e.target.value)} placeholder="João Silva" />
+                  <Input
+                    maxLength={80}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="João Silva"
+                  />
                 </div>
                 <div>
                   <Label className="text-xs">WhatsApp (com DDD) *</Label>
-                  <Input maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(18) 99796-2510" />
+                  <Input
+                    maxLength={20}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(18) 99796-2510"
+                  />
                 </div>
               </div>
 
               {/* Método de Entrega */}
               <div className="space-y-3 mb-5">
-                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">📦 Como prefere receber?</h3>
+                <h3 className="font-display uppercase text-sm text-muted-foreground tracking-wide">
+                  📦 Como prefere receber?
+                </h3>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setDeliveryMethod("entrega")}
@@ -529,20 +629,40 @@ export default function CartDrawer() {
                   <div className="grid grid-cols-3 gap-2">
                     <div className="col-span-2">
                       <Label className="text-xs">Rua *</Label>
-                      <Input maxLength={120} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="R. Smith Vasconcelos" />
+                      <Input
+                        maxLength={120}
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                        placeholder="R. Smith Vasconcelos"
+                      />
                     </div>
                     <div>
                       <Label className="text-xs">Número *</Label>
-                      <Input maxLength={10} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="312" />
+                      <Input
+                        maxLength={10}
+                        value={number}
+                        onChange={(e) => setNumber(e.target.value)}
+                        placeholder="312"
+                      />
                     </div>
                   </div>
                   <div>
                     <Label className="text-xs">Complemento</Label>
-                    <Input maxLength={80} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto 21, bloco B" />
+                    <Input
+                      maxLength={80}
+                      value={complement}
+                      onChange={(e) => setComplement(e.target.value)}
+                      placeholder="Apto 21, bloco B"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs">Ponto de referência</Label>
-                    <Input maxLength={120} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Próximo ao mercado..." />
+                    <Input
+                      maxLength={120}
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                      placeholder="Próximo ao mercado..."
+                    />
                   </div>
                 </div>
               )}
@@ -574,7 +694,9 @@ export default function CartDrawer() {
                       <button
                         onClick={() => setNeedsChange(true)}
                         className={`flex-1 p-2 rounded border text-xs font-bold transition-smooth ${
-                          needsChange === true ? "border-primary bg-primary/20 text-primary" : "border-border"
+                          needsChange === true
+                            ? "border-primary bg-primary/20 text-primary"
+                            : "border-border"
                         }`}
                       >
                         Sim
@@ -585,18 +707,22 @@ export default function CartDrawer() {
                           setChangeFor("");
                         }}
                         className={`flex-1 p-2 rounded border text-xs font-bold transition-smooth ${
-                          needsChange === false ? "border-primary bg-primary/20 text-primary" : "border-border"
+                          needsChange === false
+                            ? "border-primary bg-primary/20 text-primary"
+                            : "border-border"
                         }`}
                       >
                         Não
                       </button>
                     </div>
-                    
+
                     {needsChange === true && (
                       <div className="animate-in fade-in slide-in-from-top-1">
                         <Label className="text-[10px] uppercase">Troco para quanto?</Label>
                         <div className="relative mt-1">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">R$</span>
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
+                            R$
+                          </span>
                           <Input
                             className="pl-8"
                             value={changeFor}
@@ -619,12 +745,26 @@ export default function CartDrawer() {
                 {coupon ? (
                   <div className="flex items-center justify-between bg-primary/10 border border-primary/40 rounded-lg p-2">
                     <span className="font-bold text-sm text-primary">✓ {coupon.code}</span>
-                    <button onClick={removeCoupon} className="text-xs text-destructive hover:underline">Remover</button>
+                    <button
+                      onClick={removeCoupon}
+                      className="text-xs text-destructive hover:underline"
+                    >
+                      Remover
+                    </button>
                   </div>
                 ) : (
                   <div className="flex gap-2">
-                    <Input value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="DIGITE O CUPOM" maxLength={30} />
-                    <Button variant="outline" onClick={applyCoupon} disabled={validatingCoupon || !couponCode}>
+                    <Input
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="DIGITE O CUPOM"
+                      maxLength={30}
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={applyCoupon}
+                      disabled={validatingCoupon || !couponCode}
+                    >
                       Aplicar
                     </Button>
                   </div>
@@ -634,7 +774,13 @@ export default function CartDrawer() {
               {/* Observações */}
               <div>
                 <Label className="text-xs">Observações</Label>
-                <Textarea rows={2} maxLength={300} placeholder="Sem cebola, ponto da carne..." value={notes} onChange={(e) => setNotes(e.target.value)} />
+                <Textarea
+                  rows={2}
+                  maxLength={300}
+                  placeholder="Sem cebola, ponto da carne..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
               </div>
             </>
           )}
@@ -654,7 +800,13 @@ export default function CartDrawer() {
             )}
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Taxa de entrega</span>
-              <span>{freeShipping ? <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span> : formatBRL(fee)}</span>
+              <span>
+                {freeShipping ? (
+                  <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
+                ) : (
+                  formatBRL(fee)
+                )}
+              </span>
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-border">
               <span className="font-bold">Total</span>
@@ -677,7 +829,10 @@ export default function CartDrawer() {
               <MessageCircle className="w-5 h-5 mr-2" />
               {submitting ? "Enviando..." : "Confirmar pedido"}
             </Button>
-            <button onClick={clear} className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth">
+            <button
+              onClick={clear}
+              className="w-full text-xs text-muted-foreground hover:text-destructive transition-smooth"
+            >
               Limpar carrinho
             </button>
           </div>
