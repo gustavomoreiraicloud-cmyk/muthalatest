@@ -115,6 +115,7 @@ export default function CartDrawer() {
   const [cep, setCep] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("entrega");
   const [deliveryRangeId, setDeliveryRangeId] = useState("");
   const [deliveryRanges, setDeliveryRanges] = useState<DeliveryRange[]>([]);
@@ -187,7 +188,14 @@ export default function CartDrawer() {
         const data = await res.json();
         if (data.logradouro) {
           setStreet(data.logradouro);
-          toast.success("Endereço encontrado!");
+          if (data.bairro) setNeighborhood(data.bairro);
+          toast.success("Endereço preenchido!");
+          
+          // Focar no número após preencher a rua
+          setTimeout(() => {
+            const numInput = document.getElementById("address-number");
+            if (numInput) (numInput as HTMLInputElement).focus();
+          }, 100);
         } else {
           toast.error("CEP não encontrado");
         }
@@ -318,6 +326,7 @@ export default function CartDrawer() {
       lines.push(`${street}, ${number}`);
       lines.push(`Distância: ${detectedDistance ? detectedDistance.toFixed(1) + "km" : "Não calculada"}`);
       if (estimatedTime) lines.push(`Tempo estimado: ${estimatedTime}`);
+      if (neighborhood) lines.push(`Bairro: ${neighborhood}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
@@ -418,7 +427,7 @@ export default function CartDrawer() {
         _address_street: deliveryMethod === "entrega" ? street : "Retirada",
         _address_number: deliveryMethod === "entrega" ? number : "0",
         _address_neighborhood:
-          deliveryMethod === "entrega" ? (detectedDistance ? `${detectedDistance.toFixed(1)}km` : "Calculado") : "Retirada no Local",
+          deliveryMethod === "entrega" ? (neighborhood ? `${neighborhood} (${detectedDistance?.toFixed(1)}km)` : (detectedDistance ? `${detectedDistance.toFixed(1)}km` : "Calculado")) : "Retirada no Local",
         _address_complement: complement || undefined,
         _address_reference: reference || undefined,
         _notes: notes || undefined,
@@ -743,15 +752,26 @@ export default function CartDrawer() {
                     <MapPin className="w-4 h-4" /> Endereço de entrega
                   </h3>
                   <div className="space-y-3">
-                    <div>
-                      <Label className="text-xs">CEP (Opcional - Preenche a rua)</Label>
-                      <Input
-                        placeholder="00000-000"
-                        maxLength={9}
-                        value={cep}
-                        onChange={(e) => handleCEPChange(e.target.value)}
-                        inputMode="numeric"
-                      />
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label className="text-xs">CEP *</Label>
+                        <Input
+                          placeholder="00000-000"
+                          maxLength={9}
+                          value={cep}
+                          onChange={(e) => handleCEPChange(e.target.value)}
+                          inputMode="numeric"
+                          className="font-bold"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Bairro</Label>
+                        <Input
+                          value={neighborhood}
+                          onChange={(e) => setNeighborhood(e.target.value)}
+                          placeholder="Centro"
+                        />
+                      </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div className="col-span-2">
@@ -766,6 +786,7 @@ export default function CartDrawer() {
                       <div>
                         <Label className="text-xs">Número *</Label>
                         <Input
+                          id="address-number"
                           maxLength={10}
                           value={number}
                           onChange={(e) => setNumber(e.target.value)}
