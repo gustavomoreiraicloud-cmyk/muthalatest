@@ -1073,7 +1073,7 @@ export default function CartDrawer() {
                       Copiar
                     </Button>
                   </div>
-                  {settings.pix_qr_code_url && (
+                  {PIX_QR && (
                     <div className="flex flex-col items-center gap-2 pt-2">
                       <img src={settings.pix_qr_code_url} alt="QR Code PIX" className="w-32 h-32 rounded-lg bg-white p-2" />
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">Ou escaneie o QR Code acima</p>
