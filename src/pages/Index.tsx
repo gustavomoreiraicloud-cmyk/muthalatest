@@ -43,7 +43,7 @@ import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { useMenu } from "@/hooks/useMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
-import { nextOpening, formatNextOpening, DEFAULT_HOURS } from "@/lib/businessHours";
+import { nextOpening, formatNextOpening, isWithinHours, DEFAULT_HOURS } from "@/lib/businessHours";
 
 // Map database paths to actual imported asset URLs
 export const ASSET_MAP: Record<string, string> = {
@@ -163,7 +163,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {settings &&
-        !settings.is_open &&
+        (!settings.is_open || !isWithinHours(settings.business_hours ?? DEFAULT_HOURS)) &&
         (() => {
           const next = nextOpening(settings.business_hours ?? DEFAULT_HOURS);
           return (
