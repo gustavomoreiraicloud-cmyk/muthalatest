@@ -194,7 +194,7 @@ export default function AdminDashboard() {
         </div>
         <div className="text-right">
           <p className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Última atualização</p>
-          <p className="text-sm font-bold text-foreground">{new Date().toLocaleTimeString()}</p>
+          <p className="text-sm font-bold text-foreground">{lastUpdate.toLocaleTimeString()}</p>
         </div>
       </div>
 
