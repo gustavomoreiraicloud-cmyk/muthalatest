@@ -397,11 +397,27 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      {orders.length === 0 ? (
-        <Card className="p-12 text-center text-muted-foreground">Nenhum pedido ainda.</Card>
-      ) : (
-        <div className="grid gap-4">
-          {orders.map((o) => {
+      <Tabs defaultValue="ativos" className="w-full">
+        <TabsList className="grid grid-cols-2 w-full max-w-md">
+          <TabsTrigger value="ativos">
+            Ativos ({activeOrders.length})
+          </TabsTrigger>
+          <TabsTrigger value="finalizados">
+            Finalizados ({finishedOrders.length})
+          </TabsTrigger>
+        </TabsList>
+
+        {(["ativos", "finalizados"] as const).map((tab) => {
+          const list = tab === "ativos" ? activeOrders : finishedOrders;
+          return (
+            <TabsContent key={tab} value={tab}>
+              {list.length === 0 ? (
+                <Card className="p-12 text-center text-muted-foreground">
+                  {tab === "ativos" ? "Nenhum pedido em andamento." : "Nenhum pedido finalizado ainda."}
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {list.map((o) => {
             const fullAddr = [o.address_street, o.address_number].filter(Boolean).join(", ");
             const mapsUrl = fullAddr
               ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${fullAddr}, ${o.address_neighborhood ?? ""}`)}`
