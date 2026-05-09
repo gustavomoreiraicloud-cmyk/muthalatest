@@ -311,11 +311,13 @@ export default function AdminOrders() {
   useEffect(() => {
     load();
     const ch = supabase
-      .channel("orders-admin")
+      .channel("orders-admin-local")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, (payload) => {
         const o = payload.new as Order;
         if (!knownIds.current.has(o.id)) {
           knownIds.current.add(o.id);
+          // O som e notificação global agora são tratados no Admin.tsx
+          // Aqui tocamos o som apenas se estiver na página de pedidos para garantir feedback
           if (soundOn) playBeep();
           if (notifyOn) {
             sendPushNotification(
@@ -328,7 +330,6 @@ export default function AdminOrders() {
             action: {
               label: "Ver pedido",
               onClick: () => {
-                // Rola para o topo para garantir que o pedido apareça
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }
