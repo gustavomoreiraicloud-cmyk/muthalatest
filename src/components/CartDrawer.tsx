@@ -326,6 +326,7 @@ export default function CartDrawer() {
       lines.push(`${street}, ${number}`);
       lines.push(`Distância: ${detectedDistance ? detectedDistance.toFixed(1) + "km" : "Não calculada"}`);
       if (estimatedTime) lines.push(`Tempo estimado: ${estimatedTime}`);
+      if (neighborhood) lines.push(`Bairro: ${neighborhood}`);
       if (complement) lines.push(`Complemento: ${complement}`);
       if (reference) lines.push(`Referência: ${reference}`);
     }
