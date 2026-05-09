@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
@@ -313,15 +314,22 @@ export default function AdminOrders() {
   }, [soundOn, notifyOn]);
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
-    if (error) return toast.error("Erro ao atualizar");
-    
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ status })
+      .eq("id", id)
+      .select("id");
+    if (error) return toast.error("Erro: " + error.message);
+    if (!data || data.length === 0) {
+      return toast.error("Sem permissão. Faça login como administrador.");
+    }
+
     // Se mudou para preparo, imprime automaticamente
     if (status === "preparo") {
-      const order = orders.find(o => o.id === id);
+      const order = orders.find((o) => o.id === id);
       if (order) printOrder(order);
     }
-    
+
     toast.success("Pedido atualizado");
   };
 
@@ -349,10 +357,17 @@ export default function AdminOrders() {
 
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
+  const activeOrders = orders.filter(
+    (o) => o.status === "novo" || o.status === "preparo" || o.status === "entrega",
+  );
+  const finishedOrders = orders.filter(
+    (o) => o.status === "finalizado" || o.status === "cancelado",
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="font-display text-2xl uppercase">Pedidos ({orders.length})</h2>
+        <h2 className="font-display text-2xl uppercase">Pedidos</h2>
         <div className="flex items-center gap-4">
           <label
             className="flex items-center gap-2 text-sm cursor-pointer"
@@ -382,11 +397,27 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      {orders.length === 0 ? (
-        <Card className="p-12 text-center text-muted-foreground">Nenhum pedido ainda.</Card>
-      ) : (
-        <div className="grid gap-4">
-          {orders.map((o) => {
+      <Tabs defaultValue="ativos" className="w-full">
+        <TabsList className="grid grid-cols-2 w-full max-w-md">
+          <TabsTrigger value="ativos">
+            Ativos ({activeOrders.length})
+          </TabsTrigger>
+          <TabsTrigger value="finalizados">
+            Finalizados ({finishedOrders.length})
+          </TabsTrigger>
+        </TabsList>
+
+        {(["ativos", "finalizados"] as const).map((tab) => {
+          const list = tab === "ativos" ? activeOrders : finishedOrders;
+          return (
+            <TabsContent key={tab} value={tab}>
+              {list.length === 0 ? (
+                <Card className="p-12 text-center text-muted-foreground">
+                  {tab === "ativos" ? "Nenhum pedido em andamento." : "Nenhum pedido finalizado ainda."}
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {list.map((o) => {
             const fullAddr = [o.address_street, o.address_number].filter(Boolean).join(", ");
             const mapsUrl = fullAddr
               ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${fullAddr}, ${o.address_neighborhood ?? ""}`)}`
@@ -597,8 +628,12 @@ export default function AdminOrders() {
               </Card>
             );
           })}
-        </div>
-      )}
+                </div>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </div>
   );
 }
