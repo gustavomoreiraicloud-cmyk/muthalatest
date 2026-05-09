@@ -183,9 +183,11 @@ export default function AdminNeighborhoods() {
       </div>
 
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-md rounded-3xl">
           <DialogHeader>
-            <DialogTitle>{editing?.id ? "Editar Faixa" : "Nova Faixa"}</DialogTitle>
+            <DialogTitle className="font-display text-2xl uppercase text-primary">
+              {editing?.id ? "Editar Faixa" : "Nova Faixa de Frete"}
+            </DialogTitle>
           </DialogHeader>
           {editing && (
             <div className="space-y-4">
