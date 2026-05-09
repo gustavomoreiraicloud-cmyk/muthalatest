@@ -85,7 +85,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const inc = (id: string) => {
-    setItems((prev) => prev.map((i) => (getItemId(i) === id ? { ...i, qty: i.qty + 1 } : i)));
+    setItems((prev) =>
+      prev.map((i) => {
+        const currentId = getItemId(i);
+        return currentId === id ? { ...i, qty: i.qty + 1 } : i;
+      }),
+    );
   };
 
   const dec = (id: string) => {
