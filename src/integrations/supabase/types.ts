@@ -409,7 +409,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      store_settings_public: {
+        Row: {
+          address: string | null
+          business_hours: Json | null
+          delivery_fee: number | null
+          estimated_delivery_time: number | null
+          hours: string | null
+          id: string | null
+          is_open: boolean | null
+          latitude: number | null
+          longitude: number | null
+          min_order: number | null
+          order_prep_time_multiplier: number | null
+          phone: string | null
+          store_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_hours?: Json | null
+          delivery_fee?: number | null
+          estimated_delivery_time?: number | null
+          hours?: string | null
+          id?: string | null
+          is_open?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          min_order?: number | null
+          order_prep_time_multiplier?: number | null
+          phone?: string | null
+          store_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_hours?: Json | null
+          delivery_fee?: number | null
+          estimated_delivery_time?: number | null
+          hours?: string | null
+          id?: string | null
+          is_open?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          min_order?: number | null
+          order_prep_time_multiplier?: number | null
+          phone?: string | null
+          store_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_unique_order_number: { Args: never; Returns: number }
