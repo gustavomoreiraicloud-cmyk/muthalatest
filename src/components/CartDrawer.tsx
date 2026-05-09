@@ -848,6 +848,11 @@ export default function CartDrawer() {
                         </span>
                         <span className="text-xs font-black">{formatBRL(fee)}</span>
                       </div>
+                      {detectedDistance > 12 && (
+                        <p className="text-[10px] text-orange-400 font-bold animate-pulse mt-1">
+                          ⚠️ Distância alta detectada. Verifique se o endereço está correto.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
