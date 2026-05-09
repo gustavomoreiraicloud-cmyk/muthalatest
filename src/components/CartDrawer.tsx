@@ -862,9 +862,6 @@ export default function CartDrawer() {
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Taxa de entrega</span>
               <span>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Taxa de entrega</span>
-              <span>
                 {freeShipping ? (
                   <span className="text-[hsl(142_76%_55%)] font-bold">GRÁTIS</span>
                 ) : (
