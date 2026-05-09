@@ -587,9 +587,9 @@ export default function CartDrawer() {
               <div className="mb-6">
                 {!user ? (
                   <Card className="p-4 bg-primary/5 border-dashed border-primary/30 text-center">
-                    <p className="text-xs font-bold uppercase text-primary mb-2">Fidelidade Muthala</p>
+                    <p className="text-xs font-bold uppercase text-primary mb-2">Sua conta Muthala</p>
                     <p className="text-[10px] text-muted-foreground mb-3">
-                      Crie sua conta para ganhar pontos e salvar seus endereços.
+                      Crie sua conta para salvar seus endereços e agilizar pedidos.
                     </p>
                     <Button 
                       size="sm" 
