@@ -562,35 +562,35 @@ export default function AdminOrders() {
                   </div>
 
                   {/* Coluna 2: Entrega e Pagamento */}
-                  <div className="p-4 space-y-4 bg-muted/5">
+                  <div className="p-6 space-y-6 bg-muted/5">
                     <div>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                         Entrega e Contato
                       </h4>
                       {fullAddr ? (
-                        <div className="space-y-2">
-                          <div className="text-xs leading-relaxed">
-                            <p className="font-bold">📍 {fullAddr}</p>
-                            <p className="text-muted-foreground">
+                        <div className="space-y-4">
+                          <div className="text-sm leading-relaxed">
+                            <p className="font-black text-lg text-foreground mb-1">📍 {fullAddr}</p>
+                            <p className="font-bold text-muted-foreground uppercase text-xs tracking-wider">
                               {o.address_neighborhood || "Bairro não informado"}
                             </p>
                             {(o.address_complement || o.address_reference) && (
-                              <p className="text-[10px] mt-1 text-muted-foreground italic border-l-2 border-border pl-2">
-                                {o.address_complement && `Compl: ${o.address_complement} `}
-                                {o.address_reference && `Ref: ${o.address_reference}`}
-                              </p>
+                              <div className="mt-3 p-3 bg-card border-l-4 border-primary rounded shadow-sm text-xs space-y-1">
+                                {o.address_complement && <p className="font-bold text-foreground">🏠 Complemento: <span className="font-medium text-muted-foreground">{o.address_complement}</span></p>}
+                                {o.address_reference && <p className="font-bold text-foreground">🚩 Referência: <span className="font-medium text-muted-foreground">{o.address_reference}</span></p>}
+                              </div>
                             )}
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-3">
                             {mapsUrl && (
                               <Button
                                 asChild
                                 size="sm"
-                                variant="secondary"
-                                className="h-8 text-[10px] font-bold"
+                                variant="outline"
+                                className="flex-1 h-10 text-xs font-black uppercase tracking-tighter"
                               >
                                 <a href={mapsUrl} target="_blank" rel="noreferrer">
-                                  📍 Ver no Mapa
+                                  Ver no Mapa
                                 </a>
                               </Button>
                             )}
@@ -598,11 +598,11 @@ export default function AdminOrders() {
                               <Button
                                 asChild
                                 size="sm"
-                                variant="secondary"
-                                className="h-8 text-[10px] font-bold text-green-500 hover:text-green-600"
+                                variant="outline"
+                                className="flex-1 h-10 text-xs font-black uppercase tracking-tighter border-green-500/50 text-green-500 hover:bg-green-500 hover:text-white"
                               >
                                 <a href={waUrl} target="_blank" rel="noreferrer">
-                                  💬 WhatsApp
+                                  Chamar Whats
                                 </a>
                               </Button>
                             )}
