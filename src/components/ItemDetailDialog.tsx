@@ -32,11 +32,11 @@ type Props = {
   onClose: () => void;
 };
 
-const getBurgerSizes = (itemName: string) => {
+const getBurgerSizes = (itemName: string, category: string) => {
   if (
+    category !== "hamburgueres" ||
     itemName === "BALDUR DE OURO" ||
-    itemName === "COMBO BANQUETE NÓRDICO" ||
-    itemName.includes("DOG")
+    itemName === "COMBO BANQUETE NÓRDICO"
   ) {
     return [];
   }
@@ -157,7 +157,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
   const [notes, setNotes] = useState("");
   const [qty, setQty] = useState(1);
 
-  const burgerSizes = useMemo(() => (item ? getBurgerSizes(item.name) : []), [item]);
+  const burgerSizes = useMemo(() => (item ? getBurgerSizes(item.name, item.category) : []), [item]);
   const portionSizes = useMemo(() => (item ? getPortionSizes(item.name) : []), [item]);
   const allSizes = useMemo(() => [...burgerSizes, ...portionSizes], [burgerSizes, portionSizes]);
 
@@ -272,7 +272,7 @@ export default function ItemDetailDialog({ item, open, onClose }: Props) {
               )}
             </DialogHeader>
 
-            {allSizes.length > 0 && item.category !== "bebidas" && item.category !== "porcoes" && (
+            {allSizes.length > 0 && (item.category === "hamburgueres" || item.category === "porcoes") && (
               <div className="space-y-4">
                 <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!size ? "bg-destructive/10 border-destructive/50" : "bg-muted/30 border-border/50"}`}>
                   <div>
