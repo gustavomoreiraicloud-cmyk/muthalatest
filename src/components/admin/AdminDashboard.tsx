@@ -205,14 +205,18 @@ export default function AdminDashboard() {
             size="sm" 
             className="font-bold uppercase text-[10px] tracking-widest h-9"
             onClick={() => {
-              const today = new Date().toLocaleDateString('pt-BR');
-              const w = window.open("", "_blank", "width=800,height=900");
-              if (!w) return;
-              
+              const esc = (s: unknown) =>
+                String(s ?? "")
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#39;");
+
               const validOrders = orders.filter(o => o.status !== 'cancelado');
               const totalRevenue = validOrders.reduce((acc, o) => acc + Number(o.total), 0);
-              
-              w.document.write(`
+
+              const html = `
                 <html><head><title>Relatório de Vendas - Muthala Burger</title>
                 <style>
                   body{font-family:sans-serif;padding:40px;color:#333;line-height:1.5}
