@@ -40,19 +40,22 @@ export default function OrderStatus() {
   }, []);
 
   const fetchOrder = async (id: string, ph: string) => {
-    if (!id || !ph) return;
+    if (!id && !ph) return;
     setLoading(true);
     setSearched(true);
 
-    if (!(id.length === 4 && /^\d+$/.test(id))) {
+    const orderNum = id ? parseInt(id) : null;
+    
+    // Se ID for fornecido, deve ser numérico de 4 dígitos (opcional se ph estiver presente)
+    if (id && !(/^\d+$/.test(id))) {
       setLoading(false);
       setOrder(null);
       return;
     }
 
     const { data, error } = await supabase.rpc("lookup_order_status", {
-      _order_number: parseInt(id),
-      _phone: ph,
+      _order_number: orderNum,
+      _phone: ph || null,
     });
 
     const found = Array.isArray(data) && data.length > 0 ? data[0] : null;
