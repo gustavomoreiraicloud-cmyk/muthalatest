@@ -24,11 +24,23 @@ const STATUS_MAP = {
 };
 
 export default function OrderStatus() {
+  const { user } = useAuth();
   const [orderId, setOrderId] = useState("");
   const [phone, setPhone] = useState("");
   const [order, setOrder] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const loadProfile = async () => {
+        const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+        setUserProfile(data);
+      };
+      loadProfile();
+    }
+  }, [user]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
