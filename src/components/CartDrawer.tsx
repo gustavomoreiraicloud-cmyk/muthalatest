@@ -606,31 +606,32 @@ export default function CartDrawer() {
               {/* User Login/Account Header */}
               <div className="mb-6">
                 {!user ? (
-                  <Card className="p-4 bg-primary/5 border-dashed border-primary/30 text-center">
-                    <p className="text-xs font-bold uppercase text-primary mb-2">Sua conta Muthala</p>
-                    <p className="text-[10px] text-muted-foreground mb-3">
-                      Crie sua conta para salvar seus endereços e agilizar pedidos.
+                  <Card className="p-4 bg-muted/30 border-border text-center overflow-hidden relative">
+                    <div className="absolute top-0 right-0 px-2 py-1 bg-primary/20 text-primary text-[8px] font-black uppercase rounded-bl-lg">Opcional</div>
+                    <p className="text-xs font-bold uppercase text-foreground mb-1">Você pode pedir sem conta!</p>
+                    <p className="text-[10px] text-muted-foreground mb-3 leading-tight">
+                      Basta preencher seus dados abaixo. Criar conta serve apenas para salvar seu histórico e ganhar pontos.
                     </p>
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="w-full text-xs font-bold uppercase border-primary/50 text-primary hover:bg-primary/10"
+                      className="w-full h-8 text-[10px] font-bold uppercase border-primary/30 text-primary hover:bg-primary/10"
                       onClick={() => {
                         close();
                         window.location.href = "/auth?mode=signup&redirect=/";
                       }}
                     >
-                      <User className="w-3 h-3 mr-2" /> Criar conta / Entrar
+                      <User className="w-3 h-3 mr-2" /> Já tem conta ou quer criar uma?
                     </Button>
                   </Card>
                 ) : (
-                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl border border-border/50">
+                  <div className="flex items-center justify-between p-3 bg-primary/5 rounded-xl border border-primary/20">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-primary-foreground font-black text-xs">
+                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-primary-foreground font-black text-xs shadow-sm">
                         {user.user_metadata?.full_name?.charAt(0).toUpperCase() || "U"}
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase text-muted-foreground leading-none">Bem-vindo,</p>
+                        <p className="text-[9px] font-black uppercase text-primary/70 leading-none">Logado como</p>
                         <p className="text-xs font-bold">{user.user_metadata?.full_name?.split(" ")[0] || "Guerreiro"}</p>
                       </div>
                     </div>
