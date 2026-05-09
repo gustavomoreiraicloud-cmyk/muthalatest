@@ -191,6 +191,74 @@ const printOrder = (o: Order) => {
   `);
   w.document.close();
 };
+const printDailyReport = (orders: Order[]) => {
+  const today = new Date().toLocaleDateString("pt-BR");
+  const finishedOrders = orders.filter(
+    (o) =>
+      o.status === "finalizado" &&
+      new Date(o.created_at).toLocaleDateString("pt-BR") === today
+  );
+
+  const totalRevenue = finishedOrders.reduce((acc, o) => acc + Number(o.total), 0);
+  const totalOrders = finishedOrders.length;
+  
+  const paymentTotals: Record<string, number> = {};
+  finishedOrders.forEach((o) => {
+    const method = PAY_LABEL[o.payment_method ?? ""] ?? "Outros";
+    paymentTotals[method] = (paymentTotals[method] || 0) + Number(o.total);
+  });
+
+  const productStats: Record<string, number> = {};
+  finishedOrders.forEach((o) => {
+    o.items?.forEach((it) => {
+      productStats[it.name] = (productStats[it.name] || 0) + it.qty;
+    });
+  });
+
+  const w = window.open("", "_blank", "width=400,height=600");
+  if (!w) return;
+
+  w.document.write(`
+    <html><head><title>Relatório Diário - ${today}</title>
+    <style>
+      body{font-family:monospace;width:300px;padding:10px;color:#000}
+      h2, h3{text-align:center;margin:10px 0;text-transform:uppercase}
+      .summary{border:1px solid #000;padding:8px;margin-bottom:15px}
+      .row{display:flex;justify-content:space-between;font-size:12px;margin:2px 0}
+      hr{border:none;border-top:1px dashed #000;margin:10px 0}
+      table{width:100%;font-size:12px}
+      .footer{text-align:center;font-size:10px;margin-top:20px}
+    </style></head><body>
+      <h2>MUTHALA BURGER</h2>
+      <h3>RELATÓRIO DO DIA</h3>
+      <p style="text-align:center">Data: ${today}</p>
+      
+      <div class="summary">
+        <div class="row"><b>PEDIDOS FINALIZADOS:</b> <b>${totalOrders}</b></div>
+        <div class="row"><b>TOTAL VENDIDO:</b> <b>${formatBRL(totalRevenue)}</b></div>
+      </div>
+
+      <h4>VENDAS POR PAGAMENTO</h4>
+      ${Object.entries(paymentTotals)
+        .map(([m, val]) => `<div class="row"><span>${m}</span><span>${formatBRL(val)}</span></div>`)
+        .join("")}
+
+      <hr/>
+      <h4>PRODUTOS MAIS VENDIDOS</h4>
+      <table>
+        ${Object.entries(productStats)
+          .sort((a, b) => b[1] - a[1])
+          .map(([name, qty]) => `<tr><td>${qty}x</td><td>${name}</td></tr>`)
+          .join("")}
+      </table>
+
+      <hr/>
+      <p class="footer">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
+      <script>window.print();setTimeout(()=>window.close(),500);</script>
+    </body></html>
+  `);
+  w.document.close();
+};
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -298,6 +366,9 @@ export default function AdminOrders() {
             )}
             <Switch checked={soundOn} onCheckedChange={toggleSound} />
           </label>
+          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders)}>
+            <Printer className="w-4 h-4 mr-1" /> Relatório do Dia
+          </Button>
           <Button variant="outline" size="sm" onClick={load}>
             <RefreshCw className="w-4 h-4" /> Atualizar
           </Button>
