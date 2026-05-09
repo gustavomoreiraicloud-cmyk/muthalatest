@@ -490,13 +490,15 @@ export default function CartDrawer() {
           ) : (
             <>
               <ul className="space-y-4 mb-8">
-                <AnimatePresence initial={false}>
-                  {items.map((i, idx) => {
+                <LayoutGroup>
+                  <AnimatePresence initial={false}>
+                    {items.map((i, idx) => {
                     const lineTotal = parsePrice(i.price) * i.qty;
                     const itemKey = `${i.name}-${idx}`;
                     const uniqueId = i.name + (i.options ? JSON.stringify(i.options) : "");
                     return (
                       <motion.li
+                        layout
                         key={uniqueId}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -581,6 +583,7 @@ export default function CartDrawer() {
                     );
                   })}
                 </AnimatePresence>
+              </LayoutGroup>
               </ul>
 
               {/* User Login/Account Header */}
