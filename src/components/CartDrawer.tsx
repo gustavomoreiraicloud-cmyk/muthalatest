@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { z } from "zod";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371; // Raio da Terra em km
