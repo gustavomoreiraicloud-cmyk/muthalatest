@@ -480,18 +480,18 @@ export default function AdminOrders() {
             return (
               <Card key={o.id} className="overflow-hidden bg-card border-border shadow-md">
                 {/* Header do Card - Informações Principais */}
-                <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-muted/20">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 px-3 py-1 rounded-lg border border-primary/20">
-                      <span className="font-display text-xl text-primary leading-none">
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border bg-muted/40">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-primary px-3 py-1.5 rounded-lg shadow-glow">
+                      <span className="font-display text-2xl text-primary-foreground leading-none">
                         #{o.order_number ?? o.id.slice(0, 6)}
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg leading-none mb-1">
+                      <h3 className="font-black text-2xl leading-none mb-1 tracking-tight text-foreground uppercase">
                         {o.customer_name || "Cliente"}
                       </h3>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs font-bold text-primary flex items-center gap-1">
                         {new Date(o.created_at).toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
                           minute: "2-digit",
