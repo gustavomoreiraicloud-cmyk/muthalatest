@@ -156,6 +156,7 @@ const Index = () => {
     name: it.name,
     price: formatBRL(Number(it.price)),
     img: (it.image_url && ASSET_MAP[it.image_url]) || it.image_url || FALLBACK_IMG,
+    category: it.category,
     desc: it.description ?? undefined,
     ingredients: it.ingredients ?? undefined,
   });
