@@ -105,6 +105,9 @@ const reviews = [
 ];
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     // Scroll to top when entering index
     window.scrollTo(0, 0);
