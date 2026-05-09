@@ -520,6 +520,22 @@ export type Database = {
           updated_at: string
         }[]
       }
+      lookup_order_status_v2: {
+        Args: { _order_number: number; _phone: string }
+        Returns: {
+          created_at: string
+          delivery_fee: number
+          delivery_method: string
+          discount: number
+          id: string
+          items: Json
+          order_number: number
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }[]
+      }
       place_order: {
         Args: {
           _address_complement?: string

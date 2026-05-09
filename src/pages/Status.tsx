@@ -76,7 +76,7 @@ export default function OrderStatus() {
       return;
     }
 
-    const { data, error } = await supabase.rpc("lookup_order_status", {
+    const { data, error } = await supabase.rpc("lookup_order_status_v2", {
       _order_number: orderNum || 0,
       _phone: ph || "",
     });
