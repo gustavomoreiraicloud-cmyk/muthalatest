@@ -430,45 +430,58 @@ export default function AdminOrders() {
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="font-display text-2xl uppercase">Pedidos</h2>
-        <div className="flex items-center gap-4 flex-wrap">
-          <label
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer"
-            title="Impressão automática ao aceitar"
-          >
-            <Printer className={`w-4 h-4 ${autoPrint ? "text-primary" : "text-muted-foreground"}`} />
-            <span className="hidden sm:inline">Auto Imprimir</span>
-            <Switch checked={autoPrint} onCheckedChange={toggleAutoPrint} />
-          </label>
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex items-center justify-between flex-wrap gap-4 bg-card/30 p-6 rounded-2xl border border-white/5">
+        <div>
+          <h2 className="font-display text-4xl uppercase bg-gradient-gold bg-clip-text text-transparent tracking-tighter">Pedidos</h2>
+          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] mt-1 opacity-70">
+            Gerenciamento em tempo real
+          </p>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-4 bg-black/40 px-4 py-2 rounded-xl border border-white/5">
+            <label
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
+              title="Impressão automática ao aceitar"
+            >
+              <Printer className={`w-4 h-4 ${autoPrint ? "text-primary" : "text-muted-foreground"}`} />
+              <span className="hidden sm:inline">Auto Imprimir</span>
+              <Switch checked={autoPrint} onCheckedChange={toggleAutoPrint} className="data-[state=checked]:bg-primary" />
+            </label>
 
-          <label
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer"
-            title="Notificação no sistema"
-          >
-            {notifyOn ? (
-              <Bell className="w-4 h-4 text-primary" />
-            ) : (
-              <BellOff className="w-4 h-4 text-muted-foreground" />
-            )}
-            <span className="hidden sm:inline">Notificar</span>
-            <Switch checked={notifyOn} onCheckedChange={toggleNotify} />
-          </label>
+            <div className="w-[1px] h-6 bg-white/5 mx-1" />
 
-          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-tight cursor-pointer" title="Aviso sonoro">
-            {soundOn ? (
-              <Volume2 className="w-4 h-4 text-primary" />
-            ) : (
-              <VolumeX className="w-4 h-4 text-muted-foreground" />
-            )}
-            <span className="hidden sm:inline">Sons</span>
-            <Switch checked={soundOn} onCheckedChange={toggleSound} />
-          </label>
+            <label
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
+              title="Notificação no sistema"
+            >
+              {notifyOn ? (
+                <Bell className="w-4 h-4 text-primary" />
+              ) : (
+                <BellOff className="w-4 h-4 text-muted-foreground" />
+              )}
+              <span className="hidden sm:inline">Notificar</span>
+              <Switch checked={notifyOn} onCheckedChange={toggleNotify} className="data-[state=checked]:bg-primary" />
+            </label>
 
-          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders, autoPrint)} className="font-bold uppercase text-xs h-8">
-            <Printer className="w-3.5 h-3.5 mr-1" /> Relatório
+            <div className="w-[1px] h-6 bg-white/5 mx-1" />
+
+            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:text-primary transition-colors" title="Aviso sonoro">
+              {soundOn ? (
+                <Volume2 className="w-4 h-4 text-primary" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-muted-foreground" />
+              )}
+              <span className="hidden sm:inline">Sons</span>
+              <Switch checked={soundOn} onCheckedChange={toggleSound} className="data-[state=checked]:bg-primary" />
+            </label>
+          </div>
+
+          <Button variant="outline" size="sm" onClick={() => printDailyReport(orders, autoPrint)} className="font-black uppercase text-[10px] tracking-widest h-10 px-6 rounded-xl border-white/10 hover:bg-white/5">
+            <Printer className="w-3.5 h-3.5 mr-2 text-primary" /> Relatório do Dia
           </Button>
+        </div>
+      </div>
           <Button variant="outline" size="sm" onClick={load} className="font-bold h-8">
             <RefreshCw className="w-3.5 h-3.5" />
           </Button>

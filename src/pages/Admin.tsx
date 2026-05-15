@@ -140,41 +140,54 @@ export default function Admin() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur sticky top-0 z-30">
-        <div className="container mx-auto flex items-center justify-between py-3 px-4">
-          <div>
-            <h1 className="font-display text-xl uppercase">Painel Muthala</h1>
-            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">
-              Logado como: {user?.email?.split('@')[0]}
-            </p>
+    <div className="min-h-screen bg-[#0a0a0a] text-foreground">
+      <header className="border-b border-white/5 bg-black/40 backdrop-blur-md sticky top-0 z-30">
+        <div className="container mx-auto flex items-center justify-between py-4 px-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-gold p-[1px]">
+              <div className="w-full h-full rounded-[11px] bg-black flex items-center justify-center">
+                <UtensilsCrossed className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+            <div>
+              <h1 className="font-display text-xl uppercase tracking-tighter bg-gradient-gold bg-clip-text text-transparent">Painel Administrativo</h1>
+              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                {user?.email?.split('@')[0]}
+              </p>
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => signOut().then(() => navigate({ to: "/auth" }))}
-          >
-            <LogOut className="w-4 h-4" /> Sair
-          </Button>
-        </div>
-        <nav className="container mx-auto flex gap-1 px-2 overflow-x-auto">
-          {tabs.map((t) => (
-            <Link
-              key={t.to}
-              to={t.to as any}
-              activeProps={{ className: "border-primary text-primary" }}
-              inactiveProps={{
-                className: "border-transparent text-muted-foreground hover:text-foreground",
-              }}
-              className="flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors"
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-white hover:bg-white/5 uppercase text-[10px] font-bold tracking-widest"
+              onClick={() => signOut().then(() => navigate({ to: "/auth" }))}
             >
-              <t.icon className="w-4 h-4" /> {t.label}
-            </Link>
-          ))}
-        </nav>
+              <LogOut className="w-4 h-4 mr-2" /> Sair
+            </Button>
+          </div>
+        </div>
+        <div className="border-t border-white/5">
+          <nav className="container mx-auto flex gap-1 px-4 overflow-x-auto no-scrollbar">
+            {tabs.map((t) => (
+              <Link
+                key={t.to}
+                to={t.to as any}
+                activeProps={{ className: "border-primary text-primary bg-primary/5" }}
+                inactiveProps={{
+                  className: "border-transparent text-muted-foreground hover:text-foreground hover:bg-white/5",
+                }}
+                className="flex items-center gap-2 px-5 py-4 text-xs font-bold uppercase tracking-widest border-b-2 whitespace-nowrap transition-all"
+              >
+                <t.icon className="w-4 h-4" /> {t.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-8">
         <Outlet />
       </main>
     </div>

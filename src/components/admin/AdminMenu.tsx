@@ -135,26 +135,30 @@ export default function AdminMenu() {
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   return (
-    <div className="space-y-4">
-      <Alert className="bg-primary/10 border-primary/30">
+    <div className="space-y-6 animate-fade-in">
+      <Alert className="bg-primary/5 border-primary/20 rounded-2xl p-4">
         <AlertCircle className="h-4 w-4 text-primary" />
-        <AlertDescription className="text-xs text-primary font-bold">
-          Dica: Os adicionais (bacon, queijos, etc.) e variações de peso (100g/180g) são gerenciados
-          automaticamente pelo sistema de acordo com o nome do item.
+        <AlertDescription className="text-[10px] text-primary font-black uppercase tracking-widest ml-2">
+          Dica: Os adicionais e variações de peso são calculados automaticamente conforme o nome do item.
         </AlertDescription>
       </Alert>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl uppercase">Cardápio ({items.length})</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-6 bg-card/30 p-6 rounded-2xl border border-white/5">
+        <div>
+          <h2 className="font-display text-4xl uppercase bg-gradient-gold bg-clip-text text-transparent tracking-tighter">Cardápio</h2>
+          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] mt-1 opacity-70">
+            {items.length} produtos cadastrados
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-44">
+            <SelectTrigger className="w-52 h-11 rounded-xl bg-black/40 border-white/10 uppercase text-[10px] font-black tracking-widest">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas categorias</SelectItem>
+            <SelectContent className="bg-[#111] border-white/10">
+              <SelectItem value="all" className="uppercase text-[10px] font-black tracking-widest">Todas categorias</SelectItem>
               {CATEGORIES.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
+                <SelectItem key={c.id} value={c.id} className="uppercase text-[10px] font-black tracking-widest">
                   {c.label}
                 </SelectItem>
               ))}
@@ -162,9 +166,9 @@ export default function AdminMenu() {
           </Select>
           <Button
             onClick={() => setEditing({ ...empty })}
-            className="bg-gradient-gold text-primary-foreground font-bold"
+            className="h-11 px-6 rounded-xl bg-gradient-gold text-primary-foreground font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform"
           >
-            <Plus className="w-4 h-4" /> Novo item
+            <Plus className="w-4 h-4 mr-2" /> Novo Produto
           </Button>
         </div>
       </div>
