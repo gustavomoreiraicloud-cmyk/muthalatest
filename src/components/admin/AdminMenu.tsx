@@ -24,6 +24,7 @@ import { Pencil, Plus, Trash2, Loader2, Upload, AlertCircle } from "lucide-react
 import { toast } from "sonner";
 import { ASSET_MAP } from "@/pages/Index";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { UtensilsCrossed } from "lucide-react";
 
 type MenuItem = {
   id: string;
@@ -174,80 +175,95 @@ export default function AdminMenu() {
       </div>
 
       {items.length === 0 && (
-        <Card className="p-12 text-center text-muted-foreground">
-          Nenhum item ainda. Cadastre o primeiro hambúrguer!
+        <Card className="p-20 text-center bg-black/40 border-white/5 rounded-3xl border-2 border-dashed">
+          <UtensilsCrossed className="w-12 h-12 text-muted-foreground opacity-20 mx-auto mb-4" />
+          <p className="font-display text-xl uppercase tracking-tighter mb-2">Nenhum item ainda</p>
+          <p className="text-sm text-muted-foreground mb-6">Cadastre seu primeiro hambúrguer para começar a vender.</p>
+          <Button onClick={() => setEditing({ ...empty })} variant="outline">Cadastrar Produto</Button>
         </Card>
       )}
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {filtered.map((it) => (
           <Card
             key={it.id}
-            className={`p-4 flex flex-col sm:flex-row items-center gap-4 bg-card border-border transition-all ${!it.available ? "grayscale opacity-60" : "hover:border-primary/30"}`}
+            className={`overflow-hidden bg-black/40 border-white/5 transition-all duration-300 relative group ${!it.available ? "grayscale opacity-50" : "hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5"}`}
           >
-            <div className="relative group shrink-0">
-              {it.image_url ? (
-                <img
-                  src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url}
-                  alt={it.name}
-                  className="w-20 h-20 rounded-lg object-cover border border-border shadow-sm"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center">
-                  <Plus className="w-6 h-6 text-muted-foreground opacity-20" />
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1 min-w-0 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap mb-1">
-                <p className="font-bold text-lg truncate">{it.name}</p>
-                {it.highlight && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold uppercase tracking-wider">
-                    Destaque
-                  </span>
+            <div className="flex flex-col sm:flex-row items-stretch gap-0">
+              <div className="relative w-full sm:w-40 h-40 shrink-0">
+                {it.image_url ? (
+                  <img
+                    src={(it.image_url && ASSET_MAP[it.image_url]) || it.image_url}
+                    alt={it.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted/20 flex items-center justify-center">
+                    <UtensilsCrossed className="w-10 h-10 text-muted-foreground opacity-20" />
+                  </div>
                 )}
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-bold uppercase tracking-wider">
-                  {CATEGORIES.find((c) => c.id === it.category)?.label ?? it.category}
-                </span>
+                {!it.available && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-red-500 text-white px-3 py-1 rounded-full">Indisponível</span>
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                {it.description}
-              </p>
-            </div>
 
-            <div className="shrink-0 flex flex-col items-center sm:items-end gap-3 sm:border-l sm:border-border sm:pl-6 min-w-[140px]">
-              <p className="font-display text-2xl text-primary leading-none">
-                R$ {Number(it.price).toFixed(2)}
-              </p>
-
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">
-                    {it.available ? "Ativo" : "Pausado"}
-                  </span>
-                  <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} />
+              <div className="flex-1 p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <div>
+                      <h3 className="font-display text-2xl uppercase tracking-tight text-white group-hover:text-primary transition-colors">{it.name}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[9px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-black uppercase tracking-widest border border-white/5">
+                          {CATEGORIES.find((c) => c.id === it.category)?.label ?? it.category}
+                        </span>
+                        {it.highlight && (
+                          <span className="text-[9px] px-2 py-0.5 rounded-md bg-primary/10 text-primary font-black uppercase tracking-widest border border-primary/20">
+                            ⭐ Destaque
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <p className="font-display text-3xl text-primary leading-none tracking-tighter">
+                      R$ {Number(it.price).toFixed(2)}
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed max-w-xl">
+                    {it.description}
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-1">
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="h-8 w-8"
-                    onClick={() => setEditing(it)}
-                    title="Editar"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="destructive"
-                    className="h-8 w-8"
-                    onClick={() => remove(it.id)}
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+                      <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">
+                        {it.available ? "Ativo" : "Pausado"}
+                      </span>
+                      <Switch checked={it.available} onCheckedChange={() => toggleAvailable(it)} className="data-[state=checked]:bg-emerald-500 scale-75" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 rounded-xl hover:bg-white/5 text-muted-foreground hover:text-white"
+                      onClick={() => setEditing(it)}
+                      title="Editar"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 rounded-xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500"
+                      onClick={() => remove(it.id)}
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
