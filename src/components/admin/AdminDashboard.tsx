@@ -192,11 +192,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="flex items-center justify-between border-b border-border pb-4 flex-wrap gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-4 bg-card/30 p-6 rounded-2xl border border-white/5">
         <div>
-          <h2 className="font-display text-3xl uppercase text-primary">Resumo Geral</h2>
-          <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">
-            Métricas dos últimos 30 dias
+          <h2 className="font-display text-4xl uppercase bg-gradient-gold bg-clip-text text-transparent tracking-tighter">
+            Visão Geral
+          </h2>
+          <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] mt-1 opacity-70">
+            Relatório de performance • últimos 30 dias
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -308,15 +310,18 @@ export default function AdminDashboard() {
       {/* Cards de Métricas Principais - Mais limpos */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((c) => (
-          <Card key={c.label} className="p-6 bg-card border-border shadow-sm flex items-center gap-4 group hover:border-primary/50 transition-colors">
-            <div className={`p-3 rounded-2xl bg-muted/50 ${c.color.replace('text-', 'bg-').split(' ')[0]}/10 group-hover:scale-110 transition-transform`}>
-              <c.icon className={`w-6 h-6 ${c.color}`} />
+          <Card key={c.label} className="p-6 bg-black/40 border-white/5 shadow-xl flex items-center gap-5 group hover:border-primary/40 transition-all duration-300 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+               <c.icon className="w-20 h-20 rotate-12" />
             </div>
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">
+            <div className={`p-4 rounded-2xl bg-muted/20 ${c.color.replace('text-', 'bg-').split(' ')[0]}/10 group-hover:scale-110 transition-transform duration-500`}>
+              <c.icon className={`w-7 h-7 ${c.color}`} />
+            </div>
+            <div className="relative z-10">
+              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 opacity-60">
                 {c.label}
               </p>
-              <p className="font-display text-3xl leading-none text-white">{c.value}</p>
+              <p className="font-display text-4xl leading-none text-white tracking-tighter">{c.value}</p>
             </div>
           </Card>
         ))}
@@ -324,11 +329,14 @@ export default function AdminDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Gráfico de Faturamento - Estilo Moderno */}
-        <Card className="p-6 bg-card border-border">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-white">
-              <TrendingUp className="w-4 h-4 text-primary" /> Faturamento Semanal
-            </h3>
+        <Card className="p-8 bg-black/40 border-white/5 shadow-2xl">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h3 className="font-bold flex items-center gap-2 uppercase text-[10px] tracking-[0.2em] text-primary mb-1">
+                <TrendingUp className="w-4 h-4" /> Desempenho Financeiro
+              </h3>
+              <p className="text-xl font-display uppercase tracking-tight text-white">Faturamento Semanal</p>
+            </div>
           </div>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
