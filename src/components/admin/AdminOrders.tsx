@@ -480,10 +480,9 @@ export default function AdminOrders() {
           <Button variant="outline" size="sm" onClick={() => printDailyReport(orders, autoPrint)} className="font-black uppercase text-[10px] tracking-widest h-10 px-6 rounded-xl border-white/10 hover:bg-white/5">
             <Printer className="w-3.5 h-3.5 mr-2 text-primary" /> Relatório do Dia
           </Button>
-        </div>
-      </div>
-          <Button variant="outline" size="sm" onClick={load} className="font-bold h-8">
-            <RefreshCw className="w-3.5 h-3.5" />
+          
+          <Button variant="outline" size="sm" onClick={load} className="h-10 w-10 p-0 rounded-xl border-white/10 hover:bg-white/5">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-primary' : 'text-muted-foreground'}`} />
           </Button>
         </div>
       </div>
