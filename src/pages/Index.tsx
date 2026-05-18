@@ -67,7 +67,6 @@ const PHONE = "tel:+5518997962510";
 const FALLBACK_IMG = "/placeholder.svg";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  promocoes: "Promoções",
   hamburgueres: "Hambúrgueres",
   hotdogs: "Hot Dogs",
   porcoes: "Porções",
@@ -136,7 +135,7 @@ const Index = () => {
     dbItems.forEach((it) => {
       (grouped[it.category] ??= []).push(it);
     });
-    const order = ["promocoes", "hamburgueres", "hotdogs", "porcoes", "bebidas"];
+    const order = ["hamburgueres", "hotdogs", "porcoes", "bebidas"];
     const known = order
       .filter((id) => grouped[id]?.length)
       .map((id) => ({
