@@ -412,7 +412,7 @@ export default function AdminOrders() {
     setUpdatingIds(prev => new Set(prev).add(id));
     const prevOrders = orders;
     // Atualização otimista — UI muda na hora
-    setOrders((curr) => curr.map((o) => (o.id === id ? { ...o, status } : o)));
+    setOrders((curr: Order[]) => curr.map((o: Order) => (o.id === id ? { ...o, status } : o)));
  
     try {
       const { data, error } = await supabase
@@ -426,7 +426,7 @@ export default function AdminOrders() {
  
       // Se mudou para preparo e auto-print estiver ligado, imprime
       if ((status === "preparo" || status === "entrega") && autoPrint) {
-        const order = prevOrders.find((o) => o.id === id);
+        const order = prevOrders.find((o: Order) => o.id === id);
         if (order) printOrder(order);
       }
  
@@ -476,11 +476,11 @@ export default function AdminOrders() {
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   const activeOrders = orders.filter(
-    (o) => o.status === "novo" || o.status === "preparo",
+    (o: Order) => o.status === "novo" || o.status === "preparo",
   );
-  const deliveryOrders = orders.filter((o) => o.status === "entrega");
+  const deliveryOrders = orders.filter((o: Order) => o.status === "entrega");
   const finishedOrders = orders.filter(
-    (o) => o.status === "finalizado" || o.status === "cancelado",
+    (o: Order) => o.status === "finalizado" || o.status === "cancelado",
   );
 
   return (
@@ -589,7 +589,7 @@ export default function AdminOrders() {
                 </Card>
               ) : (
                 <div className="grid gap-4">
-                  {list.map((o) => {
+                  {list.map((o: Order) => {
             const fullAddr = [o.address_street, o.address_number].filter(Boolean).join(", ");
             const mapsUrl = fullAddr
               ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${fullAddr}, ${o.address_neighborhood ?? ""}`)}`
@@ -641,7 +641,7 @@ export default function AdminOrders() {
                         <ShoppingBag className="w-4 h-4" /> Itens do Pedido
                       </h4>
                       <ul className="space-y-3">
-                        {o.items?.map((it, idx) => (
+                        {o.items?.map((it: any, idx: number) => (
                           <li
                             key={idx}
                             className="bg-background border border-border/60 rounded-xl p-3 shadow-sm"
