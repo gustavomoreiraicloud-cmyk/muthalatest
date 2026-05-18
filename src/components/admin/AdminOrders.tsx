@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag, MessageCircle } from "lucide-react";
+import { Loader2, RefreshCw, Printer, Volume2, VolumeX, Bell, BellOff, ShoppingBag, MessageCircle, Power, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/hooks/useCart";
 
@@ -288,8 +288,58 @@ const printDailyReport = (orders: Order[], autoPrint: boolean = true) => {
   w.document.close();
 };
 
+const resetDay = async (orders: Order[]) => {
+  const confirm = window.confirm("ATENÇÃO: Isso irá imprimir o relatório e LIMPAR todos os pedidos da tela de ativos. O sistema será FECHADO. Deseja continuar?");
+  if (!confirm) return;
+
+  // 1. Imprimir relatório
+  printDailyReport(orders, true);
+
+  // 2. Fechar a loja
+  try {
+    const { data: settings } = await supabase.from("store_settings").select("id").maybeSingle();
+    if (settings) {
+      await supabase.from("store_settings").update({ is_open: false }).eq("id", settings.id);
+    }
+
+    // 3. Finalizar todos os pedidos ativos (ou cancelar os que não foram aceitos)
+    const activeIds = orders
+      .filter(o => ["novo", "preparo", "entrega"].includes(o.status))
+      .map(o => o.id);
+
+    if (activeIds.length > 0) {
+      await supabase
+        .from("orders")
+        .update({ status: "finalizado" })
+        .in("id", activeIds);
+    }
+
+    toast.success("Dia resetado! Loja fechada e pedidos arquivados.");
+    setTimeout(() => window.location.reload(), 2000);
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao resetar o dia");
+  }
+};
+
+const openStore = async () => {
+  try {
+    const { data: settings } = await supabase.from("store_settings").select("id").maybeSingle();
+    if (settings) {
+      await supabase.from("store_settings").update({ is_open: true }).eq("id", settings.id);
+      toast.success("LOJA ABERTA! Boas vendas! 🍔");
+      setTimeout(() => window.location.reload(), 1000);
+    }
+  } catch (err) {
+    toast.error("Erro ao abrir a loja");
+  }
+};
+
 export default function AdminOrders() {
+  const [storeOpen, setStoreOpen] = useState<boolean | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
+
+
   const [loading, setLoading] = useState(true);
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_KEY) !== "0");
   const [notifyOn, setNotifyOn] = useState(() => localStorage.getItem(NOTIFY_KEY) === "1");
@@ -316,7 +366,11 @@ export default function AdminOrders() {
   };
 
   useEffect(() => {
+    supabase.from("store_settings").select("is_open").maybeSingle().then(({ data }) => {
+      if (data) setStoreOpen(data.is_open);
+    });
     load();
+
     const ch = supabase
       .channel("orders-admin-local")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, (payload) => {
@@ -358,7 +412,7 @@ export default function AdminOrders() {
     setUpdatingIds(prev => new Set(prev).add(id));
     const prevOrders = orders;
     // Atualização otimista — UI muda na hora
-    setOrders((curr) => curr.map((o) => (o.id === id ? { ...o, status } : o)));
+    setOrders((curr: Order[]) => curr.map((o: Order) => (o.id === id ? { ...o, status } : o)));
  
     try {
       const { data, error } = await supabase
@@ -372,7 +426,7 @@ export default function AdminOrders() {
  
       // Se mudou para preparo e auto-print estiver ligado, imprime
       if ((status === "preparo" || status === "entrega") && autoPrint) {
-        const order = prevOrders.find((o) => o.id === id);
+        const order = prevOrders.find((o: Order) => o.id === id);
         if (order) printOrder(order);
       }
  
@@ -422,11 +476,11 @@ export default function AdminOrders() {
   if (loading) return <Loader2 className="w-6 h-6 animate-spin mx-auto mt-12" />;
 
   const activeOrders = orders.filter(
-    (o) => o.status === "novo" || o.status === "preparo",
+    (o: Order) => o.status === "novo" || o.status === "preparo",
   );
-  const deliveryOrders = orders.filter((o) => o.status === "entrega");
+  const deliveryOrders = orders.filter((o: Order) => o.status === "entrega");
   const finishedOrders = orders.filter(
-    (o) => o.status === "finalizado" || o.status === "cancelado",
+    (o: Order) => o.status === "finalizado" || o.status === "cancelado",
   );
 
   return (
@@ -477,13 +531,34 @@ export default function AdminOrders() {
             </label>
           </div>
 
+          {storeOpen === true ? (
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              onClick={() => resetDay(orders)} 
+              className="font-black uppercase text-[10px] tracking-widest h-10 px-6 rounded-xl border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400"
+            >
+              <Power className="w-3.5 h-3.5 mr-2" /> Resetar Dia / Fechar
+            </Button>
+          ) : storeOpen === false ? (
+            <Button 
+              variant="default" 
+              size="sm" 
+              onClick={openStore} 
+              className="font-black uppercase text-[10px] tracking-widest h-10 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/20"
+            >
+              <Power className="w-3.5 h-3.5 mr-2" /> Abrir Loja
+            </Button>
+          ) : null}
+
           <Button variant="outline" size="sm" onClick={() => printDailyReport(orders, autoPrint)} className="font-black uppercase text-[10px] tracking-widest h-10 px-6 rounded-xl border-white/10 hover:bg-white/5">
-            <Printer className="w-3.5 h-3.5 mr-2 text-primary" /> Relatório do Dia
+            <Printer className="w-3.5 h-3.5 mr-2 text-primary" /> Relatório
           </Button>
           
           <Button variant="outline" size="sm" onClick={load} className="h-10 w-10 p-0 rounded-xl border-white/10 hover:bg-white/5">
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-primary' : 'text-muted-foreground'}`} />
           </Button>
+
         </div>
       </div>
 
@@ -514,7 +589,7 @@ export default function AdminOrders() {
                 </Card>
               ) : (
                 <div className="grid gap-4">
-                  {list.map((o) => {
+                  {list.map((o: Order) => {
             const fullAddr = [o.address_street, o.address_number].filter(Boolean).join(", ");
             const mapsUrl = fullAddr
               ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${fullAddr}, ${o.address_neighborhood ?? ""}`)}`
@@ -566,7 +641,7 @@ export default function AdminOrders() {
                         <ShoppingBag className="w-4 h-4" /> Itens do Pedido
                       </h4>
                       <ul className="space-y-3">
-                        {o.items?.map((it, idx) => (
+                        {o.items?.map((it: any, idx: number) => (
                           <li
                             key={idx}
                             className="bg-background border border-border/60 rounded-xl p-3 shadow-sm"
