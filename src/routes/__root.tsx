@@ -18,40 +18,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Muthala Burger | O Melhor Hambúrguer Artesanal de Assis/SP" },
+      { title: "Muthala Burger | Melhor Hambúrguer Artesanal em Assis/SP" },
       {
         name: "description",
         content:
-          "Descubra o sabor lendário do Muthala Burger em Assis/SP. Hambúrgueres artesanais, smash burgers suculentos e ingredientes de alta qualidade. Peça online agora!",
+          "O melhor hambúrguer artesanal de Assis/SP. Smash burgers suculentos, ingredientes premium e sabor lendário. Peça seu delivery agora no Muthala Burger!",
       },
-      { name: "keywords", content: "hambúrguer artesanal, burger assis sp, delivery hambúrguer, smash burger, muthala burger, melhor lanche assis, hamburgueria assis centro" },
-      { property: "og:title", content: "Muthala Burger | O Melhor Hambúrguer Artesanal de Assis/SP" },
-      { property: "og:description", content: "Open Interaction allows users to upload and view website files, including images." },
+      { name: "keywords", content: "hambúrguer artesanal Assis, burger Assis SP, delivery lanches Assis, melhor hambúrguer Assis, hamburgueria Assis centro, smash burger Assis" },
+      { property: "og:title", content: "Muthala Burger | O Sabor dos Deuses em Assis/SP" },
+      { property: "og:description", content: "Hambúrgueres artesanais forjados com paixão. Experimente o melhor smash burger de Assis e região." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: SITE_URL },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:site_name", content: "Muthala Burger" },
       {
         property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png",
+        content: "https://muthalatest.lovable.app/og-image.jpg",
       },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Muthala Burger | O Melhor Hambúrguer Artesanal de Assis/SP" },
-      { name: "twitter:description", content: "Open Interaction allows users to upload and view website files, including images." },
+      { name: "twitter:title", content: "Muthala Burger | Hambúrguer Artesanal em Assis" },
+      { name: "twitter:description", content: "O melhor smash burger de Assis/SP. Peça online e receba em casa." },
       {
         name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0dcd31c4-1eb2-4548-a61a-c83ae6315807/id-preview-519bfb41--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778273157075.png",
+        content: "https://muthalatest.lovable.app/og-image.jpg",
       },
       { name: "geo.region", content: "BR-SP" },
       { name: "geo.placename", content: "Assis" },
       { name: "geo.position", content: "-22.6617;-50.4132" },
       { name: "ICBM", content: "-22.6617, -50.4132" },
       { name: "robots", content: "index, follow" },
-      { name: "description", content: "Open Interaction allows users to upload and view website files, including images." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab4ef172-b181-47ae-9875-8463a4762826/id-preview-9d4d8f58--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778305558028.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab4ef172-b181-47ae-9875-8463a4762826/id-preview-9d4d8f58--aebc800f-48ee-442d-ad4f-261d92d5bcfb.lovable.app-1778305558028.png" },
     ],
     links: [
       {

@@ -5,7 +5,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Muthala Burger | O Melhor Hambúrguer Artesanal de Assis/SP",
+        title: "Muthala Burger | Melhor Hambúrguer Artesanal de Assis/SP",
       },
       {
         name: "description",
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
     links: [
       {
         rel: "canonical",
-        href: "https://oi-hug-happy.lovable.app/",
+        href: "https://muthalatest.lovable.app/",
       },
     ],
   }),
