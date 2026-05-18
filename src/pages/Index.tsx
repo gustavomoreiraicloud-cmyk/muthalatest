@@ -163,19 +163,20 @@ const Index = () => {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Restaurant",
+    "@type": "FoodEstablishment",
     "name": "Muthala Burger",
+    "description": "O melhor hambúrguer artesanal de Assis/SP. Ingredientes premium e sabor irresistível.",
     "image": [
       ASSET_MAP["/src/assets/hero-burger.jpg"],
       ASSET_MAP["/src/assets/burger-muthala.jpg"],
       ASSET_MAP["/src/assets/burger-bacon.jpg"]
     ],
-    "@id": typeof window !== "undefined" ? window.location.origin : "https://muthalaburguer.com",
-    "url": typeof window !== "undefined" ? window.location.origin : "https://muthalaburguer.com",
+    "@id": "https://muthalatest.lovable.app",
+    "url": "https://muthalatest.lovable.app",
     "telephone": "+5518997962510",
     "priceRange": "$$",
-    "menu": "https://oi-hug-happy.lovable.app/#menu",
-    "servesCuisine": ["American", "Hamburgers"],
+    "menu": "https://muthalatest.lovable.app/#menu",
+    "servesCuisine": ["American", "Hamburgers", "Fast Food"],
     "acceptsReservations": "false",
     "address": {
       "@type": "PostalAddress",
@@ -199,13 +200,12 @@ const Index = () => {
       }
     ],
     "sameAs": [
-      "https://instagram.com/muthalaburguer",
-      "https://wa.me/5518997962510"
+      "https://instagram.com/muthalaburguer"
     ],
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "4.7",
-      "reviewCount": "98"
+      "ratingValue": "4.8",
+      "reviewCount": "105"
     }
   };
 
