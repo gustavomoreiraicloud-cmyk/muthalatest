@@ -337,7 +337,8 @@ const openStore = async () => {
 
 export default function AdminOrders() {
   const [storeOpen, setStoreOpen] = useState<boolean | null>(null);
-  // ... rest of state
+  const [orders, setOrders] = useState<Order[]>([]);
+
 
   const [loading, setLoading] = useState(true);
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_KEY) !== "0");
